@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /boiler-template/public/
+
+    # Jangan rewrite file/folder yang ada
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Semua request lain masuk ke index.php
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
