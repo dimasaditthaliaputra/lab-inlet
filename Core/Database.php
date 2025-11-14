@@ -11,13 +11,14 @@ class Database
     private $user = DB_USER;
     private $pass = DB_PASS;
     private $name = DB_NAME;
+    private $port = DB_PORT;
     
     private $conn;
     private $stmt;
 
     public function __construct()
     {
-        $dsn = 'pgsql:host=' . $this->host . ';dbname=' . $this->name;
+        $dsn = 'pgsql:host=' . $this->host . ';port=' . $this->port . ';dbname=' . $this->name;
         $options = [
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
