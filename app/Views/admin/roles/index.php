@@ -19,7 +19,6 @@
                                 <tr>
                                     <th width="5%">No</th>
                                     <th>Nama Role</th>
-                                    <th width="10%">Status</th>
                                     <th width="20%">Aksi</th>
                                 </tr>
                             </thead>
