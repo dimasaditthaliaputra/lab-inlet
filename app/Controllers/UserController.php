@@ -32,13 +32,6 @@ class UserController extends Controller
         try {
             $roles = $this->userModel->all();
 
-            if (!$roles) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Data tidak ditemukan'
-                ], 404);
-            }
-
             return response()->json([
                 'success' => true,
                 'message' => 'Success',
