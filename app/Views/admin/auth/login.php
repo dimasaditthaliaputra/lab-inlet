@@ -93,6 +93,8 @@
 
     <script>
         $('#formData').submit(function(e) {
+            console.log('DOM siap. jQuery berhasil dimuat.');
+            
             e.preventDefault();
 
             let formData = $(this).serialize();
@@ -128,7 +130,7 @@
                             errorMessage = 'Server terlalu lama merespon (timeout).';
                             break;
                         default:
-                            errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Terjadi kesalahan. Silakan coba lagi.';
+                            errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Terjadi kesalahan. Silahkan coba lagi.';
                     }
 
                     errorCatch.html(errorMessage);
