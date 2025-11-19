@@ -16,6 +16,10 @@ class DashboardController extends Controller
 
     public function index()
     {
-        view_with_layout('admin/dashboard/index');
+        $data = [
+            'title' => 'Dashboard'
+        ];
+
+        view_with_layout('admin/dashboard/index', $data);
     }
 }

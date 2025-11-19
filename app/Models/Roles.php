@@ -10,6 +10,6 @@ class Roles extends Model
 
     public function getAll()
     {
-        return $this->db->query("SELECT * FROM {$this->table} ORDER BY \"role_name\"")->all();
+        return $this->db->query("SELECT * FROM {$this->table} ORDER BY \"role_name\"")->fetchAll();
     }
 }

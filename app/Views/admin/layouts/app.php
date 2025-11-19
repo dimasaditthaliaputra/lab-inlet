@@ -21,6 +21,7 @@
         <?php include __DIR__ . '/components/sidebar.php'; ?>
         
         <div id="main">
+            <?php include __DIR__ . '/components/navbar.php'; ?>
             
             <header class="mb-3">
                 <a href="#" class="burger-btn d-block d-xl-none">

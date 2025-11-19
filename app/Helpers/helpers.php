@@ -216,12 +216,12 @@ if (!function_exists('request')) {
 
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
             if (in_array($method, ['PUT', 'PATCH', 'DELETE'])) {
-                
+
                 $input = file_get_contents('php://input');
-                
+
                 $parsed_data = [];
                 parse_str($input, $parsed_data);
-            
+
                 $all_data = array_merge($all_data, $parsed_data);
             }
         }
@@ -316,7 +316,6 @@ if (!function_exists('session')) {
 
         if ($value === null)
             return $_SESSION[$key] ?? null;
-
 
         $_SESSION[$key] = $value;
     }

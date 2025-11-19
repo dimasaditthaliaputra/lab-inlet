@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\Roles;
 use Core\Controller;
 
+use function PHPSTORM_META\map;
+
 class RolesController extends Controller
 {
     protected $rolesModel;
@@ -30,7 +32,7 @@ class RolesController extends Controller
     public function data()
     {
         try {
-            $roles = $this->rolesModel->getAll();
+            $roles = $this->rolesModel->all();
 
             return response()->json([
                 'success' => true,

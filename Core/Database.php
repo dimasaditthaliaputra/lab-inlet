@@ -76,7 +76,7 @@ class Database
     /**
      * Get all results
      */
-    public function all()
+    public function fetchAll()
     {
         $this->execute();
         return $this->stmt->fetchAll();
@@ -85,7 +85,7 @@ class Database
     /**
      * Get single result
      */
-    public function single()
+    public function first()
     {
         $this->execute();
         return $this->stmt->fetch();

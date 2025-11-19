@@ -17,7 +17,7 @@ class Model
      */
     public function all()
     {
-        return $this->db->query("SELECT * FROM {$this->table}")->all();
+        return $this->db->query("SELECT * FROM {$this->table}")->fetchAll();
     }
 
     /**
@@ -27,7 +27,7 @@ class Model
     {
         return $this->db->query("SELECT * FROM {$this->table} WHERE id = :id")
             ->bind(':id', $id)
-            ->single();
+            ->first();
     }
 
     /**
@@ -37,7 +37,7 @@ class Model
     {
         return $this->db->query("SELECT * FROM {$this->table} WHERE {$column} = :value")
             ->bind(':value', $value)
-            ->single();
+            ->first();
     }
 
     /**

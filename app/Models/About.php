@@ -10,6 +10,6 @@ class About extends Model
 
     public function getAll()
     {
-        return $this->db->query("SELECT * FROM {$this->table}")->all();
+        return $this->db->query("SELECT * FROM {$this->table}")->fetchAll();
     }
 }

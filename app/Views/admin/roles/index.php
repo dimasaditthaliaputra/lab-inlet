@@ -54,7 +54,7 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <form id="formData">
+                <form id="formData" action="<?php echo base_url('admin/roles') ?>" method="post">
                     <div class="modal-body">
                         <input type="hidden" name="primary_id" id="primary_id">
 
