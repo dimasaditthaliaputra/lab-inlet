@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict srCryqPjzZgcUgCjOMspp0cacVjJSvcUs5fAtW39kdTdrpsU1W16DaunGXkiHYq
+\restrict WNRubiYcBXyaN5Th27fN9OKasoo7jU8NqV3rOSsHBsQNvzAncaI0wFJIOGc9rdA
 
 -- Dumped from database version 15.14
 -- Dumped by pg_dump version 15.14
 
--- Started on 2025-11-14 14:50:31
+-- Started on 2025-11-20 02:12:46
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,9 +20,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE db_lab_inlet;
+DROP DATABASE IF EXISTS db_lab_inlet;
 --
--- TOC entry 3448 (class 1262 OID 18172)
+-- TOC entry 3460 (class 1262 OID 18172)
 -- Name: db_lab_inlet; Type: DATABASE; Schema: -; Owner: postgres
 --
 
@@ -31,9 +31,9 @@ CREATE DATABASE db_lab_inlet WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_
 
 ALTER DATABASE db_lab_inlet OWNER TO postgres;
 
-\unrestrict srCryqPjzZgcUgCjOMspp0cacVjJSvcUs5fAtW39kdTdrpsU1W16DaunGXkiHYq
+\unrestrict WNRubiYcBXyaN5Th27fN9OKasoo7jU8NqV3rOSsHBsQNvzAncaI0wFJIOGc9rdA
 \connect db_lab_inlet
-\restrict srCryqPjzZgcUgCjOMspp0cacVjJSvcUs5fAtW39kdTdrpsU1W16DaunGXkiHYq
+\restrict WNRubiYcBXyaN5Th27fN9OKasoo7jU8NqV3rOSsHBsQNvzAncaI0wFJIOGc9rdA
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -83,7 +83,7 @@ CREATE SEQUENCE public.aboutus_id_seq
 ALTER TABLE public.aboutus_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3449 (class 0 OID 0)
+-- TOC entry 3461 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: aboutus_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -122,12 +122,57 @@ CREATE SEQUENCE public.aboutusimages_id_seq
 ALTER TABLE public.aboutusimages_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3450 (class 0 OID 0)
+-- TOC entry 3462 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: aboutusimages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.aboutusimages_id_seq OWNED BY public.aboutusimages.id;
+
+
+--
+-- TOC entry 239 (class 1259 OID 18660)
+-- Name: activity_log; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.activity_log (
+    id integer NOT NULL,
+    id_user integer NOT NULL,
+    action_type character varying(50) NOT NULL,
+    table_name character varying(100),
+    record_id integer,
+    description text,
+    old_data jsonb,
+    new_data jsonb,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.activity_log OWNER TO postgres;
+
+--
+-- TOC entry 238 (class 1259 OID 18659)
+-- Name: activity_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.activity_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.activity_log_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3463 (class 0 OID 0)
+-- Dependencies: 238
+-- Name: activity_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.activity_log_id_seq OWNED BY public.activity_log.id;
 
 
 --
@@ -166,7 +211,7 @@ CREATE SEQUENCE public.gallery_id_seq
 ALTER TABLE public.gallery_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3451 (class 0 OID 0)
+-- TOC entry 3464 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: gallery_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -208,7 +253,7 @@ CREATE SEQUENCE public.journal_id_seq
 ALTER TABLE public.journal_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3452 (class 0 OID 0)
+-- TOC entry 3465 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: journal_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -251,7 +296,7 @@ CREATE SEQUENCE public.news_id_seq
 ALTER TABLE public.news_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3453 (class 0 OID 0)
+-- TOC entry 3466 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -291,7 +336,7 @@ CREATE SEQUENCE public.partner_id_seq
 ALTER TABLE public.partner_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3454 (class 0 OID 0)
+-- TOC entry 3467 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: partner_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -334,7 +379,7 @@ CREATE SEQUENCE public.product_id_seq
 ALTER TABLE public.product_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3455 (class 0 OID 0)
+-- TOC entry 3468 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -377,7 +422,7 @@ CREATE SEQUENCE public.project_id_seq
 ALTER TABLE public.project_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3456 (class 0 OID 0)
+-- TOC entry 3469 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: project_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -420,7 +465,7 @@ CREATE SEQUENCE public.publication_id_seq
 ALTER TABLE public.publication_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3457 (class 0 OID 0)
+-- TOC entry 3470 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: publication_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -458,7 +503,7 @@ CREATE SEQUENCE public.roles_id_seq
 ALTER TABLE public.roles_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3458 (class 0 OID 0)
+-- TOC entry 3471 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -502,7 +547,7 @@ CREATE SEQUENCE public.team_id_seq
 ALTER TABLE public.team_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3459 (class 0 OID 0)
+-- TOC entry 3472 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: team_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -521,7 +566,7 @@ CREATE TABLE public.users (
     password character varying(100) NOT NULL,
     email character varying(100),
     full_name character varying(100),
-    fk_roles integer,
+    id_roles integer NOT NULL,
     remember_token character varying(255),
     remember_token_expires_at timestamp without time zone
 );
@@ -546,7 +591,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3460 (class 0 OID 0)
+-- TOC entry 3473 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -555,7 +600,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 3228 (class 2604 OID 18238)
+-- TOC entry 3233 (class 2604 OID 18238)
 -- Name: aboutus id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -563,7 +608,7 @@ ALTER TABLE ONLY public.aboutus ALTER COLUMN id SET DEFAULT nextval('public.abou
 
 
 --
--- TOC entry 3229 (class 2604 OID 18239)
+-- TOC entry 3234 (class 2604 OID 18239)
 -- Name: aboutusimages id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -571,7 +616,15 @@ ALTER TABLE ONLY public.aboutusimages ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 3230 (class 2604 OID 18240)
+-- TOC entry 3245 (class 2604 OID 18663)
+-- Name: activity_log id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.activity_log ALTER COLUMN id SET DEFAULT nextval('public.activity_log_id_seq'::regclass);
+
+
+--
+-- TOC entry 3235 (class 2604 OID 18240)
 -- Name: gallery id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -579,7 +632,7 @@ ALTER TABLE ONLY public.gallery ALTER COLUMN id SET DEFAULT nextval('public.gall
 
 
 --
--- TOC entry 3231 (class 2604 OID 18241)
+-- TOC entry 3236 (class 2604 OID 18241)
 -- Name: journal id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -587,7 +640,7 @@ ALTER TABLE ONLY public.journal ALTER COLUMN id SET DEFAULT nextval('public.jour
 
 
 --
--- TOC entry 3232 (class 2604 OID 18242)
+-- TOC entry 3237 (class 2604 OID 18242)
 -- Name: news id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -595,7 +648,7 @@ ALTER TABLE ONLY public.news ALTER COLUMN id SET DEFAULT nextval('public.news_id
 
 
 --
--- TOC entry 3233 (class 2604 OID 18243)
+-- TOC entry 3238 (class 2604 OID 18243)
 -- Name: partner id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -603,7 +656,7 @@ ALTER TABLE ONLY public.partner ALTER COLUMN id SET DEFAULT nextval('public.part
 
 
 --
--- TOC entry 3234 (class 2604 OID 18244)
+-- TOC entry 3239 (class 2604 OID 18244)
 -- Name: product id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -611,7 +664,7 @@ ALTER TABLE ONLY public.product ALTER COLUMN id SET DEFAULT nextval('public.prod
 
 
 --
--- TOC entry 3235 (class 2604 OID 18245)
+-- TOC entry 3240 (class 2604 OID 18245)
 -- Name: project id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -619,7 +672,7 @@ ALTER TABLE ONLY public.project ALTER COLUMN id SET DEFAULT nextval('public.proj
 
 
 --
--- TOC entry 3236 (class 2604 OID 18246)
+-- TOC entry 3241 (class 2604 OID 18246)
 -- Name: publication id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -627,7 +680,7 @@ ALTER TABLE ONLY public.publication ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3237 (class 2604 OID 18247)
+-- TOC entry 3242 (class 2604 OID 18247)
 -- Name: roles id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -635,7 +688,7 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 
 
 --
--- TOC entry 3238 (class 2604 OID 18248)
+-- TOC entry 3243 (class 2604 OID 18248)
 -- Name: team id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -643,7 +696,7 @@ ALTER TABLE ONLY public.team ALTER COLUMN id SET DEFAULT nextval('public.team_id
 
 
 --
--- TOC entry 3239 (class 2604 OID 18249)
+-- TOC entry 3244 (class 2604 OID 18249)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -651,137 +704,133 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3419 (class 0 OID 18173)
+-- TOC entry 3429 (class 0 OID 18173)
 -- Dependencies: 214
 -- Data for Name: aboutus; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.aboutus (id, title, description, vision, mission) FROM stdin;
-1	Information and Learning Engineering Technology	Laboratorium Sistem Informasi merupakan salah satu laboratorium yang berperan penting dalam mendukung kegiatan praktikum, penelitian, dan pengembangan sistem informasi terapan.\n\t Laboratorium ini memiliki fokus riset di bidang Technology-Enhanced Learning, Learning Engineering, dan Learning Analytics. Tidak hanya untuk mendukung kegiatan akademik mahasiswa, \n\t tetapi juga sebagai pusat riset dan inovasi di bidang sistem informasi yang dapat diaplikasikan pada berbagai sektor, mulai dari pendidikan, bisnis, hingga industri..	Menjadi laboratorium unggulan yang menghasilkan solusi Sistem Informasi terapan untuk kebutuhan pendidikan, bisnis, dan industri.	1. Mendukung praktikum & pengembangan aplikasi SI (web, mobile, enterprise).\n\t 2. Melakukan riset terapan di basis data, proses bisnis, analitik data, dan integrasi SI.\n\t 3. Berkolaborasi dengan industri/lembaga untuk proyek SI dan layanan konsultasi.\n\t 4. Selaras dengan mandat pendidikan terapan Polinema & kurikulum prodi TI.
-2	About Us	Kami adalah tim yang berfokus pada pengembangan sistem informasi.	Menjadi lab unggulan di bidang teknologi.	Berinovasi, berkolaborasi, dan berkembang bersama.
-\.
+INSERT INTO public.aboutus VALUES (1, 'Information and Learning Engineering Technology', 'Laboratorium Sistem Informasi merupakan salah satu laboratorium yang berperan penting dalam mendukung kegiatan praktikum, penelitian, dan pengembangan sistem informasi terapan.
+	 Laboratorium ini memiliki fokus riset di bidang Technology-Enhanced Learning, Learning Engineering, dan Learning Analytics. Tidak hanya untuk mendukung kegiatan akademik mahasiswa, 
+	 tetapi juga sebagai pusat riset dan inovasi di bidang sistem informasi yang dapat diaplikasikan pada berbagai sektor, mulai dari pendidikan, bisnis, hingga industri..', 'Menjadi laboratorium unggulan yang menghasilkan solusi Sistem Informasi terapan untuk kebutuhan pendidikan, bisnis, dan industri.', '1. Mendukung praktikum & pengembangan aplikasi SI (web, mobile, enterprise).
+	 2. Melakukan riset terapan di basis data, proses bisnis, analitik data, dan integrasi SI.
+	 3. Berkolaborasi dengan industri/lembaga untuk proyek SI dan layanan konsultasi.
+	 4. Selaras dengan mandat pendidikan terapan Polinema & kurikulum prodi TI.');
+INSERT INTO public.aboutus VALUES (2, 'About Us', 'Kami adalah tim yang berfokus pada pengembangan sistem informasi.', 'Menjadi lab unggulan di bidang teknologi.', 'Berinovasi, berkolaborasi, dan berkembang bersama.');
 
 
 --
--- TOC entry 3421 (class 0 OID 18179)
+-- TOC entry 3431 (class 0 OID 18179)
 -- Dependencies: 216
 -- Data for Name: aboutusimages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.aboutusimages (id, aboutus_id, image_name) FROM stdin;
-1	1	foto1.webp
-2	1	foto2.webp
-3	1	foto3.webp
-\.
+INSERT INTO public.aboutusimages VALUES (1, 1, 'foto1.webp');
+INSERT INTO public.aboutusimages VALUES (2, 1, 'foto2.webp');
+INSERT INTO public.aboutusimages VALUES (3, 1, 'foto3.webp');
 
 
 --
--- TOC entry 3423 (class 0 OID 18183)
+-- TOC entry 3454 (class 0 OID 18660)
+-- Dependencies: 239
+-- Data for Name: activity_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.activity_log VALUES (11, 3, 'Login', NULL, NULL, 'User admin berhasil login ke sistem', NULL, NULL, '2025-11-19 20:51:53.440416');
+INSERT INTO public.activity_log VALUES (12, 3, 'Log Out', NULL, NULL, 'User admin logout dari sistem', NULL, NULL, '2025-11-19 20:51:58.684925');
+INSERT INTO public.activity_log VALUES (15, 3, 'Login', NULL, NULL, 'User admin berhasil login ke sistem', NULL, NULL, '2025-11-19 20:52:19.419972');
+INSERT INTO public.activity_log VALUES (16, 3, 'Update', 'users', 1, 'User Admin berhasil diperbarui', '{"id": 1, "role_name": "Admin P"}', '{"role_name": "Admin"}', '2025-11-19 21:12:34.504327');
+INSERT INTO public.activity_log VALUES (17, 3, 'Login', NULL, NULL, 'User admin berhasil login ke sistem', NULL, NULL, '2025-11-20 01:49:00.335777');
+
+
+--
+-- TOC entry 3433 (class 0 OID 18183)
 -- Dependencies: 218
 -- Data for Name: gallery; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.gallery (id, title, description, image_name, upload_date, type, url) FROM stdin;
-\.
 
 
 --
--- TOC entry 3425 (class 0 OID 18190)
+-- TOC entry 3435 (class 0 OID 18190)
 -- Dependencies: 220
 -- Data for Name: journal; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.journal (id, journal_title, authors, year, indexing, publication_id) FROM stdin;
-\.
 
 
 --
--- TOC entry 3427 (class 0 OID 18194)
+-- TOC entry 3437 (class 0 OID 18194)
 -- Dependencies: 222
 -- Data for Name: news; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.news (id, title, content, image_name, publish_date, is_publish, created_by) FROM stdin;
-\.
 
 
 --
--- TOC entry 3429 (class 0 OID 18200)
+-- TOC entry 3439 (class 0 OID 18200)
 -- Dependencies: 224
 -- Data for Name: partner; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.partner (id, partner_name, partner_logo, url) FROM stdin;
-\.
+INSERT INTO public.partner VALUES (1, 'anjay mabar', 'partner.jpg', 'https://google.com');
 
 
 --
--- TOC entry 3431 (class 0 OID 18206)
+-- TOC entry 3441 (class 0 OID 18206)
 -- Dependencies: 226
 -- Data for Name: product; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.product (id, product_name, description, image_name, release_date, feature, specification) FROM stdin;
-\.
 
 
 --
--- TOC entry 3433 (class 0 OID 18212)
+-- TOC entry 3443 (class 0 OID 18212)
 -- Dependencies: 228
 -- Data for Name: project; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.project (id, project_title, description, start_date, end_date, image_name, team_id) FROM stdin;
-\.
 
 
 --
--- TOC entry 3435 (class 0 OID 18218)
+-- TOC entry 3445 (class 0 OID 18218)
 -- Dependencies: 230
 -- Data for Name: publication; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.publication (id, title, description, publication_year, url, publication_type, team_id) FROM stdin;
-\.
 
 
 --
--- TOC entry 3437 (class 0 OID 18224)
+-- TOC entry 3447 (class 0 OID 18224)
 -- Dependencies: 232
 -- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.roles (id, role_name) FROM stdin;
-2	Operator
-3	Mahasiswa Magang
-4	Mahasiswa Skripsi
-1	Admin
-\.
+INSERT INTO public.roles VALUES (2, 'Operator');
+INSERT INTO public.roles VALUES (3, 'Mahasiswa Magang');
+INSERT INTO public.roles VALUES (4, 'Mahasiswa Skripsi');
+INSERT INTO public.roles VALUES (1, 'Admin');
 
 
 --
--- TOC entry 3439 (class 0 OID 18228)
+-- TOC entry 3449 (class 0 OID 18228)
 -- Dependencies: 234
 -- Data for Name: team; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.team (id, name, "position", nip, nidn, study_program, description, social_media) FROM stdin;
-\.
 
 
 --
--- TOC entry 3441 (class 0 OID 18234)
+-- TOC entry 3451 (class 0 OID 18234)
 -- Dependencies: 236
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, username, password, email, full_name, fk_roles, remember_token, remember_token_expires_at) FROM stdin;
-1	admin	$2y$10$qq3/ozM5Avmj51zLoATTE.mgtr0MT87iyc0LnODx1ZQhp2FLmPhIS	admin@labtech.ac.id	Admin Lab	1	5b33fdd0b1211cd91d908b492f2ac64290cc448040bdb5fbfeaeedd916ab96cb	2025-12-14 07:04:54
-\.
+INSERT INTO public.users VALUES (3, 'admin', '$2y$10$O4StDqIWuEqNevoBYqer7e.aCNDF4PpGdjqsXKHeRpDGN1lmdlRHW', 'adminlab@jti.polinema.ac.id', 'Admin Lab', 1, NULL, NULL);
+INSERT INTO public.users VALUES (9, 'abel cantik', '$2y$10$I3PqtqFlAYRlP5YsPqb1de7sDUTCFsj4oEFNOIsSXB/aRaYX2EkkS', 'amanda@gmail.com', 'Abellll', 1, NULL, NULL);
 
 
 --
--- TOC entry 3461 (class 0 OID 0)
+-- TOC entry 3474 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: aboutus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -790,7 +839,7 @@ SELECT pg_catalog.setval('public.aboutus_id_seq', 2, true);
 
 
 --
--- TOC entry 3462 (class 0 OID 0)
+-- TOC entry 3475 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: aboutusimages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -799,7 +848,16 @@ SELECT pg_catalog.setval('public.aboutusimages_id_seq', 3, true);
 
 
 --
--- TOC entry 3463 (class 0 OID 0)
+-- TOC entry 3476 (class 0 OID 0)
+-- Dependencies: 238
+-- Name: activity_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.activity_log_id_seq', 17, true);
+
+
+--
+-- TOC entry 3477 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: gallery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -808,7 +866,7 @@ SELECT pg_catalog.setval('public.gallery_id_seq', 1, false);
 
 
 --
--- TOC entry 3464 (class 0 OID 0)
+-- TOC entry 3478 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: journal_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -817,7 +875,7 @@ SELECT pg_catalog.setval('public.journal_id_seq', 1, false);
 
 
 --
--- TOC entry 3465 (class 0 OID 0)
+-- TOC entry 3479 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: news_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -826,16 +884,16 @@ SELECT pg_catalog.setval('public.news_id_seq', 1, false);
 
 
 --
--- TOC entry 3466 (class 0 OID 0)
+-- TOC entry 3480 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: partner_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.partner_id_seq', 1, false);
+SELECT pg_catalog.setval('public.partner_id_seq', 1, true);
 
 
 --
--- TOC entry 3467 (class 0 OID 0)
+-- TOC entry 3481 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -844,7 +902,7 @@ SELECT pg_catalog.setval('public.product_id_seq', 1, false);
 
 
 --
--- TOC entry 3468 (class 0 OID 0)
+-- TOC entry 3482 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: project_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -853,7 +911,7 @@ SELECT pg_catalog.setval('public.project_id_seq', 1, false);
 
 
 --
--- TOC entry 3469 (class 0 OID 0)
+-- TOC entry 3483 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: publication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -862,16 +920,16 @@ SELECT pg_catalog.setval('public.publication_id_seq', 1, false);
 
 
 --
--- TOC entry 3470 (class 0 OID 0)
+-- TOC entry 3484 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.roles_id_seq', 5, true);
+SELECT pg_catalog.setval('public.roles_id_seq', 10, true);
 
 
 --
--- TOC entry 3471 (class 0 OID 0)
+-- TOC entry 3485 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: team_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -880,16 +938,16 @@ SELECT pg_catalog.setval('public.team_id_seq', 1, false);
 
 
 --
--- TOC entry 3472 (class 0 OID 0)
+-- TOC entry 3486 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.users_id_seq', 9, true);
 
 
 --
--- TOC entry 3242 (class 2606 OID 18251)
+-- TOC entry 3249 (class 2606 OID 18251)
 -- Name: aboutus aboutus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -898,7 +956,7 @@ ALTER TABLE ONLY public.aboutus
 
 
 --
--- TOC entry 3244 (class 2606 OID 18253)
+-- TOC entry 3251 (class 2606 OID 18253)
 -- Name: aboutusimages aboutusimages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -907,7 +965,16 @@ ALTER TABLE ONLY public.aboutusimages
 
 
 --
--- TOC entry 3246 (class 2606 OID 18255)
+-- TOC entry 3279 (class 2606 OID 18668)
+-- Name: activity_log activity_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.activity_log
+    ADD CONSTRAINT activity_log_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3253 (class 2606 OID 18255)
 -- Name: gallery gallery_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -916,7 +983,7 @@ ALTER TABLE ONLY public.gallery
 
 
 --
--- TOC entry 3248 (class 2606 OID 18257)
+-- TOC entry 3255 (class 2606 OID 18257)
 -- Name: journal journal_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -925,7 +992,7 @@ ALTER TABLE ONLY public.journal
 
 
 --
--- TOC entry 3250 (class 2606 OID 18259)
+-- TOC entry 3257 (class 2606 OID 18259)
 -- Name: news news_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -934,7 +1001,7 @@ ALTER TABLE ONLY public.news
 
 
 --
--- TOC entry 3252 (class 2606 OID 18261)
+-- TOC entry 3259 (class 2606 OID 18261)
 -- Name: partner partner_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -943,7 +1010,7 @@ ALTER TABLE ONLY public.partner
 
 
 --
--- TOC entry 3254 (class 2606 OID 18263)
+-- TOC entry 3261 (class 2606 OID 18263)
 -- Name: product product_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -952,7 +1019,7 @@ ALTER TABLE ONLY public.product
 
 
 --
--- TOC entry 3256 (class 2606 OID 18265)
+-- TOC entry 3263 (class 2606 OID 18265)
 -- Name: project project_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -961,7 +1028,7 @@ ALTER TABLE ONLY public.project
 
 
 --
--- TOC entry 3258 (class 2606 OID 18267)
+-- TOC entry 3265 (class 2606 OID 18267)
 -- Name: publication publication_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -970,7 +1037,7 @@ ALTER TABLE ONLY public.publication
 
 
 --
--- TOC entry 3260 (class 2606 OID 18269)
+-- TOC entry 3267 (class 2606 OID 18269)
 -- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -979,7 +1046,7 @@ ALTER TABLE ONLY public.roles
 
 
 --
--- TOC entry 3264 (class 2606 OID 18271)
+-- TOC entry 3271 (class 2606 OID 18271)
 -- Name: team team_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -988,7 +1055,7 @@ ALTER TABLE ONLY public.team
 
 
 --
--- TOC entry 3266 (class 2606 OID 18273)
+-- TOC entry 3273 (class 2606 OID 18273)
 -- Name: users unique_email; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -997,7 +1064,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3262 (class 2606 OID 18275)
+-- TOC entry 3269 (class 2606 OID 18275)
 -- Name: roles unique_roles; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1006,7 +1073,7 @@ ALTER TABLE ONLY public.roles
 
 
 --
--- TOC entry 3268 (class 2606 OID 18277)
+-- TOC entry 3275 (class 2606 OID 18277)
 -- Name: users unique_username; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1015,7 +1082,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3270 (class 2606 OID 18279)
+-- TOC entry 3277 (class 2606 OID 18279)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1024,7 +1091,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3271 (class 2606 OID 18280)
+-- TOC entry 3280 (class 2606 OID 18280)
 -- Name: aboutusimages aboutusimages_aboutus_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1033,7 +1100,16 @@ ALTER TABLE ONLY public.aboutusimages
 
 
 --
--- TOC entry 3272 (class 2606 OID 18285)
+-- TOC entry 3286 (class 2606 OID 18682)
+-- Name: activity_log fk_activity_log_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.activity_log
+    ADD CONSTRAINT fk_activity_log_user FOREIGN KEY (id_user) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3281 (class 2606 OID 18285)
 -- Name: journal journal_publication_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1042,7 +1118,7 @@ ALTER TABLE ONLY public.journal
 
 
 --
--- TOC entry 3273 (class 2606 OID 18290)
+-- TOC entry 3282 (class 2606 OID 18290)
 -- Name: news news_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1051,7 +1127,7 @@ ALTER TABLE ONLY public.news
 
 
 --
--- TOC entry 3274 (class 2606 OID 18295)
+-- TOC entry 3283 (class 2606 OID 18295)
 -- Name: project project_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1060,7 +1136,7 @@ ALTER TABLE ONLY public.project
 
 
 --
--- TOC entry 3275 (class 2606 OID 18300)
+-- TOC entry 3284 (class 2606 OID 18300)
 -- Name: publication publication_team_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1069,19 +1145,19 @@ ALTER TABLE ONLY public.publication
 
 
 --
--- TOC entry 3276 (class 2606 OID 18305)
--- Name: users users_fk_roles_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3285 (class 2606 OID 18654)
+-- Name: users users_id_roles_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_fk_roles_fkey FOREIGN KEY (fk_roles) REFERENCES public.roles(id);
+    ADD CONSTRAINT users_id_roles_fkey FOREIGN KEY (id_roles) REFERENCES public.roles(id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
--- Completed on 2025-11-14 14:50:31
+-- Completed on 2025-11-20 02:12:46
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict srCryqPjzZgcUgCjOMspp0cacVjJSvcUs5fAtW39kdTdrpsU1W16DaunGXkiHYq
+\unrestrict WNRubiYcBXyaN5Th27fN9OKasoo7jU8NqV3rOSsHBsQNvzAncaI0wFJIOGc9rdA
 

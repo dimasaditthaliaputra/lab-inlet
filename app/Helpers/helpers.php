@@ -42,6 +42,58 @@ if (!function_exists('asset')) {
     }
 }
 
+if (!function_exists('current_url')) {
+    function current_url($relative = false)
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+            || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+
+        $host = rtrim($_SERVER['HTTP_HOST'], '/');
+        $scriptName = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+
+        if (strlen($scriptName) > 1) {
+            $scriptName = rtrim($scriptName, '/');
+        }
+
+        $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        if ($relative) {
+            return $requestUri;
+        }
+
+        $baseUrl = $protocol . $host . $scriptName;
+        return rtrim($baseUrl, '/') . rtrim($requestUri, '/');
+    }
+}
+
+if (!function_exists('current_route')) {
+    function current_route()
+    {
+        return current_url(true);
+    }
+}
+
+if (!function_exists('is_route')) {
+    function is_route($route)
+    {
+        $currentRoute = current_route();
+        $route = '/' . ltrim($route, '/');
+
+        return $currentRoute === $route;
+    }
+}
+
+if (!function_exists('is_route_prefix')) {
+    function is_route_prefix($prefix)
+    {
+        $currentRoute = current_route();
+        $prefix = '/' . ltrim($prefix, '/');
+        $prefix = rtrim($prefix, '/');
+
+        return strpos($currentRoute, $prefix) === 0;
+    }
+}
+
 if (!function_exists('redirect')) {
     /**
      * Redirect to URL
@@ -600,6 +652,126 @@ if (!function_exists('env')) {
         function method_field($method)
         {
             return '<input type="hidden" name="_method" value="' . strtoupper($method) . '">';
+        }
+    }
+
+    if (!function_exists('validate_request')) {
+        function validate_request($rules)
+        {
+            $validated = [];
+            $errors = [];
+            $requestData = request();
+
+            foreach ($rules as $field => $options) {
+                $isRequired = $options['required'] ?? false;
+                $type = $options['type'] ?? 'string';
+                $messages = $options['messages'] ?? [];
+                $value = $requestData[$field] ?? null;
+
+                $isUnique    = $options['unique'] ?? false;
+                $table       = $options['table'] ?? null;
+                $columnName  = $options['column'] ?? $field;
+
+                if ($isRequired && (is_null($value) || (is_string($value) && trim($value) === ''))) {
+                    $errors[$field] = $messages['required'] ?? ucfirst($field) . ' is required';
+                    $validated[$field] = null;
+                    continue;
+                }
+
+                if (!$isRequired && (is_null($value) || (is_string($value) && trim($value) === ''))) {
+                    $validated[$field] = null;
+                    continue;
+                }
+
+                $typeValid = match ($type) {
+                    'string' => is_string($value),
+                    'int', 'integer' => is_numeric($value),
+                    'bool', 'boolean' => in_array($value, [true, false, '1', '0', 'true', 'false'], true),
+                    'array' => is_array($value),
+                    'email' => filter_var($value, FILTER_VALIDATE_EMAIL),
+                    default => true
+                };
+
+                if (!$typeValid) {
+                    $defaultMessage = ucfirst($field) . ' must be of type ' . $type;
+                    $errors[$field] = $messages['type'] ?? $defaultMessage;
+                    $validated[$field] = null;
+                    continue;
+                }
+
+                $validated[$field] = match ($type) {
+                    'int', 'integer' => (int)$value,
+                    'bool', 'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
+                    'email' => strtolower(trim($value)),
+                    'string' => is_string($value) ? trim($value) : $value,
+                    default => $value
+                };
+
+                if ($isUnique && $table) {
+                    $db = new \Core\Database();
+
+                    $query = "SELECT COUNT(*) AS count FROM {$table} WHERE {$columnName} = :value";
+
+                    $result = $db->query($query)
+                        ->bind(':value', $value)
+                        ->first();
+
+                    if ($result && $result->count > 0) {
+                        $errors[$field] = $messages['unique'] ?? ucfirst($field) . ' sudah terdaftar.';
+                        $validated[$field] = null;
+                        continue;
+                    }
+                }
+
+                $validated[$field] = match ($type) {
+                    'int', 'integer' => (int)$value,
+                    'bool', 'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
+                    'email' => strtolower(trim($value)),
+                    'string' => is_string($value) ? trim($value) : $value,
+                    default => $value
+                };
+            }
+
+            return [
+                'success' => empty($errors),
+                'data' => $validated,
+                'errors' => $errors
+            ];
+        }
+    }
+
+    if (!function_exists('validate')) {
+        function validate($rules)
+        {
+            return validate_request($rules);
+        }
+    }
+
+    if (!function_exists('logActivity')) {
+        function logActivity($action_type, $description = null, $table_name = null, $record_id = null, $old_data = null, $new_data = null)
+        {
+            $db = new \Core\Database();
+            $user = session('user');
+
+            $userId = $user ? $user->id : null;
+
+            $db->query("
+            INSERT INTO activity_log (
+                id_user, action_type, table_name, record_id, description, old_data, new_data
+            ) VALUES (
+                :id_user, :action_type, :table_name, :record_id, :description, :old_data, :new_data
+            )
+        ");
+
+            $db->bind(":id_user", $userId);
+            $db->bind(":action_type", $action_type);
+            $db->bind(":table_name", $table_name);
+            $db->bind(":record_id", $record_id);
+            $db->bind(":description", $description);
+            $db->bind(":old_data", $old_data ? json_encode($old_data) : null);
+            $db->bind(":new_data", $new_data ? json_encode($new_data) : null);
+
+            $db->execute();
         }
     }
 }

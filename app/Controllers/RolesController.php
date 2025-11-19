@@ -23,7 +23,7 @@ class RolesController extends Controller
     public function index()
     {
         $data = [
-            'title' => 'Role Pengguna',
+            'title' => 'Roles User',
         ];
 
         view_with_layout('admin/roles/index', $data);
@@ -32,7 +32,7 @@ class RolesController extends Controller
     public function data()
     {
         try {
-            $roles = $this->rolesModel->all();
+            $roles = $this->rolesModel->orderBy('role_name', 'ASC');
 
             return response()->json([
                 'success' => true,
@@ -50,11 +50,37 @@ class RolesController extends Controller
     public function store()
     {
         try {
-            $form = request('role_name');
-
-            $role = $this->rolesModel->create([
-                'role_name' => $form
+            $validation = validate([
+                'role_name' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Role Name is required'
+                    ]
+                ],
             ]);
+
+            if (!$validation['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validation['errors']
+                ], 422);
+            }
+
+            $data = [
+                'role_name' => $validation['data']['role_name']
+            ];
+
+            $role = $this->rolesModel->create($data);
+
+            logActivity(
+                "Create",
+                "Add Role ' . $role->role_name . '",
+                "roles",
+                $role->id,
+                null,
+                $data
+            );
 
             return response()->json([
                 'success' => true,
@@ -96,20 +122,47 @@ class RolesController extends Controller
     public function update($id)
     {
         try {
-            $role = $this->rolesModel->find($id);
+            $oldData = $this->rolesModel->find($id);
 
-            if (!$role) {
+            if (!$oldData) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data role tidak ditemukan.'
                 ], 404);
             }
 
-            $form = request('role_name');
-
-            $this->rolesModel->update($id, [
-                'role_name' => $form
+            $validation = validate([
+                'role_name' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Role Name is required.',
+                    ]
+                ],
             ]);
+
+            if (!$validation['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validation['errors']
+                ], 422);
+            }
+
+            $newData = [
+                'role_name' => $validation['data']['role_name']
+            ];
+
+            $role = $this->rolesModel->update($id, $newData);
+
+            logActivity(
+                "Update",
+                "User {$validation['data']['role_name']} berhasil diperbarui",
+                "users",
+                $id,
+                $oldData,
+                $newData
+            );
+
 
             return response()->json([
                 'success' => true,

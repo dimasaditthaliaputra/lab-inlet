@@ -56,6 +56,11 @@ class AuthController
                     cookie('remember_me_token', $cookie_value, 30 * 24 * 60 * 60);
                 }
 
+                logActivity(
+                    "Login",
+                    "User {$user->username} berhasil login ke sistem"
+                );
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Login berhasil'
@@ -81,6 +86,11 @@ class AuthController
             $userModel = new User();
             $userModel->updateRememberToken($user_id, null, null);
         }
+
+        logActivity(
+            "Log Out",
+            "User " . session('user')->username . " logout dari sistem"
+        );
 
         clear_session();
 

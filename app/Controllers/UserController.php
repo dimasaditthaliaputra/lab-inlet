@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Roles;
 use App\Models\User;
 use Core\Controller;
 
@@ -20,8 +21,13 @@ class UserController extends Controller
 
     public function index()
     {
+        $usersModel = new Roles();
+
+        $users = $usersModel->orderBy('role_name', 'ASC');
+
         $data = [
-            'title' => 'User Pengguna',
+            'title' => 'User',
+            'roles' => $users
         ];
 
         view_with_layout('admin/user/index', $data);
@@ -30,12 +36,12 @@ class UserController extends Controller
     public function data()
     {
         try {
-            $roles = $this->userModel->all();
+            $users = $this->userModel->all();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Success',
-                'data' => $roles
+                'data' => $users
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -48,13 +54,65 @@ class UserController extends Controller
     public function store()
     {
         try {
-            $username = request('username');
-            $email = request('email');
-
-            $role = $this->userModel->create([
-                'role_name' => $username,
-                'email' => $email
+            $validation = validate([
+                'username' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Username is required.'
+                    ]
+                ],
+                'email' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Email is required.'
+                    ]
+                ],
+                'password' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Password is required.'
+                    ]
+                ],
+                'full_name' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Full Name is required.'
+                    ]
+                ],
+                'id_roles' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Roles is required'
+                    ]
+                ]
             ]);
+
+            if (!$validation['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validation['errors']
+                ], 422);
+            }
+
+            $data = [
+                'username' => $validation['data']['username'],
+                'email' => $validation['data']['email'],
+                'password' => password_hash($validation['data']['password'], PASSWORD_DEFAULT),
+                'full_name' => $validation['data']['full_name'],
+                'id_roles' => $validation['data']['id_roles']
+            ];
+
+            $user = $this->userModel->create($data);
+
+            logActivity(
+                "Create",
+                "User {$validation['data']['username']} berhasil ditambahkan",
+                "users",
+                $user->id,
+                null,
+                $data
+            );
 
             return response()->json([
                 'success' => true,
@@ -63,7 +121,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan pada server, coba lagi.'
+                'message' => 'Terjadi kesalahan pada server, coba lagi.' . $e->getMessage()
             ], 500);
         }
     }
@@ -71,9 +129,9 @@ class UserController extends Controller
     public function edit($id)
     {
         try {
-            $role = $this->userModel->findBy('id', $id);
+            $user = $this->userModel->getUserWithRoles($id);
 
-            if (!$role) {
+            if (!$user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data tidak ditemukan'
@@ -83,12 +141,12 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Success',
-                'data' => $role
+                'data' => $user
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan pada server, coba lagi.'
+                'message' => 'Terjadi kesalahan pada server, coba lagi.' . $e->getMessage()
             ], 500);
         }
     }
@@ -96,20 +154,74 @@ class UserController extends Controller
     public function update($id)
     {
         try {
-            $role = $this->userModel->find($id);
+            $oldData = $this->userModel->find($id);
 
-            if (!$role) {
+            if (!$oldData) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data role tidak ditemukan.'
                 ], 404);
             }
 
-            $form = request('role_name');
-
-            $this->userModel->update($id, [
-                'role_name' => $form
+            $validation = validate([
+                'username' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Username is required.'
+                    ]
+                ],
+                'email' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Email is required.'
+                    ]
+                ],
+                'password' => [
+                    'required' => false,
+                ],
+                'full_name' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Full Name is required.'
+                    ]
+                ],
+                'id_roles' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Roles is required'
+                    ]
+                ]
             ]);
+
+            if (!$validation['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validation['errors']
+                ], 422);
+            }
+
+            $newData = [
+                'username' => $validation['data']['username'],
+                'email' => $validation['data']['email'],
+                'full_name' => $validation['data']['full_name'],
+                'id_roles' => $validation['data']['id_roles']
+            ];
+
+            if (!empty($validation['data']['password'])) {
+                $newData['password'] = password_hash($validation['data']['password'], PASSWORD_DEFAULT);
+            }
+
+            $user = $this->userModel->update($id, $newData);
+
+            logActivity(
+                "Update",
+                "User {$validation['data']['username']} berhasil diperbarui",
+                "users",
+                $id,
+                $oldData,
+                $user
+            );
 
             return response()->json([
                 'success' => true,
@@ -126,9 +238,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
-            $role = $this->userModel->find($id);
+            $user = $this->userModel->find($id);
 
-            if (!$role) {
+            if (!$user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data role tidak ditemukan.'

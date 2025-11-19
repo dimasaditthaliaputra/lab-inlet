@@ -3,10 +3,12 @@
 use App\Controllers\AboutUsController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
+use App\Controllers\LogActivityController;
 use App\Controllers\RolesController;
 use App\Controllers\TeamController;
 use App\Controllers\UserController;
 use App\Controllers\PartnerController;
+use App\Controllers\UserRedirectController;
 
 return prefix('admin', route_group([
 
@@ -54,4 +56,16 @@ return prefix('admin', route_group([
     get('/partner/{id}/edit', [PartnerController::class, 'edit']),
     put('/partner/{id}', [PartnerController::class, 'update']),
     delete('/partner/{id}', [PartnerController::class, 'destroy']),
+
+    // Log Activity
+    get('/log-activity', [LogActivityController::class, 'index']),
+    get('/log-activity/data', [LogActivityController::class, 'data']),
+
+    // Route User Redirect
+    get('/userRedirect', [UserRedirectController::class, 'index']),
+    get('/userRedirect/create', [UserRedirectController::class, 'create']),
+    post('/userRedirect/insert', [UserRedirectController::class, 'store']),
+    get('/userRedirect/{id}/edit', [UserRedirectController::class, 'edit']),
+    put('/userRedirect/{id}/update', [UserRedirectController::class, 'update']),
+    delete('/userRedirect/{id}/delete', [UserRedirectController::class, 'destroy']),
 ]));

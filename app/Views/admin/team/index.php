@@ -52,7 +52,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitleId">
-                        Form Team 
+                        Form Team
                     </h5>
                     <button
                         type="button"
@@ -139,7 +139,7 @@ ob_start();
 
     $(document).ready(function() {
         $('#data-tables').DataTable({
-            processing: false,
+            processing: true,
             responsive: true,
             autoWidth: false,
             ajax: '<?php echo base_url('admin/team/data'); ?>',
@@ -294,16 +294,19 @@ ob_start();
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
-                        let errorsHtml = '<ul>';
+
+                        $('.text-danger').remove();
+
                         $.each(errors, function(key, value) {
-                            errorsHtml += `<li>${value}</li>`;
+                            let inputEl = $(`#${key}`);
+                            if (inputEl.length) {
+                                inputEl.after(`
+                                <small class="text-danger d-block mt-1">
+                                    ${value}
+                                </small>
+                            `);
+                            }
                         });
-                        errorsHtml += '</ul>';
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            html: errorsHtml
-                        })
                     } else {
                         Swal.fire({
                             icon: 'error',

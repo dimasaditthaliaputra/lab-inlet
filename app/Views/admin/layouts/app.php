@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Lab Inlet' ?></title>
+    <title><?= $_ENV['APP_NAME'] ?? 'Lab Inlet' ?></title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="<?= asset('assets/mazer/compiled/css/app.css') ?>">
@@ -12,16 +12,18 @@
     <link rel="stylesheet" href="<?= asset('assets/mazer/compiled/css/table-datatable-jquery.css') ?>">
     <link rel="stylesheet" href="<?= asset('assets/mazer/compiled/css/iconly.css') ?>">
     <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/sweetalert2/sweetalert2.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/select2/dist/css/select2.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/select2/dist/css/select2-bootstrap-5-theme.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
 </head>
 
 <body>
     <div id="app">
         <?php include __DIR__ . '/components/sidebar.php'; ?>
-        
+
         <div id="main">
             <?php include __DIR__ . '/components/navbar.php'; ?>
-            
+
             <header class="mb-3">
                 <a href="#" class="burger-btn d-block d-xl-none">
                     <i class="bi bi-justify fs-3"></i>
@@ -41,6 +43,7 @@
     <script src="<?= base_url('assets/mazer/extensions/datatables.net/js/jquery.dataTables.min.js') ?>"></script>
     <script src="<?= base_url('assets/mazer/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js') ?>"></script>
     <script src="<?= base_url('assets/mazer/static/js/pages/datatables.js') ?>"></script>
+    <script src="<?= base_url('assets/mazer/extensions/select2/dist/js/select2.min.js') ?>"></script>
 
     <script src="<?= base_url('assets/mazer/extensions/sweetalert2/sweetalert2.all.min.js') ?>"></script>
 

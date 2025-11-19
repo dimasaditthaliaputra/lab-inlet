@@ -5,11 +5,14 @@
 <div class="page-content">
     <section class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Daftar Role Pengguna</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">Tambah Role Baru</button>
+                        <h4 class="card-title">Roles List</h4>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                            <i class="bi bi-plus me-1" role="img" aria-label="Add new roles"></i>
+                            Add New Roles
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -18,8 +21,8 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Nama Role</th>
-                                    <th width="20%">Aksi</th>
+                                    <th>Role Name</th>
+                                    <th width="20%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,7 +49,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitleId">
-                        Form Role Pengguna
+                        Form Roles
                     </h5>
                     <button
                         type="button"
@@ -61,7 +64,7 @@
                         <div class="row mb-3 align-items-center">
                             <label for="role_name" class="col-md-3 col-form-label">Role Name</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="role_name" id="role_name" placeholder="Masukkan nama role">
+                                <input type="text" class="form-control" name="role_name" id="role_name" placeholder="Input role name">
                             </div>
                         </div>
                     </div>
@@ -92,7 +95,7 @@ ob_start();
 
     $(document).ready(function() {
         $('#data-tables').DataTable({
-            processing: false,
+            processing: true,
             responsive: true,
             autoWidth: false,
             ajax: '<?php echo base_url('admin/roles/data'); ?>',
@@ -121,7 +124,7 @@ ob_start();
 
                         return `
                             <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit">Edit</button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Hapus</button>
+                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Delete</button>
                         `;
                     }
                 },
@@ -139,7 +142,7 @@ ob_start();
                 dataType: 'JSON',
                 success: function(res) {
                     if (res.success) {
-                        $('#modalTitleId').html('Form Edit Role Pengguna');
+                        $('#modalTitleId').html('Form Edit Roles');
                         $('#primary_id').val(res.data.id);
                         $('#role_name').val(res.data.role_name);
                         $('#modalForm').modal('show');
@@ -151,7 +154,8 @@ ob_start();
         $('#modalForm').on('hidden.bs.modal', function(event) {
             $('#formData')[0].reset();
 
-            $('#modalTitleId').html('Form Role Pengguna');
+            $('#modalTitleId').html('Form Roles');
+            $('.text-danger').remove();
             $('#primary_id').val('');
             $('#role_name').val('');
         });
@@ -201,22 +205,21 @@ ob_start();
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
-                        let errorsHtml = '<ul>';
+
+                        $('.text-danger').remove();
+
                         $.each(errors, function(key, value) {
-                            errorsHtml += `<li>${value}</li>`;
+                            let inputEl = $(`#${key}`);
+                            if (inputEl.length) {
+                                inputEl.after(`
+                                <small class="text-danger d-block mt-1">
+                                    ${value}
+                                </small>
+                            `);
+                            }
                         });
-                        errorsHtml += '</ul>';
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            html: errorsHtml
-                        })
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Terjadi kesalahan. Silakan coba lagi!'
-                        })
+                        console.error('Terjadi kesalahan server:', error);
                     }
                 },
                 complete: function() {

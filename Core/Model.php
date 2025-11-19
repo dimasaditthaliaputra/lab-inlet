@@ -20,6 +20,11 @@ class Model
         return $this->db->query("SELECT * FROM {$this->table}")->fetchAll();
     }
 
+
+    public function orderBy($key, $order = 'ASC') {
+        return $this->db->query("SELECT * FROM {$this->table} ORDER BY {$key} {$order}")->fetchAll();
+    }
+
     /**
      * Find record by ID
      */
@@ -47,13 +52,13 @@ class Model
     {
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
-        
+
         $this->db->query("INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})");
-        
+
         foreach ($data as $key => $value) {
             $this->db->bind(':' . $key, $value);
         }
-        
+
         if ($this->db->execute()) {
             return $this->db->lastInsertId();
         }
@@ -70,14 +75,14 @@ class Model
             $set .= "{$key} = :{$key}, ";
         }
         $set = rtrim($set, ', ');
-        
+
         $this->db->query("UPDATE {$this->table} SET {$set} WHERE id = :id");
         $this->db->bind(':id', $id);
-        
+
         foreach ($data as $key => $value) {
             $this->db->bind(':' . $key, $value);
         }
-        
+
         return $this->db->execute();
     }
 

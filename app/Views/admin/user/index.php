@@ -5,11 +5,14 @@
 <div class="page-content">
     <section class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Daftar Role Pengguna</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">Tambah Role Baru</button>
+                        <h4 class="card-title">User List</h4>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                            <i class="bi bi-plus me-1" role="img" aria-label="Add new roles"></i>
+                            Add New User
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -20,7 +23,7 @@
                                     <th width="5%">No</th>
                                     <th>Username</th>
                                     <th>Email</th>
-                                    <th>Nama Lengkap</th>
+                                    <th>Name</th>
                                     <th width="20%">Aksi</th>
                                 </tr>
                             </thead>
@@ -63,14 +66,42 @@
                         <div class="row mb-3 align-items-center">
                             <label for="role_name" class="col-md-3 col-form-label">Username</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="username" id="username" placeholder="Masukkan nama role">
+                                <input type="text" class="form-control" name="username" id="username" placeholder="Input username">
                             </div>
                         </div>
 
                         <div class="row mb-3 align-items-center">
                             <label for="role_name" class="col-md-3 col-form-label">Email</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="email" id="email" placeholder="Masukkan nama role">
+                                <input type="email" class="form-control" name="email" id="email" placeholder="example example@mail.com">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="role_name" class="col-md-3 col-form-label">Password</label>
+                            <div class="col-md-9">
+                                <input type="password" class="form-control" name="password" id="password">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="role_name" class="col-md-3 col-form-label">Full Name</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" name="full_name" id="full_name" placeholder="example example@mail.com">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="role_name" class="col-md-3 col-form-label">Roles</label>
+                            <div class="col-md-9">
+                                <select name="id_roles" id="id_roles">
+                                    <option value=""></option>
+                                    <?php
+                                    foreach ($roles as $item) {
+                                        echo '<option value="' . $item->id . '">' . $item->role_name . '</option>';
+                                    }
+                                    ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -100,8 +131,17 @@ ob_start();
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
     $(document).ready(function() {
+        $('#id_roles').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            dropdownParent: $('#modalForm'),
+            allowClear: true,
+            placeholder: 'Pilih role',
+            minimumResultsForSearch: Infinity
+        });
+
         $('#data-tables').DataTable({
-            processing: false,
+            processing: true,
             responsive: true,
             autoWidth: false,
             ajax: '<?php echo base_url('admin/user/data'); ?>',
@@ -138,7 +178,7 @@ ob_start();
 
                         return `
                             <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit">Edit</button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Hapus</button>
+                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Delete</button>
                         `;
                     }
                 },
@@ -157,8 +197,20 @@ ob_start();
                 success: function(res) {
                     if (res.success) {
                         $('#modalTitleId').html('Form Edit Role Pengguna');
-                        $('#primary_id').val(res.data.id);
-                        $('#role_name').val(res.data.role_name);
+                        $('#primary_id').val(res.data.user_id);
+                        $('#username').val(res.data.username);
+                        $('#email').val(res.data.email);
+                        $('#full_name').val(res.data.full_name);
+                        var option = new Option(res.data.roles.role_name, res.data.roles.id, true, true);
+                        $('#id_roles').append(option).trigger('change');
+
+                        $('#password').next('small').remove();
+                        $('#password').after(`
+                            <small class="text-muted d-block mt-1">
+                                Kosongkan jika tidak diisi
+                            </small>
+                        `);
+
                         $('#modalForm').modal('show');
                     }
                 }
@@ -168,9 +220,13 @@ ob_start();
         $('#modalForm').on('hidden.bs.modal', function(event) {
             $('#formData')[0].reset();
 
+            $('#id_roles').val('').trigger('change');
+
+            $('.text-danger').remove();
+            $('#password').next('small').remove();
+
             $('#modalTitleId').html('Form Role Pengguna');
             $('#primary_id').val('');
-            $('#role_name').val('');
         });
 
         $('#formData').submit(function(e) {
@@ -218,16 +274,19 @@ ob_start();
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
-                        let errorsHtml = '<ul>';
+
+                        $('.text-danger').remove();
+
                         $.each(errors, function(key, value) {
-                            errorsHtml += `<li>${value}</li>`;
+                            let inputEl = $(`#${key}`);
+                            if (inputEl.length) {
+                                inputEl.after(`
+                                <small class="text-danger d-block mt-1">
+                                    ${value}
+                                </small>
+                            `);
+                            }
                         });
-                        errorsHtml += '</ul>';
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            html: errorsHtml
-                        })
                     } else {
                         Swal.fire({
                             icon: 'error',

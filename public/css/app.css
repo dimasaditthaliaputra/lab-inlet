@@ -26,15 +26,6 @@ body {
   z-index: 1000 !important;
 }
 
-.burger-btn {
-  color: #435ebe;
-  text-decoration: none;
-}
-
-.burger-btn:hover {
-  color: #364a98;
-}
-
 /* Clock Styling */
 #current-time {
   font-size: 1rem;
@@ -163,6 +154,13 @@ body {
     color: white !important;
 }
 
+#data-tables tbody td {
+    color: black !important;
+}
+
+.col-form-label {
+  color: #000 !important;
+}
 
 /* Responsive */
 @media (max-width: 991px) {

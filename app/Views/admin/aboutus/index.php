@@ -42,7 +42,7 @@ ob_start();
 
     $(document).ready(function() {
         $('#data-tables').DataTable({
-            processing: false,
+            processing: true,
             responsive: true,
             autoWidth: false,
             ajax: '<?php echo base_url('admin/aboutus/data'); ?>',
@@ -102,7 +102,7 @@ ob_start();
                 timer: 1500
             });
         <?php
-            unset($_SESSION['success_message']); 
+            unset($_SESSION['success_message']);
         endif;
         ?>
 
