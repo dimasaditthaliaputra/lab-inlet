@@ -44,7 +44,7 @@
         <div class="about-content">
             <div class="about-text">
                 <h2 class="about-title text-slide-animate text-slide-left" data-text="About Us">About Us</h2>
-                <p class="description text-slide-animate" data-text="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati quae, iusto quod culpa vitae harum repudiandae reiciendis rerum, tempora odit minus in eum facere. Dolores harum ipsam, et porro non totam exercitationem.">
+                <p class="description fade-animate fade-in-left" data-text="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati quae, iusto quod culpa vitae harum repudiandae reiciendis rerum, tempora odit minus in eum facere. Dolores harum ipsam, et porro non totam exercitationem.">
                     Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                     Obcaecati quae, iusto quod culpa vitae harum repudiandae reiciendis rerum,
                     tempora odit minus in eum facere. Dolores harum ipsam, et porro non totam exercitationem.
@@ -52,19 +52,19 @@
             </div>
             <div class="card-stat-container">
                 <div class="card-stat">
-                    <h3 class="number text-slide-animate" data-text="11">11</h3>
+                    <h3 class="count-up" data-target="11">11</h3>
                     <p class="text text-slide-animate" data-text="Active Members">Active Members</p>
                 </div>
                 <div class="card-stat">
-                    <h3 class="number text-slide-animate" data-text="> 50">> 50</h3>
+                    <h3 class="count-up" data-target="50"> 50</h3>
                     <p class="text text-slide-animate" data-text="Related Articles">Related Articles</p>
                 </div>
                 <div class="card-stat">
-                    <h3 class="number text-slide-animate" data-text="5">5</h3>
+                    <h3 class="count-up" data-target="5">5</h3>
                     <p class="text text-slide-animate" data-text="Prototypes">Prototypes</p>
                 </div>
                 <div class="card-stat">
-                    <h3 class="number text-slide-animate" data-text="> 50">> 50</h3>
+                    <h3 class="count-up" data-target="50"> 50</h3>
                     <p class="text text-slide-animate" data-text="Student Involved">Student Involved</p>
                 </div>
             </div>
