@@ -5,76 +5,116 @@ window.addEventListener("load", () => {
   });
 });
 
+// Count
+function animateCount(el, duration = 1200) {
+  const target = parseInt(el.getAttribute("data-target"));
+  const start = 0;
+  const startTime = performance.now();
+
+  function update(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const value = Math.floor(progress * target);
+    el.textContent = value.toLocaleString();
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+
+  requestAnimationFrame(update);
+}
+
+function animateCount(el, duration = 1200) {
+  const target = parseInt(el.getAttribute("data-target"));
+  const start = 0;
+  const startTime = performance.now();
+
+  function update(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const value = Math.floor(progress * target);
+    el.textContent = value.toLocaleString();
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+
+  requestAnimationFrame(update);
+}
+
 // ===== GLOBAL FADE ANIMATION SYSTEM =====
 class FadeAnimation {
   constructor(options = {}) {
     this.threshold = options.threshold || 0.15;
-    this.rootMargin = options.rootMargin || '0px 0px -50px 0px';
+    this.rootMargin = options.rootMargin || "0px 0px -50px 0px";
     this.once = options.once !== false;
     this.observer = null;
   }
 
   // Init dengan Intersection Observer
-  init(selector = '.fade-animate') {
+  init(selector = ".fade-animate") {
     const elements = document.querySelectorAll(selector);
-    
+
     if (elements.length === 0) return;
 
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animated');
-          
-          if (this.once) {
-            this.observer.unobserve(entry.target);
-          }
-        } else if (!this.once) {
-          entry.target.classList.remove('animated');
-        }
-      });
-    }, {
-      threshold: this.threshold,
-      rootMargin: this.rootMargin
-    });
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animated");
 
-    elements.forEach(element => {
+            if (this.once) {
+              this.observer.unobserve(entry.target);
+            }
+          } else if (!this.once) {
+            entry.target.classList.remove("animated");
+          }
+        });
+      },
+      {
+        threshold: this.threshold,
+        rootMargin: this.rootMargin,
+      }
+    );
+
+    elements.forEach((element) => {
       this.observer.observe(element);
     });
   }
 
   // Fade In manual
   fadeIn(element, duration = 500) {
-    if (typeof element === 'string') {
+    if (typeof element === "string") {
       element = document.querySelector(element);
     }
-    
+
     if (!element) return;
 
     element.style.transition = `opacity ${duration}ms ease`;
-    element.style.opacity = '0';
-    element.style.visibility = 'visible';
-    
+    element.style.opacity = "0";
+    element.style.visibility = "visible";
+
     setTimeout(() => {
-      element.style.opacity = '1';
+      element.style.opacity = "1";
     }, 10);
   }
 
   // Fade Out manual
   fadeOut(element, duration = 500, callback) {
-    if (typeof element === 'string') {
+    if (typeof element === "string") {
       element = document.querySelector(element);
     }
-    
+
     if (!element) return;
 
     element.style.transition = `opacity ${duration}ms ease`;
-    element.style.opacity = '1';
-    
+    element.style.opacity = "1";
+
     setTimeout(() => {
-      element.style.opacity = '0';
-      
+      element.style.opacity = "0";
+
       setTimeout(() => {
-        element.style.visibility = 'hidden';
+        element.style.visibility = "hidden";
         if (callback) callback();
       }, duration);
     }, 10);
@@ -82,14 +122,14 @@ class FadeAnimation {
 
   // Toggle fade
   fadeToggle(element, duration = 500) {
-    if (typeof element === 'string') {
+    if (typeof element === "string") {
       element = document.querySelector(element);
     }
-    
+
     if (!element) return;
 
-    const isVisible = window.getComputedStyle(element).opacity === '1';
-    
+    const isVisible = window.getComputedStyle(element).opacity === "1";
+
     if (isVisible) {
       this.fadeOut(element, duration);
     } else {
@@ -99,21 +139,21 @@ class FadeAnimation {
 
   // Trigger animasi (untuk class-based animations)
   trigger(element) {
-    if (typeof element === 'string') {
+    if (typeof element === "string") {
       element = document.querySelector(element);
     }
     if (element) {
-      element.classList.add('animated');
+      element.classList.add("animated");
     }
   }
 
   // Reset animasi
   reset(element) {
-    if (typeof element === 'string') {
+    if (typeof element === "string") {
       element = document.querySelector(element);
     }
     if (element) {
-      element.classList.remove('animated');
+      element.classList.remove("animated");
       void element.offsetWidth;
     }
   }
@@ -149,13 +189,8 @@ class FadeAnimation {
 // Instance global
 const fadeAnim = new FadeAnimation({
   threshold: 0.15,
-  rootMargin: '0px 0px -50px 0px',
-  once: true
-});
-
-// Auto init saat DOM ready
-document.addEventListener('DOMContentLoaded', function() {
-  fadeAnim.init('.fade-animate');
+  rootMargin: "0px 0px -50px 0px",
+  once: true,
 });
 
 // Helper functions
@@ -170,57 +205,60 @@ function initFadeWithDelay(selector, delayIncrement = 100) {
 class GlobalSlideAnimation {
   constructor(options = {}) {
     this.threshold = options.threshold || 0.2;
-    this.rootMargin = options.rootMargin || '0px 0px -50px 0px';
+    this.rootMargin = options.rootMargin || "0px 0px -50px 0px";
     this.once = options.once !== false; // Default true (animate sekali saja)
     this.observer = null;
   }
 
-  init(selector = '.slide-animate') {
+  init(selector = ".slide-animate") {
     const elements = document.querySelectorAll(selector);
-    
+
     if (elements.length === 0) return;
 
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animated');
-          
-          // Jika once = true, stop observing setelah animate
-          if (this.once) {
-            this.observer.unobserve(entry.target);
-          }
-        } else if (!this.once) {
-          // Jika once = false, bisa repeat animasi
-          entry.target.classList.remove('animated');
-        }
-      });
-    }, {
-      threshold: this.threshold,
-      rootMargin: this.rootMargin
-    });
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animated");
 
-    elements.forEach(element => {
+            // Jika once = true, stop observing setelah animate
+            if (this.once) {
+              this.observer.unobserve(entry.target);
+            }
+          } else if (!this.once) {
+            // Jika once = false, bisa repeat animasi
+            entry.target.classList.remove("animated");
+          }
+        });
+      },
+      {
+        threshold: this.threshold,
+        rootMargin: this.rootMargin,
+      }
+    );
+
+    elements.forEach((element) => {
       this.observer.observe(element);
     });
   }
 
   // Trigger animasi manual
   trigger(element) {
-    if (typeof element === 'string') {
+    if (typeof element === "string") {
       element = document.querySelector(element);
     }
     if (element) {
-      element.classList.add('animated');
+      element.classList.add("animated");
     }
   }
 
   // Reset animasi
   reset(element) {
-    if (typeof element === 'string') {
+    if (typeof element === "string") {
       element = document.querySelector(element);
     }
     if (element) {
-      element.classList.remove('animated');
+      element.classList.remove("animated");
       void element.offsetWidth; // Force reflow
     }
   }
@@ -236,13 +274,8 @@ class GlobalSlideAnimation {
 // Instance global
 const slideAnim = new GlobalSlideAnimation({
   threshold: 0.2,
-  rootMargin: '0px 0px -50px 0px',
-  once: true
-});
-
-// Auto init saat DOM ready
-document.addEventListener('DOMContentLoaded', function() {
-  slideAnim.init('.slide-animate');
+  rootMargin: "0px 0px -50px 0px",
+  once: true,
 });
 
 // Helper function untuk batch animation dengan delay
@@ -263,8 +296,6 @@ tombol.addEventListener("click", function () {
 
 // Navbar scroll effect
 const navbar = document.querySelector(".navbar");
-
-
 
 window.addEventListener("scroll", function () {
   if (window.scrollY > 50) {
@@ -290,7 +321,7 @@ class TextSlideAnimation {
     text.split("").forEach((char, index) => {
       const span = document.createElement("span");
       span.textContent = char === " " ? "\u00A0" : char;
-      span.style.animationDelay = `${this.baseDelay + (index * this.charDelay)}s`;
+      span.style.animationDelay = `${this.baseDelay + index * this.charDelay}s`;
       element.appendChild(span);
     });
   }
@@ -317,7 +348,7 @@ class TextSlideAnimation {
 
   // Batch setup multiple elements
   setupMultiple(elements) {
-    elements.forEach(element => {
+    elements.forEach((element) => {
       this.setup(element);
     });
   }
@@ -335,7 +366,7 @@ class TextSlideAnimation {
 // Instance default yang bisa digunakan global
 const textSlideAnim = new TextSlideAnimation({
   charDelay: 0.03,
-  baseDelay: 0
+  baseDelay: 0,
 });
 
 // Fungsi helper untuk Intersection Observer (animasi saat scroll ke view)
@@ -344,23 +375,26 @@ function initTextSlideOnScroll(selector, options = {}) {
   const animation = new TextSlideAnimation(options);
 
   // Setup semua element
-  elements.forEach(element => {
+  elements.forEach((element) => {
     animation.setup(element);
   });
 
   // Observer untuk trigger animasi saat terlihat
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !entry.target.classList.contains('animate')) {
-        animation.animate(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.5,
-    rootMargin: '0px 0px -100px 0px'
-  });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !entry.target.classList.contains("animate")) {
+          animation.animate(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.5,
+      rootMargin: "0px 0px -100px 0px",
+    }
+  );
 
-  elements.forEach(element => {
+  elements.forEach((element) => {
     observer.observe(element);
   });
 
@@ -447,6 +481,23 @@ window.addEventListener("load", function () {
 
 // Smooth blob animations
 document.addEventListener("DOMContentLoaded", function () {
+  fadeAnim.init(".fade-animate");
+  slideAnim.init(".slide-animate");
+
+  const counters = document.querySelectorAll(".count-up");
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+        animateCount(entry.target);
+        observer.unobserve(entry.target); // jalan sekali aja
+      }
+    });
+  });
+
+  counters.forEach((counter) => observer.observe(counter));
+
   const blobImages = document.querySelectorAll(".blob-image");
   const blobBgs = document.querySelectorAll(".blob-bg");
 

@@ -29,6 +29,21 @@ body {
   background: #555;
 }
 
+/* Global Count */
+
+.count-up {
+    font-weight: 700;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.count-up.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* ===== GLOBAL FADE ANIMATIONS ===== */
 
 /* Base class untuk fade animations */
