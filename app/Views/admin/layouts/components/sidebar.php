@@ -1,11 +1,13 @@
 <?php
-function isActive($link) {
+function isActive($link)
+{
     // Bandingkan Link Menu (Full URL) dengan URL Browser Saat ini (Full URL)
     // current_url() diambil dari helper Anda yang sudah ada
     return ($link === current_url()) ? 'active' : '';
 }
 
-function isSubmenuActive($children) {
+function isSubmenuActive($children)
+{
     foreach ($children as $submenu) {
         // Cek apakah salah satu anak memiliki link yang sama dengan URL saat ini
         if ($submenu['link'] === current_url()) {
@@ -35,6 +37,11 @@ function isSubmenuActive($children) {
                         'title' => 'Dashboard',
                         'icon' => 'bi bi-grid-fill',
                         'link' => base_url('admin/dashboard'),
+                    ],
+                    [
+                        'title' => 'User Redirect',
+                        'icon' => 'bi bi-person-fill',
+                        'link' => base_url('admin/userRedirect'),
                     ],
                     [
                         'title' => 'Configuration',
