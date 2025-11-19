@@ -6,6 +6,7 @@ use App\Controllers\DashboardController;
 use App\Controllers\RolesController;
 use App\Controllers\TeamController;
 use App\Controllers\UserController;
+use App\Controllers\PartnerController;
 
 return prefix('admin', route_group([
 
@@ -46,4 +47,11 @@ return prefix('admin', route_group([
     post('/aboutus', [AboutUsController::class, 'store']),
     get('/aboutus/{id}/edit', [AboutUsController::class, 'edit']),
     put('/aboutus/{id}', [AboutUsController::class, 'update']),
+
+    get('/partner', [PartnerController::class, 'index']),
+    get('/partner/data', [PartnerController::class, 'data']),
+    post('/partner', [PartnerController::class, 'store']),
+    get('/partner/{id}/edit', [PartnerController::class, 'edit']),
+    put('/partner/{id}', [PartnerController::class, 'update']),
+    delete('/partner/{id}', [PartnerController::class, 'destroy']),
 ]));
