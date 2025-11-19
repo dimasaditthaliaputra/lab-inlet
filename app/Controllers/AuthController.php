@@ -69,7 +69,7 @@ class AuthController
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan pada server. Silakan coba lagi nanti.'
+                'message' => 'Terjadi kesalahan pada server. Silakan coba lagi nanti.' . $e->getMessage()
             ], 500);
         }
     }

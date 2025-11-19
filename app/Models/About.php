@@ -10,6 +10,6 @@ class About extends Model
 
     public function getAll()
     {
-        return $this->db->query("SELECT * FROM {$this->table}")->fetchAll();
+        return $this->db->query("SELECT * FROM {$this->table} LIMIT 1")->fetchAll();
     }
 }
