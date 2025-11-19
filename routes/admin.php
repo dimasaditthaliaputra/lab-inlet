@@ -46,5 +46,4 @@ return prefix('admin', route_group([
     post('/aboutus', [AboutUsController::class, 'store']),
     get('/aboutus/{id}/edit', [AboutUsController::class, 'edit']),
     put('/aboutus/{id}', [AboutUsController::class, 'update']),
-    delete('/aboutus/{id}', [AboutUsController::class, 'destroy']),
 ]));
