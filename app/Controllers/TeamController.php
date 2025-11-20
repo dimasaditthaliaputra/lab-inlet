@@ -18,6 +18,14 @@ class TeamController extends Controller
         $this->teamModel = new Team();
     }
 
+    public function create()
+    {
+        return view_with_layout('admin/team/create', [
+            'title' => 'Tambah Team'
+        ]);
+    }
+
+
     public function index()
     {
         $data = [
@@ -59,84 +67,122 @@ class TeamController extends Controller
             ];
 
             $this->teamModel->create($data);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Success menambahkan team baru',
-            ], 200);
-        } catch (\Exception $e) {
+            $_SESSION['success_message'] = 'Data team berhasil ditambahkan.';
+            redirect(base_url('admin/team'));
             // return response()->json([
-            //     'success' => false,
-            //     'message' => 'Terjadi kesalahan pada server, coba lagi.'
-            // ], 500);
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan pada server.',
-                'error'   => $e->getMessage() // opsional, bisa dihapus saat production
-            ], 500);
-        }
-    }
-
-    public function edit($id)
-    {
-        try {
-            $team = $this->teamModel->findBy('id', $id);
-
-            if (!$team) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Data tidak ditemukan'
-                ], 404);
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Success',
-                'data' => $team
-            ], 200);
+            //     'success' => true,
+            //     'message' => 'Success menambahkan team baru',
+            // ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan pada server, coba lagi.'
             ], 500);
         }
+        
     }
+
+    public function edit($id)
+    {
+        $team = $this->teamModel->findBy('id', $id);
+
+        if (!$team) {
+            redirect(base_url('admin/team'));
+        }
+
+        $data = [
+            'title' => 'Edit Team',
+            'team' => $team
+        ];
+
+        view_with_layout('admin/team/edit', $data);
+    }
+
+    // public function edit($id)
+    // {
+    //     try {
+    //         $team = $this->teamModel->findBy('id', $id);
+
+    //         if (!$team) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Data tidak ditemukan'
+    //             ], 404);
+    //         }
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Success',
+    //             'data' => $team
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Terjadi kesalahan pada server, coba lagi.'
+    //         ], 500);
+    //     }
+    // }
 
     public function update($id)
     {
-        try {
-            $team = $this->teamModel->find($id);
+        $team = $this->teamModel->find($id);
 
-            if (!$team) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Data team tidak ditemukan.'
-                ], 404);
-            }
-
-            $form = [
-                'name'          => request('name'),
-                'position'      => request('position'),
-                'nip'           => request('nip'),
-                'nidn'          => request('nidn'),
-                'study_program' => request('study_program'),
-                'description'   => request('description'),
-                'social_media'  => request('social_media'),
-            ];
-
-            $this->teamModel->update($id, $form);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Success memperbarui data Team',
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
-            ], 500);
+        if (!$team) {
+            redirect(base_url('admin/team'));
         }
+
+        $data = [
+            'name'          => request('name'),
+            'position'      => request('position'),
+            'nip'           => request('nip'),
+            'nidn'          => request('nidn'),
+            'study_program' => request('study_program'),
+            'description'   => request('description'),
+            'social_media'  => request('social_media'),
+        ];
+
+        $this->teamModel->update($id, $data);
+
+        $_SESSION['success_message'] = 'Data team berhasil diperbarui.';
+
+        redirect(base_url('admin/team'));
     }
+
+    // public function update($id)
+    // {
+    //     try {
+    //         $team = $this->teamModel->find($id);
+
+    //         if (!$team) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Data team tidak ditemukan.'
+    //             ], 404);
+    //         }
+
+    //         $form = [
+    //             'name'          => request('name'),
+    //             'position'      => request('position'),
+    //             'nip'           => request('nip'),
+    //             'nidn'          => request('nidn'),
+    //             'study_program' => request('study_program'),
+    //             'description'   => request('description'),
+    //             'social_media'  => request('social_media'),
+    //         ];
+
+    //         $this->teamModel->update($id, $form);
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Success memperbarui data Team',
+    //         ], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
     public function destroy($id)
     {

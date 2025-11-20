@@ -37,6 +37,7 @@ return prefix('admin', route_group([
 
     //Team
     get('/team', [TeamController::class, 'index']),
+    get('/team/create', [TeamController::class, 'create']),
     get('/team/data', [TeamController::class, 'data']),
     post('/team', [TeamController::class, 'store']),
     get('/team/{id}/edit', [TeamController::class, 'edit']),
@@ -50,6 +51,7 @@ return prefix('admin', route_group([
     get('/aboutus/{id}/edit', [AboutUsController::class, 'edit']),
     put('/aboutus/{id}', [AboutUsController::class, 'update']),
 
+    //Partner
     get('/partner', [PartnerController::class, 'index']),
     get('/partner/data', [PartnerController::class, 'data']),
     post('/partner', [PartnerController::class, 'store']),
