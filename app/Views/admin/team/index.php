@@ -9,7 +9,8 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Daftar Team</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">Tambah Team Baru</button>
+                        <a href="<?php echo base_url('admin/team/create'); ?>" class="btn btn-primary">Tambah Team Baru</a>
+                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">Tambah Team Baru</button> -->
                     </div>
                 </div>
                 <div class="card-body">
@@ -20,11 +21,9 @@
                                     <th width="5%">No</th>
                                     <th>Name</th>
                                     <th>Position</th>
-                                    <th>nip</th>
-                                    <th>nidn</th>
-                                    <th>study_program</th>
-                                    <th>description</th>
-                                    <th>social_media</th>
+                                    <th>NIP</th>
+                                    <th>NIDN</th>
+                                    <th>Study Program</th>
                                     <th width="20%">Action</th>
                                 </tr>
                             </thead>
@@ -83,7 +82,7 @@
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
-                            <label for="nidn" class="col-md-3 col-form-label">Team nidn</label>
+                             <label for="nidn" class="col-md-3 col-form-label">Team nidn</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="nidn" id="nidn" placeholder="Masukkan nidn team">
                             </div>
@@ -173,14 +172,6 @@ ob_start();
                     name: 'study_program'
                 },
                 {
-                    data: 'description',
-                    name: 'description'
-                },
-                {
-                    data: 'social_media',
-                    name: 'social_media'
-                },
-                {
                     data: null,
                     name: 'action',
                     orderable: false,
@@ -191,135 +182,12 @@ ob_start();
                         let deleteUrl = '<?php echo base_url('admin/team'); ?>/' + row.id;
 
                         return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit">Edit</button>
+                            <a href="${editUrl}" class="btn btn-warning btn-sm">Edit</a>
                             <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Hapus</button>
                         `;
                     }
                 },
             ]
-        });
-
-        $(document).on('click', '#btnEdit', function(e) {
-            e.preventDefault();
-
-            let url = $(this).data('url');
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'JSON',
-                success: function(res) {
-                    if (res.success) {
-                        $('#modalTitleId').html('Form Edit Team');
-                        $('#primary_id').val(res.data.id);
-
-                        $('#name').val(res.data.name);
-                        $('#position').val(res.data.position);
-                        $('#nip').val(res.data.nip);
-                        $('#nidn').val(res.data.nidn);
-                        $('#study_program').val(res.data.study_program);
-                        $('#description').val(res.data.description);
-                        $('#social_media').val(res.data.social_media);
-
-                        $('#modalForm').modal('show');
-                    }
-                }
-            });
-        });
-
-        $('#modalForm').on('hidden.bs.modal', function(event) {
-            $('#formData')[0].reset();
-            $('#primary_id').val('');
-
-            $('#name').val('');
-            $('#position').val('');
-            $('#nip').val('');
-            $('#nidn').val('');
-            $('#study_program').val('');
-            $('#description').val('');
-            $('#social_media').val('');
-
-        });
-
-        $('#formData').submit(function(e) {
-            e.preventDefault();
-
-            let social = {
-                instagram: $('#instagram').val(),
-                linkedin: $('#linkedin').val()
-            };
-
-            $('input[name="social_media"]').val(JSON.stringify(social));
-
-
-            var btn = $('#btnSubmit');
-            var spinner = btn.find('.spinner-border');
-
-            btn.prop('disabled', true);
-            spinner.removeClass('d-none');
-
-            let id = $('#primary_id').val();
-            let formData = $(this).serialize();
-            let baseUrl = '<?php echo base_url('admin/team'); ?>';
-            let url = id ? baseUrl + '/' + id : baseUrl;
-            let method = id ? 'PUT' : 'POST';
-
-            $.ajax({
-                url: url,
-                type: method,
-                data: formData,
-                dataType: 'JSON',
-                success: function(res) {
-                    if (res.success) {
-                        $('#modalForm').modal('hide');
-                        $('#data-tables').DataTable().ajax.reload();
-
-                        audio.play();
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: res.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: res.message
-                        })
-                    }
-                },
-                error: function(xhr, status, error) {
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-
-                        $('.text-danger').remove();
-
-                        $.each(errors, function(key, value) {
-                            let inputEl = $(`#${key}`);
-                            if (inputEl.length) {
-                                inputEl.after(`
-                                <small class="text-danger d-block mt-1">
-                                    ${value}
-                                </small>
-                            `);
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Terjadi kesalahan. Silakan coba lagi!'
-                        })
-                    }
-                },
-                complete: function() {
-                    btn.prop('disabled', false);
-                    spinner.addClass('d-none');
-                }
-            });
         });
 
         $(document).on('click', '#btnDelete', function(e) {
@@ -386,6 +254,22 @@ ob_start();
             });
         });
     });
+
+    <?php if (isset($_SESSION['success_message'])): ?>
+        var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
+
+        audio.play();
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '<?php echo $_SESSION['success_message']; ?>',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    <?php
+        unset($_SESSION['success_message']);
+    endif;
+    ?>
 </script>
 <?php
 $pageScripts = ob_get_clean();
