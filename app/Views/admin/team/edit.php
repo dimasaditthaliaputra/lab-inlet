@@ -4,7 +4,7 @@
 <div class="page-content">
     <section class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card border">
                 <div class="card-body"></div>
                 <form action="<?= base_url('admin/team/' . $team->id); ?>" method="POST">
                     <input type="hidden" name="_method" value="PUT">
@@ -73,8 +73,8 @@
                     <a href="<?= base_url('admin/team'); ?>" class="btn btn-secondary">Kembali</a>
 
                 </form>
-               </div>
-            </div>  
+            </div>
         </div>
-    </section>
+</div>
+</section>
 </div>

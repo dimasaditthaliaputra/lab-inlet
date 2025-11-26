@@ -15,7 +15,7 @@
         <div class="alert alert-danger"><?= $msg ?></div>
     <?php endif; ?>
 
-    <div class="card">
+    <div class="card border">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">
@@ -40,7 +40,7 @@
                                     <td><span class="badge bg-secondary"><?= e($row->role_name ?? '-') ?></span></td>
                                     <td>
                                         <a href="<?= base_url("admin/userRedirect/{$row->id}/edit") ?>" class="btn btn-sm btn-warning">Edit</a>
-                                        
+
                                         <form action="<?= base_url("admin/userRedirect/{$row->id}/delete") ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus user ini?');">
                                             <?= csrf_field() ?>
                                             <?= method_field('DELETE') ?>

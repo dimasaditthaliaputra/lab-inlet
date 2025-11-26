@@ -71,11 +71,13 @@ class RolesController extends Controller
                 'role_name' => $validation['data']['role_name']
             ];
 
-            $role = $this->rolesModel->create($data);
+            $insertId = $this->rolesModel->create($data);
+
+            $role = $this->rolesModel->find($insertId);
 
             logActivity(
                 "Create",
-                "Add Role ' . $role->role_name . '",
+                "Role {$role->role_name} successfully created",
                 "roles",
                 $role->id,
                 null,
@@ -156,7 +158,7 @@ class RolesController extends Controller
 
             logActivity(
                 "Update",
-                "User {$validation['data']['role_name']} berhasil diperbarui",
+                "Role {$validation['data']['role_name']} successfully updated",
                 "users",
                 $id,
                 $oldData,
@@ -187,6 +189,15 @@ class RolesController extends Controller
                     'message' => 'Data role tidak ditemukan.'
                 ], 404);
             }
+
+            logActivity(
+                "Delete",
+                "Role {$role->role_name} successfully deleted",
+                "roles",
+                $id,
+                $role,
+                null
+            );
 
             $this->rolesModel->delete($id);
 

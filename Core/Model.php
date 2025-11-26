@@ -32,7 +32,7 @@ class Model
     {
         return $this->db->query("SELECT * FROM {$this->table} WHERE id = :id")
             ->bind(':id', $id)
-            ->first();
+            ->fetch();
     }
 
     /**
@@ -42,7 +42,7 @@ class Model
     {
         return $this->db->query("SELECT * FROM {$this->table} WHERE {$column} = :value")
             ->bind(':value', $value)
-            ->first();
+            ->fetch();
     }
 
     /**

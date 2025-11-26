@@ -5,7 +5,7 @@
 <div class="page-content">
     <section class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Daftar Team</h4>
@@ -82,7 +82,7 @@
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
-                             <label for="nidn" class="col-md-3 col-form-label">Team nidn</label>
+                            <label for="nidn" class="col-md-3 col-form-label">Team nidn</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="nidn" id="nidn" placeholder="Masukkan nidn team">
                             </div>
@@ -183,7 +183,7 @@ ob_start();
 
                         return `
                             <a href="${editUrl}" class="btn btn-warning btn-sm">Edit</a>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Hapus</button>
+                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
                         `;
                     }
                 },

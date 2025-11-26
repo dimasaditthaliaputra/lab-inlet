@@ -7,6 +7,9 @@ use Core\Model;
 class User extends Model
 {
     protected $table = 'users';
+    public function getDataAll() {
+        return $this->db->query("SELECT u.*, r.role_name as roles FROM {$this->table} u JOIN roles r ON u.id_roles = r.id WHERE u.id != 9 order by \"username\"")->fetchAll();
+    }
 
     public function findByEmail($email)
     {
@@ -34,7 +37,7 @@ class User extends Model
         WHERE u.id = :id
     ")
             ->bind(':id', $id)
-            ->first();
+            ->fetch();
 
         return [
             "user_id"   => $data->user_id,
@@ -53,7 +56,7 @@ class User extends Model
     {
         return $this->db->query("SELECT r.role_name FROM users u JOIN roles r ON u.id_roles = r.id WHERE u.id = :id")
             ->bind(':id', $id)
-            ->first();
+            ->fetch();
     }
 
     public function getActiveUsers()
@@ -109,7 +112,7 @@ class User extends Model
 
         $user = $this->db->query($sql)
             ->bind(':id', $user_id)
-            ->first();
+            ->fetch();
 
         if ($user) {
             if (hash_equals($user->remember_token, hash('sha256', $token))) {

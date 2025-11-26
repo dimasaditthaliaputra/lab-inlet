@@ -4,6 +4,7 @@ use App\Controllers\AboutUsController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\LogActivityController;
+use App\Controllers\NewsController;
 use App\Controllers\RolesController;
 use App\Controllers\TeamController;
 use App\Controllers\UserController;
@@ -34,6 +35,8 @@ return prefix('admin', route_group([
     get('/user/{id}/edit', [UserController::class, 'edit']),
     put('/user/{id}', [UserController::class, 'update']),
     delete('/user/{id}', [UserController::class, 'destroy']),
+    get('/profile/{id}', [UserController::class, 'profile']),
+    put('/profile/{id}', [UserController::class, 'updateProfile']),
 
     //Team
     get('/team', [TeamController::class, 'index']),
@@ -58,6 +61,15 @@ return prefix('admin', route_group([
     get('/partner/{id}/edit', [PartnerController::class, 'edit']),
     put('/partner/{id}', [PartnerController::class, 'update']),
     delete('/partner/{id}', [PartnerController::class, 'destroy']),
+
+    get('/news', [NewsController::class, 'index']),
+    get('/news/data', [NewsController::class, 'data']),
+    get('/news/create', [NewsController::class, 'create']),
+    post('/news/store', [NewsController::class, 'store']),
+    get('/news/{id}/edit', [NewsController::class, 'edit']),
+    post('/news/{id}', [NewsController::class, 'update']),
+    put('/news/publish/{id}', [NewsController::class, 'publish']),
+    delete('/news/{id}', [NewsController::class, 'destroy']),
 
     // Log Activity
     get('/log-activity', [LogActivityController::class, 'index']),

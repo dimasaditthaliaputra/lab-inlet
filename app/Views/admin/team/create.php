@@ -5,7 +5,7 @@
 <div class="page-content">
     <section class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card border">
                 <div class="card-body">
 
                     <form action="<?= base_url('admin/team'); ?>" method="POST">

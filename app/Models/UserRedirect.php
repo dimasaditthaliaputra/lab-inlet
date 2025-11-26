@@ -27,7 +27,7 @@ class UserRedirect extends Model
         WHERE u.id = :id
     ")
             ->bind(':id', $id)
-            ->first();
+            ->fetch();
 
         return [
             "user_id"   => $data->user_id,

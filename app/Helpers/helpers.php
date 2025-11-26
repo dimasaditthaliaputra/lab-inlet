@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\LogActivity;
+
 /**
  * Helper Functions untuk MVC Framework
  */
@@ -33,9 +35,6 @@ if (!function_exists('base_url')) {
 }
 
 if (!function_exists('asset')) {
-    /**
-     * Generate asset URL
-     */
     function asset($path)
     {
         return rtrim(base_url(), '/') . '/' . ltrim($path, '/');
@@ -95,9 +94,6 @@ if (!function_exists('is_route_prefix')) {
 }
 
 if (!function_exists('redirect')) {
-    /**
-     * Redirect to URL
-     */
     function redirect($url)
     {
         $location = $url;
@@ -112,9 +108,6 @@ if (!function_exists('redirect')) {
 }
 
 if (!function_exists('old')) {
-    /**
-     * Get old input value
-     */
     function old($key, $default = '')
     {
         return $_SESSION['old'][$key] ?? $default;
@@ -122,9 +115,6 @@ if (!function_exists('old')) {
 }
 
 if (!function_exists('flash')) {
-    /**
-     * Set flash message
-     */
     function flash($key, $message = null)
     {
         if ($message === null) {
@@ -137,9 +127,6 @@ if (!function_exists('flash')) {
 }
 
 if (!function_exists('csrf_token')) {
-    /**
-     * Generate CSRF token
-     */
     function csrf_token()
     {
         if (empty($_SESSION['csrf_token'])) {
@@ -150,9 +137,6 @@ if (!function_exists('csrf_token')) {
 }
 
 if (!function_exists('csrf_field')) {
-    /**
-     * Generate CSRF hidden input field
-     */
     function csrf_field()
     {
         return '<input type="hidden" name="csrf_token" value="' . csrf_token() . '">';
@@ -160,9 +144,6 @@ if (!function_exists('csrf_field')) {
 }
 
 if (!function_exists('dd')) {
-    /**
-     * Dump and die
-     */
     function dd(...$vars)
     {
         foreach ($vars as $var) {
@@ -175,9 +156,6 @@ if (!function_exists('dd')) {
 }
 
 if (!function_exists('dump')) {
-    /**
-     * Dump variable
-     */
     function dump(...$vars)
     {
         foreach ($vars as $var) {
@@ -189,9 +167,6 @@ if (!function_exists('dump')) {
 }
 
 if (!function_exists('json_response')) {
-    /**
-     * Send JSON response
-     */
     function json_response($data, $statusCode = 200)
     {
         http_response_code($statusCode);
@@ -202,9 +177,6 @@ if (!function_exists('json_response')) {
 }
 
 if (!function_exists('success')) {
-    /**
-     * Send success JSON response
-     */
     function success($message, $data = [], $statusCode = 200)
     {
         json_response([
@@ -216,9 +188,6 @@ if (!function_exists('success')) {
 }
 
 if (!function_exists('error')) {
-    /**
-     * Send error JSON response
-     */
     function error($message, $errors = [], $statusCode = 400)
     {
         json_response([
@@ -230,9 +199,6 @@ if (!function_exists('error')) {
 }
 
 if (!function_exists('sanitize')) {
-    /**
-     * Sanitize string
-     */
     function sanitize($string)
     {
         $string = $string ?? '';
@@ -246,9 +212,6 @@ if (!function_exists('sanitize')) {
 }
 
 if (!function_exists('e')) {
-    /**
-     * Escape HTML entities (alias for sanitize)
-     */
     function e($string)
     {
         return sanitize($string);
@@ -256,9 +219,6 @@ if (!function_exists('e')) {
 }
 
 if (!function_exists('request')) {
-    /**
-     * Get request data, including from PUT/PATCH/DELETE bodies.
-     */
     function request($key = null, $default = null)
     {
         static $all_data = null;
@@ -287,9 +247,6 @@ if (!function_exists('request')) {
 }
 
 if (!function_exists('method')) {
-    /**
-     * Get HTTP method
-     */
     function method()
     {
         return $_SERVER['REQUEST_METHOD'];
@@ -297,9 +254,6 @@ if (!function_exists('method')) {
 }
 
 if (!function_exists('is_post')) {
-    /**
-     * Check if request is POST
-     */
     function is_post()
     {
         return method() === 'POST';
@@ -307,9 +261,6 @@ if (!function_exists('is_post')) {
 }
 
 if (!function_exists('is_get')) {
-    /**
-     * Check if request is GET
-     */
     function is_get()
     {
         return method() === 'GET';
@@ -317,9 +268,6 @@ if (!function_exists('is_get')) {
 }
 
 if (!function_exists('is_ajax')) {
-    /**
-     * Check if request is AJAX
-     */
     function is_ajax()
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
@@ -328,9 +276,6 @@ if (!function_exists('is_ajax')) {
 }
 
 if (!function_exists('config')) {
-    /**
-     * Get config value
-     */
     function config($key, $default = null)
     {
         $keys = explode('.', $key);
@@ -355,9 +300,6 @@ if (!function_exists('config')) {
 }
 
 if (!function_exists('session')) {
-    /**
-     * Get or set session value
-     */
     function session($key = null, $value = null)
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -374,9 +316,6 @@ if (!function_exists('session')) {
 }
 
 if (!function_exists('clear_session')) {
-    /**
-     * Clear session
-     */
     function clear_session()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -417,9 +356,6 @@ if (!function_exists('clear_cookie')) {
 }
 
 if (!function_exists('auth')) {
-    /**
-     * Get authenticated user
-     */
     function auth()
     {
         return session('user');
@@ -427,9 +363,7 @@ if (!function_exists('auth')) {
 }
 
 if (!function_exists('is_logged_in')) {
-    /**
-     * Check if user is logged in
-     */
+
     function is_logged_in()
     {
         return session('user') !== null;
@@ -437,9 +371,6 @@ if (!function_exists('is_logged_in')) {
 }
 
 if (!function_exists('attempt_auto_login')) {
-    /**
-     * Cek cookie "remember me" dan coba login otomatis
-     */
     function attempt_auto_login()
     {
         if (is_logged_in()) {
@@ -714,7 +645,7 @@ if (!function_exists('env')) {
 
                     $result = $db->query($query)
                         ->bind(':value', $value)
-                        ->first();
+                        ->fetch();
 
                     if ($result && $result->count > 0) {
                         $errors[$field] = $messages['unique'] ?? ucfirst($field) . ' sudah terdaftar.';
@@ -774,4 +705,13 @@ if (!function_exists('env')) {
             $db->execute();
         }
     }
+
+    if (!function_exists('get_recent_notifications')) {
+    function get_recent_notifications()
+    {
+        $logModel = new LogActivity();
+        
+        return $logModel->getRecent();
+    }
+}
 }

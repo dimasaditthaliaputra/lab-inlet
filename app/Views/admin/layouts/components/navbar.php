@@ -15,33 +15,42 @@
                     <li class="nav-item dropdown me-1">
                         <a class="nav-link active dropdown-toggle text-gray-600" href="#"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-bell bi-sub fs-4"></i>
-                            <span class="badge bg-danger badge-notification">5</span>
+                            <i class="bi bi-clock-history bi-sub fs-4"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end notification-dropdown border"
                             aria-labelledby="dropdownMenuButton">
                             <li class="dropdown-header">
-                                <h6>Notifikasi</h6>
+                                <h6>Notification</h6>
                             </li>
-                            <li>
-                                <a class="dropdown-item notification-item">
-                                    <i class="bi bi-info-circle text-primary"></i>
-                                    <div class="notification-content">
-                                        <span class="notification-title">Sistem Update</span>
-                                        <span class="notification-time">5 menit lalu</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item notification-item">
-                                    <i class="bi bi-check-circle text-success"></i>
-                                    <div class="notification-content">
-                                        <span class="notification-title">Data berhasil disimpan</span>
-                                        <span class="notification-time">10 menit lalu</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li><a class="dropdown-item text-center" href="#">Lihat Semua</a></li>
+                            <?php
+                            $notification = get_recent_notifications();
+
+                            $colorMap = [
+                                'Create'      => ['icon' => 'bi-check-circle',     'color' => 'text-primary'],
+                                'Update'   => ['icon' => 'bi-info-circle',    'color' => 'text-success'],
+                                'Delete'   => ['icon' => 'bi-trash-fill', 'color' => 'text-danger']
+                            ];
+                            ?>
+
+                            <?php foreach ($notification as $item): ?>
+                                <?php
+                                $type = $item['type'];
+                                $icon  = $colorMap[$type]['icon']  ?? 'bi-info-circle';
+                                $color = $colorMap[$type]['color'] ?? 'text-primary';
+                                ?>
+
+                                <li>
+                                    <a class="dropdown-item notification-item">
+                                        <i class="bi <?= $icon ?> <?= $color ?>" style="margin-right:1rem;"></i>
+
+                                        <div class="notification-content">
+                                            <span class="notification-title"><?= $item['description'] ?></span>
+                                            <span class="notification-time"><?= $item['created_at'] ?></span>
+                                        </div>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                            <li><a class="dropdown-item text-center" href="<?= base_url('admin/log-activity') ?>">Lihat Semua</a></li>
                         </ul>
                     </li>
 
@@ -59,6 +68,14 @@
                                     <p class="user-dropdown-status text-sm text-muted mb-0"><?php echo session('user')?->role_name ?? 'Admin'; ?></p>
                                 </div>
                             </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow border">
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('admin/profile/' . session('user')?->id ?? '') ?>">
+                                    <i class="bi bi-person me-2"></i> Profile
+                                </a>
+                            </li>
+                        </ul>
                         </a>
                     </li>
                 </div>

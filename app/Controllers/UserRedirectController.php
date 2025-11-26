@@ -136,7 +136,7 @@ class UserRedirectController extends Controller
             flash('error', 'User tidak ditemukan');
         } else {
             if ($this->userModel->delete($id)) {
-                flash('success', 'User berhasil dihapus');
+                flash('success', 'User successfully deleted');
             } else {
                 flash('error', 'Gagal menghapus user');
             }

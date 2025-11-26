@@ -36,7 +36,7 @@ class UserController extends Controller
     public function data()
     {
         try {
-            $users = $this->userModel->all();
+            $users = $this->userModel->getDataAll();
 
             return response()->json([
                 'success' => true,
@@ -103,11 +103,13 @@ class UserController extends Controller
                 'id_roles' => $validation['data']['id_roles']
             ];
 
-            $user = $this->userModel->create($data);
+            $insertId = $this->userModel->create($data);
+
+            $user = $this->userModel->find($insertId);
 
             logActivity(
                 "Create",
-                "User {$validation['data']['username']} berhasil ditambahkan",
+                "User {$user->username} successfully created",
                 "users",
                 $user->id,
                 null,
@@ -116,7 +118,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Success menambahkan role baru',
+                'message' => 'Success menambahkan user baru',
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -159,7 +161,7 @@ class UserController extends Controller
             if (!$oldData) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data role tidak ditemukan.'
+                    'message' => 'Data user tidak ditemukan.'
                 ], 404);
             }
 
@@ -216,7 +218,104 @@ class UserController extends Controller
 
             logActivity(
                 "Update",
-                "User {$validation['data']['username']} berhasil diperbarui",
+                "User {$validation['data']['username']} successfully updated",
+                "users",
+                $id,
+                $oldData,
+                $user
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Success memperbarui data role',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function profile($id)
+    {
+        $user = $this->userModel->find($id);
+
+        $data =  [
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'full_name' => $user->full_name
+        ];
+
+        $data = [
+            'title' => 'Profile',
+            'user' => $data,
+        ];
+
+        view_with_layout('admin/profile/index', $data);
+    }
+
+    public function updateProfile($id)
+    {
+        try {
+            $oldData = $this->userModel->find($id);
+
+            if (!$oldData) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data role tidak ditemukan.'
+                ], 404);
+            }
+
+            $validation = validate([
+                'username' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Username is required.'
+                    ]
+                ],
+                'email' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Email is required.'
+                    ]
+                ],
+                'password' => [
+                    'required' => false,
+                ],
+                'full_name' => [
+                    'required' => true,
+                    'messages' => [
+                        'required' => 'Full Name is required.'
+                    ]
+                ],
+            ]);
+
+            if (!$validation['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validation['errors']
+                ], 422);
+            }
+
+            $newData = [
+                'username' => $validation['data']['username'],
+                'email' => $validation['data']['email'],
+                'full_name' => $validation['data']['full_name'],
+                'id_roles' => $validation['data']['id_roles']
+            ];
+
+            if (!empty($validation['data']['password'])) {
+                $newData['password'] = password_hash($validation['data']['password'], PASSWORD_DEFAULT);
+            }
+
+            $user = $this->userModel->update($id, $newData);
+
+            logActivity(
+                "Update",
+                "Roles {$validation['data']['username']} successfully updated",
                 "users",
                 $id,
                 $oldData,
@@ -246,6 +345,15 @@ class UserController extends Controller
                     'message' => 'Data role tidak ditemukan.'
                 ], 404);
             }
+
+            logActivity(
+                "Delete",
+                "User {$user->username} successfully deleted",
+                "users",
+                $id,
+                $user,
+                null
+            );
 
             $this->userModel->delete($id);
 

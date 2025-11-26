@@ -1,15 +1,19 @@
 <div class="page-heading">
-    <h3 class="page-title"><?php echo e($title ?? 'Judul Halaman'); ?></h3>
+    <h3 class="page-title"><?php echo e($title ?? 'Partner'); ?></h3>
+    <p>Partner who’s always ready to support your growth and innovation.</p>
 </div>
 
 <div class="page-content">
     <section class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Daftar Partner</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">Tambah Partner Baru</button>
+                        <h4 class="card-title">List Partner</h4>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                            <i class="bi bi-plus me-1" role="img" aria-label="Add new partner"></i>
+                            Add New Partner
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -17,15 +21,14 @@
                         <table class="table table-striped table-hover" id="data-tables">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Partner</th>
+                                    <th width="5%">No</th>
+                                    <th>Name Partner</th>
                                     <th>Logo</th>
                                     <th>Url</th>
-                                    <th>action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
                     </div>
@@ -49,7 +52,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitleId">
-                        Form Role Pengguna
+                        Form Partner
                     </h5>
                     <button
                         type="button"
@@ -62,9 +65,29 @@
                         <input type="hidden" name="primary_id" id="primary_id">
 
                         <div class="row mb-3 align-items-center">
-                            <label for="role_name" class="col-md-3 col-form-label">Role Name</label>
+                            <label for="partner_name" class="col-md-3 col-form-label required">Partner Name</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="partner_name" id="partner_name" placeholder="Masukkan nama partner">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="partner_logo" class="col-md-3 col-form-label">Logo</label>
+                            <div class="col-md-9">
+                                <input type="file" class="form-control" name="partner_logo" id="partner_logo" placeholder="Masukkan nama partner" accept="images/*">
+
+                                <div class="mt-2">
+                                    <img id="img-preview" src="<?= $imageUrl ?>"
+                                        alt="Image Preview" class="img-thumbnail"
+                                        style="max-width: 200px; max-height: 200px; display: none;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="url" class="col-md-3 col-form-label">Link to Partner</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" name="url" id="url" placeholder="Masukkan link partner">
                             </div>
                         </div>
                     </div>
@@ -85,6 +108,19 @@
         </div>
     </div>
 
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" id="modalImageFull" class="img-fluid" alt="Preview Image">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php
@@ -104,6 +140,7 @@ ob_start();
                     name: 'ordering',
                     orderable: false,
                     searchable: false,
+                    className: 'text-center',
                     render: function(data, type, row, meta) {
                         return meta.row + 1;
                     }
@@ -117,7 +154,7 @@ ob_start();
                     name: 'partner_logo',
                     render: function(data, type, row) {
                         if (data) {
-                            return `<img src="${data}" alt="Logo" class="img-thumbnail" style="height: 100px;">`;
+                            return `<img src="${data}" alt="Logo" class="img-thumbnail img-clickable" style="height: 100px; cursor: pointer;">`;
                         }
                         return '-';
                     }
@@ -125,6 +162,12 @@ ob_start();
                 {
                     data: 'url',
                     name: 'url',
+                    render: function(data, type, row) {
+                        if (data) {
+                            return `<a href="${data}" target="_blank">${data}</a>`;
+                        }
+                        return '-';
+                    }
                 },
                 {
                     data: null,
@@ -137,12 +180,31 @@ ob_start();
                         let deleteUrl = '<?php echo base_url('admin/partner'); ?>/' + row.id;
 
                         return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit">Edit</button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Hapus</button>
+                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
+                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
                         `;
                     }
                 },
             ]
+        });
+
+        $(document).on('click', '.img-clickable', function() {
+            var src = $(this).attr('src');
+            $('#modalImageFull').attr('src', src);
+            $('#imageModal').modal('show');
+        });
+
+        $('#partner_logo').change(function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#img-preview').attr('src', e.target.result).show();
+                }
+                reader.readAsDataURL(file);
+            } else {
+                $('#img-preview').hide().attr('src', '');
+            }
         });
 
         $(document).on('click', '#btnEdit', function(e) {
@@ -156,9 +218,17 @@ ob_start();
                 dataType: 'JSON',
                 success: function(res) {
                     if (res.success) {
-                        $('#modalTitleId').html('Form Edit Role Pengguna');
+                        $('#modalTitleId').html('Form Edit Partner');
                         $('#primary_id').val(res.data.id);
-                        $('#role_name').val(res.data.role_name);
+                        $('#partner_name').val(res.data.partner_name);
+
+                        if (res.data.partner_logo) {
+                            $('#img-preview').attr('src', res.data.partner_logo).show();
+                        } else {
+                            $('#img-preview').hide().attr('src', '');
+                        }
+
+                        $('#url').val(res.data.url);
                         $('#modalForm').modal('show');
                     }
                 }
@@ -171,6 +241,8 @@ ob_start();
             $('#modalTitleId').html('Form Partner');
             $('#primary_id').val('');
             $('#partner_name').val('');
+            $('#img-preview').hide().attr('src', '');
+            $('#url').val('');
         });
 
         $('#formData').submit(function(e) {
@@ -183,16 +255,22 @@ ob_start();
             spinner.removeClass('d-none');
 
             let id = $('#primary_id').val();
-            let formData = $(this).serialize();
+            let formData = new FormData(this);
             let baseUrl = '<?php echo base_url('admin/partner'); ?>';
             let url = id ? baseUrl + '/' + id : baseUrl;
             let method = id ? 'PUT' : 'POST';
 
+            if (id) {
+                formData.append('_method', 'PUT');
+            }
+
             $.ajax({
                 url: url,
-                type: method,
+                type: 'POST',
                 data: formData,
                 dataType: 'JSON',
+                processData: false,
+                contentType: false,
                 success: function(res) {
                     if (res.success) {
                         $('#modalForm').modal('hide');

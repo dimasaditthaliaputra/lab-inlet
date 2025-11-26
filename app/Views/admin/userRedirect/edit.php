@@ -3,14 +3,14 @@
 </div>
 
 <div class="page-content">
-    <div class="card">
+    <div class="card border">
         <div class="card-body">
             <form action="<?= base_url("admin/userRedirect/{$user->id}/update") ?>" method="POST">
                 <?= csrf_field() ?>
                 <?= method_field('PUT') ?> <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text" name="username" class="form-control" value="<?= old('username', $user->username) ?>" required>
-                    <?php if(isset(flash('errors')['username'])): ?>
+                    <?php if (isset(flash('errors')['username'])): ?>
                         <div class="text-danger small"><?= flash('errors')['username'] ?></div>
                     <?php endif; ?>
                 </div>
@@ -18,7 +18,7 @@
                 <div class="mb-3">
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-control" value="<?= old('email', $user->email) ?>" required>
-                    <?php if(isset(flash('errors')['email'])): ?>
+                    <?php if (isset(flash('errors')['email'])): ?>
                         <div class="text-danger small"><?= flash('errors')['email'] ?></div>
                     <?php endif; ?>
                 </div>

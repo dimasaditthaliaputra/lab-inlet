@@ -11,10 +11,16 @@
     <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('assets/mazer/compiled/css/table-datatable-jquery.css') ?>">
     <link rel="stylesheet" href="<?= asset('assets/mazer/compiled/css/iconly.css') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/@fortawesome/fontawesome-free/css/all.min.css') ?>">
+
     <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/sweetalert2/sweetalert2.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/select2/dist/css/select2.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/select2/dist/css/select2-bootstrap-5-theme.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
+
+    <?php if (isset($pageStyle)): ?>
+        <?= $pageStyle ?>
+    <?php endif; ?>
 </head>
 
 <body>

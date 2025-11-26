@@ -24,6 +24,7 @@
                                     <th>Username</th>
                                     <th>Email</th>
                                     <th>Name</th>
+                                    <th class="text-center">Roles</th>
                                     <th width="20%">Aksi</th>
                                 </tr>
                             </thead>
@@ -160,11 +161,33 @@ ob_start();
                 },
                 {
                     data: 'email',
-                    name: 'email'
+                    name: 'email',
+                    orderable: false,
+                    searchable: false,
                 },
                 {
                     data: 'full_name',
-                    name: 'full_name'
+                    name: 'full_name',
+                    orderable: true,
+                    searchable: true,
+                },
+                {
+                    data: 'roles',
+                    name: 'roles',
+                    className: 'text-center',
+                    orderable: true,
+                    searchable: false,
+                    render: function(data) {
+                        let badgeClass = 'bg-secondary';
+                        let text = data.toUpperCase();
+
+                        if (text === 'ADMIN') badgeClass = 'bg-primary';
+                        else if (text === 'OPERATOR') badgeClass = 'bg-info';
+                        else if (text === 'MAHASISWA MAGANG') badgeClass = 'bg-success';
+                        else if (text === 'MAHASISWA SKRIPSI') badgeClass = 'bg-warning';
+
+                        return `<span class="badge ${badgeClass}">${data}</span>`;
+                    }
                 },
                 {
                     data: null,
@@ -177,8 +200,8 @@ ob_start();
                         let deleteUrl = '<?php echo base_url('admin/user'); ?>/' + row.id;
 
                         return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit">Edit</button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">Delete</button>
+                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
+                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
                         `;
                     }
                 },

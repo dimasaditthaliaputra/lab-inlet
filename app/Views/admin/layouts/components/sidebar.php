@@ -1,15 +1,13 @@
 <?php
+
 function isActive($link)
 {
-    // Bandingkan Link Menu (Full URL) dengan URL Browser Saat ini (Full URL)
-    // current_url() diambil dari helper Anda yang sudah ada
     return ($link === current_url()) ? 'active' : '';
 }
 
 function isSubmenuActive($children)
 {
     foreach ($children as $submenu) {
-        // Cek apakah salah satu anak memiliki link yang sama dengan URL saat ini
         if ($submenu['link'] === current_url()) {
             return true;
         }
@@ -33,18 +31,41 @@ function isSubmenuActive($children)
             <ul class="menu">
                 <?php
                 $menus = [
+                    // 1. MAIN MENU
+                    ['header' => 'Main Menu'],
                     [
                         'title' => 'Dashboard',
                         'icon' => 'bi bi-grid-fill',
                         'link' => base_url('admin/dashboard'),
                     ],
                     [
-                        'title' => 'User Redirect',
-                        'icon' => 'bi bi-person-fill',
-                        'link' => base_url('admin/userRedirect'),
+                        'title' => 'News',
+                        'icon' => 'bi bi-newspaper',
+                        'link' => base_url('admin/news'),
+                    ],
+
+                    // 2. LANDING PAGE (Team, About Us, Partner)
+                    ['header' => 'CMS'],
+                    [
+                        'title' => 'About Us',
+                        'icon' => 'bi bi-info-circle-fill',
+                        'link' => base_url('admin/aboutus'),
                     ],
                     [
-                        'title' => 'Configuration',
+                        'title' => 'Team',
+                        'icon' => 'bi bi-people-fill',
+                        'link' => base_url('admin/team'),
+                    ],
+                    [
+                        'title' => 'Partner',
+                        'icon' => 'bi bi-briefcase-fill',
+                        'link' => base_url('admin/partner'),
+                    ],
+
+                    // 3. SYSTEM MANAGEMENT
+                    ['header' => 'System Management'],
+                    [
+                        'title' => 'Configuration User',
                         'icon' => 'bi bi-gear-fill',
                         'children' => [
                             ['title' => 'Roles', 'link' => base_url('admin/roles')],
@@ -55,13 +76,17 @@ function isSubmenuActive($children)
                         'title' => 'Log Activity',
                         'icon' => 'bi bi-file-earmark-text-fill',
                         'link' => base_url('admin/log-activity'),
-                    ]
+                    ],
                 ];
+
                 foreach ($menus as $menu):
-                    $hasChildren = isset($menu['children']);
-                    $isSubmenuActive = $hasChildren && isSubmenuActive($menu['children']);
-                ?>
-                    <?php if ($hasChildren): ?>
+                    if (isset($menu['header'])): ?>
+                        <li class="sidebar-title"><?= $menu['header'] ?></li>
+
+                    <?php
+                    elseif (isset($menu['children'])):
+                        $isSubmenuActive = isSubmenuActive($menu['children']);
+                    ?>
                         <li class="sidebar-item has-sub <?= $isSubmenuActive ? 'active' : '' ?>">
                             <a href="#" class="sidebar-link">
                                 <i class="<?= $menu['icon'] ?> icon-white"></i>
@@ -75,15 +100,21 @@ function isSubmenuActive($children)
                                 <?php endforeach; ?>
                             </ul>
                         </li>
-                    <?php else: ?>
-                        <li class="sidebar-item <?= isActive($menu['link']) ?>">
+
+                    <?php
+                    else:
+                        $activeClass = isActive($menu['link']);
+                    ?>
+                        <li class="sidebar-item <?= $activeClass ?>">
                             <a href="<?= $menu['link'] ?>" class="sidebar-link">
-                                <i class="<?= $menu['icon'] ?> icon-white"></i>
+                                <i class="<?= $menu['icon'] ?> <?= $activeClass ? '' : 'icon-white' ?>"></i>
                                 <span><?= $menu['title'] ?></span>
                             </a>
                         </li>
                     <?php endif; ?>
+
                 <?php endforeach; ?>
+
                 <li class="sidebar-item" style="border-bottom: none">
                     <form id="logout-form">
                         <a id="logout-link" class="sidebar-link">

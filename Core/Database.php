@@ -85,7 +85,7 @@ class Database
     /**
      * Get single result
      */
-    public function first()
+    public function fetch()
     {
         $this->execute();
         return $this->stmt->fetch();

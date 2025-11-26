@@ -24,6 +24,7 @@
                                     <th width="5%">No</th>
                                     <th width="15%">Time</th>
                                     <th width="15%">User</th>
+                                    <th width="15%">Table</th>
                                     <th width="10%">Type Action</th>
                                     <th>Description</th>
                                     <th width="10%">Detail</th>
@@ -37,48 +38,49 @@
             </div>
         </div>
     </section>
-</div>
 
-<div
-    class="modal fade"
-    id="modalDetail"
-    tabindex="-1"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    role="dialog"
-    aria-labelledby="modalTitleId"
-    aria-hidden="true">
+
     <div
-        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
-        role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalDetailTitle">Detail Perubahan Data</h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Data Lama (Old)</h6>
-                        <pre class="bg-light p-2 border rounded" id="viewOldData" style="max-height: 300px; overflow: auto;">-</pre>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Data Baru (New)</h6>
-                        <pre class="bg-light p-2 border rounded" id="viewNewData" style="max-height: 300px; overflow: auto;">-</pre>
+        class="modal fade"
+        id="modalDetail"
+        tabindex="-1"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="modalTitleId"
+        aria-hidden="true">
+        <div
+            class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetailTitle">Detail Perubahan Data</h5>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Data Lama (Old)</h6>
+                            <pre class="bg-light p-2 border rounded" id="viewOldData" style="max-height: 300px; overflow: auto;">-</pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Data Baru (New)</h6>
+                            <pre class="bg-light p-2 border rounded" id="viewNewData" style="max-height: 300px; overflow: auto;">-</pre>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal">
-                    Close
-                </button>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -94,6 +96,8 @@ ob_start();
             serverSide: false,
             responsive: true,
             autoWidth: false,
+            pageLength: 10,
+            lengthChange: false,
             ajax: '<?php echo base_url('admin/log-activity/data'); ?>',
             columns: [{
                     data: null,
@@ -112,6 +116,11 @@ ob_start();
                     render: function(data) {
                         return data ? `<span class="font-weight-bold">${data}</span>` : '<span class="text-muted">System/Guest</span>';
                     }
+                },
+                {
+                    data: 'table_name',
+                    name: 'table_name',
+                    orderable: false
                 },
                 {
                     data: 'action_type',
