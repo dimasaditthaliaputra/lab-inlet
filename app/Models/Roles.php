@@ -12,4 +12,8 @@ class Roles extends Model
     {
         return $this->db->query("SELECT * FROM {$this->table} ORDER BY \"role_name\"")->fetchAll();
     }
+
+    public function count() {
+        return $this->db->query("SELECT COUNT(*) FROM {$this->table}")->fetch();
+    }
 }

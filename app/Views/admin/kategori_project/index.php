@@ -1,5 +1,6 @@
 <div class="page-heading">
-    <h3 class="page-title"><?php echo e($title ?? 'Judul Halaman'); ?></h3>
+    <h3 class="page-title"><?php echo e($title ?? 'Kategori Project'); ?></h3>
+    <p>Manage project categories.</p>
 </div>
 
 <div class="page-content">
@@ -8,13 +9,11 @@
             <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Roles List</h4>
-                        <?php if ($buttonSts) : ?>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
-                                <i class="bi bi-plus me-1" role="img" aria-label="Add new role"></i>
-                                Add New Role
-                            </button>
-                        <?php endif; ?>
+                        <h4 class="card-title">List Kategori</h4>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                            <i class="bi bi-plus me-1" role="img" aria-label="Add new category"></i>
+                            Add New Kategori
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -23,8 +22,8 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Role Name</th>
-                                    <th width="20%">Action</th>
+                                    <th>Name</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,12 +45,12 @@
         aria-labelledby="modalTitleId"
         aria-hidden="true">
         <div
-            class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+            class="modal-dialog modal-dialog-scrollable modal-dialog-centered"
             role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitleId">
-                        Form Roles
+                        Form Kategori
                     </h5>
                     <button
                         type="button"
@@ -59,14 +58,14 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <form id="formData" action="<?php echo base_url('admin/roles') ?>" method="post">
+                <form id="formData">
                     <div class="modal-body">
                         <input type="hidden" name="primary_id" id="primary_id">
 
                         <div class="row mb-3 align-items-center">
-                            <label for="role_name" class="col-md-3 col-form-label">Role Name</label>
+                            <label for="name" class="col-md-3 col-form-label required">Name</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="role_name" id="role_name" placeholder="Input role name">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan nama kategori">
                             </div>
                         </div>
                     </div>
@@ -86,7 +85,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <?php
@@ -100,19 +98,20 @@ ob_start();
             processing: true,
             responsive: true,
             autoWidth: false,
-            ajax: '<?php echo base_url('admin/roles/data'); ?>',
+            ajax: '<?php echo base_url('admin/kategori-project/data'); ?>',
             columns: [{
                     data: null,
                     name: 'ordering',
                     orderable: false,
                     searchable: false,
+                    className: 'text-center',
                     render: function(data, type, row, meta) {
                         return meta.row + 1;
                     }
                 },
                 {
-                    data: 'role_name',
-                    name: 'role_name'
+                    data: 'name',
+                    name: 'name',
                 },
                 {
                     data: null,
@@ -121,8 +120,8 @@ ob_start();
                     searchable: false,
                     className: 'text-center',
                     render: function(data, type, row) {
-                        let editUrl = '<?php echo base_url('admin/roles'); ?>/' + row.id + '/edit';
-                        let deleteUrl = '<?php echo base_url('admin/roles'); ?>/' + row.id;
+                        let editUrl = '<?php echo base_url('admin/kategori-project'); ?>/' + row.id + '/edit';
+                        let deleteUrl = '<?php echo base_url('admin/kategori-project'); ?>/' + row.id;
 
                         return `
                             <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
@@ -144,9 +143,9 @@ ob_start();
                 dataType: 'JSON',
                 success: function(res) {
                     if (res.success) {
-                        $('#modalTitleId').html('Form Edit Roles');
+                        $('#modalTitleId').html('Form Edit Kategori');
                         $('#primary_id').val(res.data.id);
-                        $('#role_name').val(res.data.role_name);
+                        $('#name').val(res.data.name);
                         $('#modalForm').modal('show');
                     }
                 }
@@ -155,11 +154,9 @@ ob_start();
 
         $('#modalForm').on('hidden.bs.modal', function(event) {
             $('#formData')[0].reset();
-
-            $('#modalTitleId').html('Form Roles');
-            $('.text-danger').remove();
+            $('#modalTitleId').html('Form Kategori');
             $('#primary_id').val('');
-            $('#role_name').val('');
+            $('#name').val('');
         });
 
         $('#formData').submit(function(e) {
@@ -172,16 +169,22 @@ ob_start();
             spinner.removeClass('d-none');
 
             let id = $('#primary_id').val();
-            let formData = $(this).serialize();
-            let baseUrl = '<?php echo base_url('admin/roles'); ?>';
+            let formData = new FormData(this);
+            let baseUrl = '<?php echo base_url('admin/kategori-project'); ?>';
             let url = id ? baseUrl + '/' + id : baseUrl;
             let method = id ? 'PUT' : 'POST';
 
+            if (id) {
+                formData.append('_method', 'PUT');
+            }
+
             $.ajax({
                 url: url,
-                type: method,
+                type: 'POST',
                 data: formData,
                 dataType: 'JSON',
+                processData: false,
+                contentType: false,
                 success: function(res) {
                     if (res.success) {
                         $('#modalForm').modal('hide');
@@ -207,9 +210,7 @@ ob_start();
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
-
                         $('.text-danger').remove();
-
                         $.each(errors, function(key, value) {
                             let inputEl = $(`#${key}`);
                             if (inputEl.length) {
@@ -221,7 +222,11 @@ ob_start();
                             }
                         });
                     } else {
-                        console.error('Terjadi kesalahan server:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan. Silakan coba lagi!'
+                        })
                     }
                 },
                 complete: function() {
@@ -259,7 +264,6 @@ ob_start();
                         success: function(res) {
                             if (res.success) {
                                 $('#data-tables').DataTable().ajax.reload();
-
                                 audio.play();
                                 Swal.fire({
                                     icon: 'success',
@@ -271,19 +275,7 @@ ob_start();
                             }
                         },
                         error: function(xhr, status, error) {
-                            let errorMessage;
-
-                            switch (xhr.status) {
-                                case 404:
-                                    errorMessage = 'Error: Halaman proses login tidak ditemukan (404).';
-                                    break;
-                                case 0:
-                                    errorMessage = 'Server terlalu lama merespon (timeout).';
-                                    break;
-                                default:
-                                    errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Terjadi kesalahan. Silakan coba lagi.';
-                            }
-
+                            let errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Terjadi kesalahan. Silakan coba lagi.';
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',

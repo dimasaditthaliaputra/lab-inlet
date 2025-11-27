@@ -10,6 +10,8 @@ use App\Controllers\TeamController;
 use App\Controllers\UserController;
 use App\Controllers\PartnerController;
 use App\Controllers\UserRedirectController;
+use App\Controllers\KategoriProjectController;
+use App\Controllers\ProjectLabController;
 
 return prefix('admin', route_group([
 
@@ -70,6 +72,22 @@ return prefix('admin', route_group([
     post('/news/{id}', [NewsController::class, 'update']),
     put('/news/publish/{id}', [NewsController::class, 'publish']),
     delete('/news/{id}', [NewsController::class, 'destroy']),
+
+    // Kategori Project
+    get('/kategori-project', [KategoriProjectController::class, 'index']),
+    get('/kategori-project/data', [KategoriProjectController::class, 'data']),
+    post('/kategori-project', [KategoriProjectController::class, 'store']),
+    get('/kategori-project/{id}/edit', [KategoriProjectController::class, 'edit']),
+    put('/kategori-project/{id}', [KategoriProjectController::class, 'update']),
+    delete('/kategori-project/{id}', [KategoriProjectController::class, 'destroy']),
+
+    // Project Lab
+    get('/project-lab', [ProjectLabController::class, 'index']),
+    get('/project-lab/data', [ProjectLabController::class, 'data']),
+    post('/project-lab', [ProjectLabController::class, 'store']),
+    get('/project-lab/{id}/edit', [ProjectLabController::class, 'edit']),
+    put('/project-lab/{id}', [ProjectLabController::class, 'update']),
+    delete('/project-lab/{id}', [ProjectLabController::class, 'destroy']),
 
     // Log Activity
     get('/log-activity', [LogActivityController::class, 'index']),

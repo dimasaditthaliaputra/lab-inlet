@@ -32,7 +32,7 @@ function isSubmenuActive($children)
                 <?php
                 $menus = [
                     // 1. MAIN MENU
-                    ['header' => 'Main Menu'],
+                    ['header' => 'Master Data'],
                     [
                         'title' => 'Dashboard',
                         'icon' => 'bi bi-grid-fill',
@@ -42,6 +42,16 @@ function isSubmenuActive($children)
                         'title' => 'News',
                         'icon' => 'bi bi-newspaper',
                         'link' => base_url('admin/news'),
+                    ],
+                    [
+                        'title' => 'Project',
+                        'icon' => 'bi bi-newspaper',
+                        'link' => base_url('admin/project-lab'),
+                    ],
+                    [
+                        'title' => 'Project Category',
+                        'icon' => 'bi bi-folder-fill',
+                        'link' => base_url('admin/kategori-project'),
                     ],
 
                     // 2. LANDING PAGE (Team, About Us, Partner)
