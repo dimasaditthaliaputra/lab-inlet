@@ -12,6 +12,8 @@ use App\Controllers\PartnerController;
 use App\Controllers\UserRedirectController;
 use App\Controllers\KategoriProjectController;
 use App\Controllers\ProjectLabController;
+use App\Controllers\GalleryController;
+
 
 return prefix('admin', route_group([
 
@@ -100,4 +102,23 @@ return prefix('admin', route_group([
     get('/userRedirect/{id}/edit', [UserRedirectController::class, 'edit']),
     put('/userRedirect/{id}/update', [UserRedirectController::class, 'update']),
     delete('/userRedirect/{id}/delete', [UserRedirectController::class, 'destroy']),
+
+
+
+        // Gallery Image
+    get('/gallery/image', [GalleryController::class, 'imageIndex']),
+    get('/gallery/image/data', [GalleryController::class, 'imageData']),
+    post('/gallery/image', [GalleryController::class, 'imageStore']),
+    get('/gallery/image/{id}/edit', [GalleryController::class, 'imageEdit']),
+    put('/gallery/image/{id}', [GalleryController::class, 'imageUpdate']),
+    delete('/gallery/image/{id}', [GalleryController::class, 'imageDestroy']),
+
+    // Gallery Video
+    get('/gallery/video', [GalleryController::class, 'videoIndex']),
+    get('/gallery/video/data', [GalleryController::class, 'videoData']),
+    post('/gallery/video', [GalleryController::class, 'videoStore']),
+    get('/gallery/video/{id}/edit', [GalleryController::class, 'videoEdit']),
+    put('/gallery/video/{id}', [GalleryController::class, 'videoUpdate']),
+    delete('/gallery/video/{id}', [GalleryController::class, 'videoDestroy']),
+
 ]));
