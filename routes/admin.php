@@ -14,6 +14,7 @@ use App\Controllers\KategoriProjectController;
 use App\Controllers\ProjectLabController;
 use App\Controllers\GalleryController;
 use App\Controllers\ProductController;
+use App\Controllers\HeroSliderController;
 
 
 
@@ -132,6 +133,15 @@ return prefix('admin', route_group([
     get('/product/{id}/edit', [ProductController::class, 'edit']),
     post('/product/{id}', [ProductController::class, 'update']),
     delete('/product/{id}', [ProductController::class, 'destroy']),
+
+
+        // Hero Slider
+    get('/hero-slider', [HeroSliderController::class, 'index']),
+    get('/hero-slider/data', [HeroSliderController::class, 'data']),
+    post('/hero-slider', [HeroSliderController::class, 'store']),
+    get('/hero-slider/{id}/edit', [HeroSliderController::class, 'edit']),
+    put('/hero-slider/{id}', [HeroSliderController::class, 'update']),
+    delete('/hero-slider/{id}', [HeroSliderController::class, 'destroy']),
 
 
 ]));
