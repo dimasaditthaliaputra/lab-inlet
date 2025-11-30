@@ -86,6 +86,12 @@ function isSubmenuActive($children)
                         'link'  => base_url('admin/product'),
                     ],
 
+                    [
+                        'title' => 'Hero Slider',
+                        'icon'  => 'bi bi-sliders',
+                        'link'  => base_url('admin/hero-slider'),
+                    ],
+
 
 
                     // 3. SYSTEM MANAGEMENT
