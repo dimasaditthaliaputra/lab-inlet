@@ -80,6 +80,13 @@ function isSubmenuActive($children)
                         ]
                     ],
 
+                    [
+                        'title' => 'Product',
+                        'icon'  => 'bi bi-box-seam',
+                        'link'  => base_url('admin/product'),
+                    ],
+
+
 
                     // 3. SYSTEM MANAGEMENT
                     ['header' => 'System Management'],

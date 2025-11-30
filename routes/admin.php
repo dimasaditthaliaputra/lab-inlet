@@ -13,6 +13,8 @@ use App\Controllers\UserRedirectController;
 use App\Controllers\KategoriProjectController;
 use App\Controllers\ProjectLabController;
 use App\Controllers\GalleryController;
+use App\Controllers\ProductController;
+
 
 
 return prefix('admin', route_group([
@@ -120,5 +122,16 @@ return prefix('admin', route_group([
     get('/gallery/video/{id}/edit', [GalleryController::class, 'videoEdit']),
     put('/gallery/video/{id}', [GalleryController::class, 'videoUpdate']),
     delete('/gallery/video/{id}', [GalleryController::class, 'videoDestroy']),
+
+
+        // Product
+    get('/product', [ProductController::class, 'index']),
+    get('/product/data', [ProductController::class, 'data']),
+    get('/product/create', [ProductController::class, 'create']),
+    post('/product/store', [ProductController::class, 'store']),
+    get('/product/{id}/edit', [ProductController::class, 'edit']),
+    post('/product/{id}', [ProductController::class, 'update']),
+    delete('/product/{id}', [ProductController::class, 'destroy']),
+
 
 ]));
