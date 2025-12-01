@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AboutUsController;
+use App\Controllers\AttendanceSettingsController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\LogActivityController;
@@ -12,6 +13,7 @@ use App\Controllers\PartnerController;
 use App\Controllers\UserRedirectController;
 use App\Controllers\KategoriProjectController;
 use App\Controllers\ProjectLabController;
+use App\Controllers\SiteSettingsController;
 
 return prefix('admin', route_group([
 
@@ -100,4 +102,17 @@ return prefix('admin', route_group([
     get('/userRedirect/{id}/edit', [UserRedirectController::class, 'edit']),
     put('/userRedirect/{id}/update', [UserRedirectController::class, 'update']),
     delete('/userRedirect/{id}/delete', [UserRedirectController::class, 'destroy']),
+
+    // Attendance
+    get('/attendance-settings', [AttendanceSettingsController::class, 'index']),
+    get('/attendance-settings/data', [AttendanceSettingsController::class, 'data']),
+    post('/attendance-settings', [AttendanceSettingsController::class, 'store']),
+    get('/attendance-settings/{id}/edit', [AttendanceSettingsController::class, 'edit']),
+    put('/attendance-settings/{id}', [AttendanceSettingsController::class, 'update']),
+    delete('/attendance-settings/{id}', [AttendanceSettingsController::class, 'destroy']),
+
+    // Site Settings
+    get('/site-settings', [SiteSettingsController::class, 'index']),
+    post('/site-settings/store', [SiteSettingsController::class, 'store']),
+
 ]));

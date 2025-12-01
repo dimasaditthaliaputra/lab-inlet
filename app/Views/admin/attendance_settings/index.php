@@ -8,8 +8,14 @@
             <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Daftar Team</h4>
-                        <a href="<?php echo base_url('admin/team/create'); ?>" class="btn btn-primary">Tambah Team Baru</a>
+                        <h4 class="card-title">Attendance List</h4>
+                        <div id="about-content" class="card border-0 shadow-sm" style="display: none;"></div>
+                        <?php if (empty($data)) : ?>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new Attendance"></i>
+                                Add New Attendance
+                            </button>
+                        <?php endif ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -18,11 +24,9 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>NIP</th>
-                                    <th>NIDN</th>
-                                    <th>Study Program</th>
+                                    <th>Mask Schedule</th>
+                                    <th>check-in time limit</th>
+                                    <th>Homecoming Schedule</th>
                                     <th width="20%">Action</th>
                                 </tr>
                             </thead>
@@ -41,16 +45,16 @@
         tabindex="-1"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
-        team="dialog"
+        role="dialog"
         aria-labelledby="modalTitleId"
         aria-hidden="true">
         <div
-            class="modal-dialog modal-dialog-scrollable modal-dialog-top modal-lg"
-            team="document">
+            class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+            role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitleId">
-                        Form Team
+                        Form Attendance
                     </h5>
                     <button
                         type="button"
@@ -58,55 +62,27 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <form id="formData">
+                <form id="formData" action="<?php echo base_url('admin/attendance_settings') ?>" method="post">
                     <div class="modal-body">
                         <input type="hidden" name="primary_id" id="primary_id">
 
                         <div class="row mb-3 align-items-center">
-                            <label for="name" class="col-md-3 col-form-label">Team Name</label>
+                            <label for="clock_in_start_time" class="col-md-3 col-form-label">Mask Schedule</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan nama team">
+                                <input type="time" class="form-control" name="clock_in_start_time" id="clock_in_start_time" placeholder="Input Mask Schedule">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="clock_in_end_time" class="col-md-3 col-form-label">check-in time limit</label>
+                            <div class="col-md-9">
+                                <input type="time" class="form-control" name="clock_in_end_time" id="clock_in_end_time" placeholder="Input Limit">
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
-                            <label for="position" class="col-md-3 col-form-label">Team Position</label>
+                            <label for="clock_out_start_time" class="col-md-3 col-form-label">Homecoming Schedule</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="position" id="position" placeholder="Masukkan position team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="nip" class="col-md-3 col-form-label">Team nip</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="nip" id="nip" placeholder="Masukkan nip team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="nidn" class="col-md-3 col-form-label">Team nidn</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="nidn" id="nidn" placeholder="Masukkan nidn team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="study_program" class="col-md-3 col-form-label">Team study_program</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="study_program" id="study_program" placeholder="Masukkan study_program team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="description" class="col-md-3 col-form-label">Team description</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="description" id="description" placeholder="Masukkan description team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="social_media" class="col-md-3 col-form-label">Team social_media</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control d-none" name="social_media" id="social_media" placeholder="Masukkan social_media team">
-                                <input type="text" name="linkedin" class="form-control" placeholder="LinkedIn">
-                                <input type="text" name="Google Scholar" class="form-control" placeholder="Google Scholar">
-                                <input type="text" name="Sinta" class="form-control" placeholder="Sinta">
-                                <input type="text" name="Email" class="form-control" placeholder="Email">
-                                <input type="text" name="CV" class="form-control" placeholder="CV">
+                                <input type="time" class="form-control" name="clock_out_start_time" id="clock_out_start_time" placeholder="Input Homecoming Schedule">
                             </div>
                         </div>
                     </div>
@@ -118,7 +94,7 @@
                             Close
                         </button>
                         <button type="submit" class="btn btn-primary" id="btnSubmit">
-                            <span class="spinner-border spinner-border-sm me-2 d-none" team="status" aria-hidden="true"></span>
+                            <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
                             Save
                         </button>
                     </div>
@@ -140,7 +116,7 @@ ob_start();
             processing: true,
             responsive: true,
             autoWidth: false,
-            ajax: '<?php echo base_url('admin/team/data'); ?>',
+            ajax: '<?php echo base_url('admin/attendance-settings/data'); ?>',
             columns: [{
                     data: null,
                     name: 'ordering',
@@ -151,24 +127,16 @@ ob_start();
                     }
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: 'clock_in_start_time',
+                    name: 'clock_in_start_time'
                 },
                 {
-                    data: 'position',
-                    name: 'position'
+                    data: 'clock_in_end_time',
+                    name: 'clock_in_end_time'
                 },
                 {
-                    data: 'nip',
-                    name: 'nip'
-                },
-                {
-                    data: 'nidn',
-                    name: 'nidn'
-                },
-                {
-                    data: 'study_program',
-                    name: 'study_program'
+                    data: 'clock_out_start_time',
+                    name: 'clock_out_start_time'
                 },
                 {
                     data: null,
@@ -177,16 +145,118 @@ ob_start();
                     searchable: false,
                     className: 'text-center',
                     render: function(data, type, row) {
-                        let editUrl = '<?php echo base_url('admin/team'); ?>/' + row.id + '/edit';
-                        let deleteUrl = '<?php echo base_url('admin/team'); ?>/' + row.id;
+                        let editUrl = '<?php echo base_url('admin/attendance-settings'); ?>/' + row.id + '/edit';
+                        let deleteUrl = '<?php echo base_url('admin/attendance-settings'); ?>/' + row.id;
 
                         return `
-                            <a href="${editUrl}" class="btn btn-warning btn-sm">Edit</a>
+                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
                             <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
                         `;
                     }
                 },
             ]
+        });
+
+        $(document).on('click', '#btnEdit', function(e) {
+            e.preventDefault();
+
+            let url = $(this).data('url');
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(res) {
+                    if (res.success) {
+                        $('#modalTitleId').html('Form Edit Attendance');
+                        $('#primary_id').val(res.data.id);
+                        $('#clock_in_start_time').val(res.data.clock_in_start_time);
+                        $('#clock_in_end_time').val(res.data.clock_in_end_time);
+                        $('#clock_out_start_time').val(res.data.clock_out_start_time);
+                        $('#modalForm').modal('show');
+                    }
+                }
+            });
+        });
+
+        $('#modalForm').on('hidden.bs.modal', function(event) {
+            $('#formData')[0].reset();
+
+            $('#modalTitleId').html('Form Attendance');
+            $('.text-danger').remove();
+            $('#primary_id').val('');
+            $('#clock_in_start_time').val('');
+            $('#clock_in_end_time').val('');
+            $('#clock_out_start_time').val('');
+        });
+
+        $('#formData').submit(function(e) {
+            e.preventDefault();
+
+            var btn = $('#btnSubmit');
+            var spinner = btn.find('.spinner-border');
+
+            btn.prop('disabled', true);
+            spinner.removeClass('d-none');
+
+            let id = $('#primary_id').val();
+            let formData = $(this).serialize();
+            let baseUrl = '<?php echo base_url('admin/attendance-settings'); ?>';
+            let url = id ? baseUrl + '/' + id : baseUrl;
+            let method = id ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: formData,
+                dataType: 'JSON',
+                success: function(res) {
+                    if (res.success) {
+                        $('#modalForm').modal('hide');
+                        $('#data-tables').DataTable().ajax.reload();
+
+                        audio.play();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: res.message
+                        })
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+
+                        $('.text-danger').remove();
+
+                        $.each(errors, function(key, value) {
+                            let inputEl = $(`#${key}`);
+                            if (inputEl.length) {
+                                inputEl.after(`
+                                <small class="text-danger d-block mt-1">
+                                    ${value}
+                                </small>
+                            `);
+                            }
+                        });
+                    } else {
+                        console.error('Terjadi kesalahan server:', error);
+                    }
+                },
+                complete: function() {
+                    btn.prop('disabled', false);
+                    spinner.addClass('d-none');
+                }
+            });
         });
 
         $(document).on('click', '#btnDelete', function(e) {
@@ -253,22 +323,6 @@ ob_start();
             });
         });
     });
-
-    <?php if (isset($_SESSION['success_message'])): ?>
-        var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
-
-        audio.play();
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: '<?php echo $_SESSION['success_message']; ?>',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    <?php
-        unset($_SESSION['success_message']);
-    endif;
-    ?>
 </script>
 <?php
 $pageScripts = ob_get_clean();

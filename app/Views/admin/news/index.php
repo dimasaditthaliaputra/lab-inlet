@@ -99,9 +99,9 @@ ob_start();
                     orderable: false,
                     className: 'text-center',
                     render: function(data, type, row) {
-                        return data ? 
-                            `<img src="${data}" class="img-thumbnail img-clickable" style="max-height: 50px; cursor: pointer;" alt="Thumbnail" />` 
-                            : '-';
+                        return data ?
+                            `<img src="${data}" class="img-thumbnail img-clickable" style="max-height: 50px; cursor: pointer;" alt="Thumbnail" />` :
+                            '-';
                     }
                 },
                 {
