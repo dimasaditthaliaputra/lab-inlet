@@ -75,6 +75,14 @@
                                     <i class="bi bi-person me-2"></i> Profile
                                 </a>
                             </li>
+                            <li>
+                                <form class="dropdown-item" id="logout-form">
+                                    <a id="logout-link" class="d-flex gap-2" style="cursor: pointer;">
+                                        <i class="bi bi-box-arrow-right text-danger"></i>
+                                        <span class="text-danger">Logout</span>
+                                    </a>
+                                </form>
+                            </li>
                         </ul>
                         </a>
                     </li>

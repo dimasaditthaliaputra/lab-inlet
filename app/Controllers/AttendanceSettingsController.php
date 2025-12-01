@@ -30,7 +30,7 @@ class AttendanceSettingsController extends Controller
     {
         $attendanceSettings = $this->attendanceSettingModel->getAll();
         $data = [
-            'title' => 'attendance_settings',
+            'title' => 'Attendance Setting',
             'data' => $attendanceSettings
         ];
 

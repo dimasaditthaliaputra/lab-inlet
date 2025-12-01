@@ -74,7 +74,8 @@
                         <div class="row mb-3 align-items-center">
                             <label for="partner_logo" class="col-md-3 col-form-label">Logo</label>
                             <div class="col-md-9">
-                                <input type="file" class="form-control" name="partner_logo" id="partner_logo" placeholder="Masukkan nama partner" accept="images/*">
+                                <input type="file" class="form-control" name="partner_logo" id="partner_logo"
+                                    placeholder="Masukkan nama partner" accept="image/png, image/jpeg, image/jpg, image/webp">
 
                                 <div class="mt-2">
                                     <img id="img-preview" src="<?= $imageUrl ?>"

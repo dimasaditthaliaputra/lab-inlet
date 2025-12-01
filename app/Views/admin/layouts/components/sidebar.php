@@ -32,89 +32,83 @@ function isSubmenuActive($children)
                 <?php
                 $menus = [
                     // 1. MAIN MENU
-                    ['header' => 'Master Data'],
+                    ['header' => 'Main Menu'],
                     [
                         'title' => 'Dashboard',
-                        'icon' => 'bi bi-grid-fill',
-                        'link' => base_url('admin/dashboard'),
+                        'icon'  => 'bi bi-grid-fill',
+                        'link'  => base_url('admin/dashboard'),
                     ],
+
+                    // 2. CONTENT MANAGEMENT (CMS)
+                    ['header' => 'Content Management'],
                     [
                         'title' => 'News',
-                        'icon' => 'bi bi-newspaper',
-                        'link' => base_url('admin/news'),
+                        'icon'  => 'bi bi-newspaper',
+                        'link'  => base_url('admin/news'),
                     ],
                     [
-                        'title' => 'Project',
-                        'icon' => 'bi bi-newspaper',
-                        'link' => base_url('admin/project-lab'),
+                        'title'    => 'Project Management',
+                        'icon'     => 'bi bi-folder-fill',
+                        'children' => [
+                            ['title' => 'Data Project', 'link' => base_url('admin/project-lab')],
+                            ['title' => 'Categories', 'link' => base_url('admin/kategori-project')],
+                        ]
                     ],
                     [
-                        'title' => 'Project Category',
-                        'icon' => 'bi bi-folder-fill',
-                        'link' => base_url('admin/kategori-project'),
-                    ],
-
-                    ['header' => 'Attendance'],
-                    [
-                        'title' => 'Time Setting',
-                        'icon' => 'bi bi-clock-fill',
-                        'link' => base_url('admin/attendance-settings'),
-                    ],
-
-                    // 2. LANDING PAGE (Team, About Us, Partner)
-                    ['header' => 'CMS'],
-                    [
-                        'title' => 'About Us',
-                        'icon' => 'bi bi-info-circle-fill',
-                        'link' => base_url('admin/aboutus'),
+                        'title'    => 'Company Profile',
+                        'icon'     => 'bi bi-building-fill',
+                        'children' => [
+                            ['title' => 'About Us', 'link' => base_url('admin/aboutus')],
+                            ['title' => 'Team', 'link' => base_url('admin/team')],
+                            ['title' => 'Partner', 'link' => base_url('admin/partner')],
+                        ]
                     ],
                     [
-                        'title' => 'Team',
-                        'icon' => 'bi bi-people-fill',
-                        'link' => base_url('admin/team'),
-                    ],
-                    [
-                        'title' => 'Partner',
-                        'icon' => 'bi bi-briefcase-fill',
-                        'link' => base_url('admin/partner'),
-                    ],
-                    [
-                        'title' => 'Gallery',
-                        'icon'  => 'bi bi-images',
+                        'title'    => 'Gallery',
+                        'icon'     => 'bi bi-images',
                         'children' => [
                             ['title' => 'Image', 'link' => base_url('admin/gallery/image')],
                             ['title' => 'Video', 'link' => base_url('admin/gallery/video')],
                         ]
                     ],
-
                     [
                         'title' => 'Product',
                         'icon'  => 'bi bi-box-seam',
                         'link'  => base_url('admin/product'),
                     ],
-
                     [
                         'title' => 'Hero Slider',
                         'icon'  => 'bi bi-sliders',
                         'link'  => base_url('admin/hero-slider'),
                     ],
 
+                    // 3. ATTENDANCE
+                    ['header' => 'Attendance System'],
+                    [
+                        'title' => 'Time Setting',
+                        'icon'  => 'bi bi-clock-fill',
+                        'link'  => base_url('admin/attendance-settings'),
+                    ],
 
-
-                    // 3. SYSTEM MANAGEMENT
+                    // 4. SYSTEM MANAGEMENT
                     ['header' => 'System Management'],
                     [
-                        'title' => 'Configuration User',
-                        'icon' => 'bi bi-gear-fill',
+                        'title'    => 'User Management',
+                        'icon'     => 'bi bi-gear-fill',
                         'children' => [
                             ['title' => 'Roles', 'link' => base_url('admin/roles')],
-                            ['title' => 'User', 'link' => base_url('admin/user')],
+                            ['title' => 'Users', 'link' => base_url('admin/user')],
                         ]
                     ],
                     [
+                        'title' => 'Site Settings',
+                        'icon'  => 'bi bi-sliders2-vertical',
+                        'link'  => base_url('admin/site-settings'),
+                    ],
+                    [
                         'title' => 'Log Activity',
-                        'icon' => 'bi bi-file-earmark-text-fill',
-                        'link' => base_url('admin/log-activity'),
+                        'icon'  => 'bi bi-file-earmark-text-fill',
+                        'link'  => base_url('admin/log-activity'),
                     ],
                 ];
 
@@ -151,17 +145,7 @@ function isSubmenuActive($children)
                             </a>
                         </li>
                     <?php endif; ?>
-
                 <?php endforeach; ?>
-
-                <li class="sidebar-item" style="border-bottom: none">
-                    <form id="logout-form">
-                        <a id="logout-link" class="sidebar-link">
-                            <i class="bi bi-box-arrow-right icon-white"></i>
-                            <span>Logout</span>
-                        </a>
-                    </form>
-                </li>
             </ul>
         </div>
     </div>

@@ -256,8 +256,6 @@ ob_start();
                         dataType: 'JSON',
                         success: function(res) {
                             if (res.success) {
-                                $('#data-tables').DataTable().ajax.reload();
-
                                 audio.play();
                                 Swal.fire({
                                     icon: 'success',
@@ -266,6 +264,8 @@ ob_start();
                                     showConfirmButton: false,
                                     timer: 1500
                                 })
+                                
+                                $('#data-tables').DataTable().ajax.reload();
                             }
                         },
                         error: function(xhr, status, error) {

@@ -51,6 +51,7 @@ class SiteSettingsController extends Controller
                 ], 422);
             }
 
+            // $siteSettings ini adalah Object
             $siteSettings = $this->model->getAll();
             $oldData = $siteSettings ?: null;
 
@@ -86,42 +87,24 @@ class SiteSettingsController extends Controller
                 $newName = md5(time()) . '.' . $ext;
 
                 if (move_uploaded_file($_FILES['logo_path']['tmp_name'], $uploadPath . $newName)) {
-                    if ($oldData && !empty($oldData['logo_path']) && file_exists($uploadPath . $oldData['logo_path'])) {
-                        unlink($uploadPath . $oldData['logo_path']);
+                    // PERBAIKAN 1: Mengakses properti object menggunakan tanda panah (->)
+                    if ($oldData && !empty($oldData->logo_path) && file_exists($uploadPath . $oldData->logo_path)) {
+                        unlink($uploadPath . $oldData->logo_path);
                     }
                     $data['logo_path'] = $newName;
                 }
             }
- 
-            // if (!empty($_FILES['favicon_path']['name'])) {
-
-            //     if ($_FILES['favicon_path']['size'] > 2 * 1024 * 1024) {
-            //         return response()->json([
-            //             'success' => false,
-            //             'message' => 'Maximum favicon size is 2MB'
-            //         ], 422);
-            //     }
-
-            //     $ext = strtolower(pathinfo($_FILES['favicon_path']['name'], PATHINFO_EXTENSION));
-            //     $newName = 'favicon_' . md5(time()) . '.' . $ext;
-
-            //     if (move_uploaded_file($_FILES['favicon_path']['tmp_name'], $uploadPath . $newName)) {
-            //         if ($oldData && !empty($oldData['favicon_path']) && file_exists($uploadPath . $oldData['favicon_path'])) {
-            //             unlink($uploadPath . $oldData['favicon_path']);
-            //         }
-            //         $data['favicon_path'] = $newName;
-            //     }
-            // }
 
             if ($oldData) {
-                $this->model->update($oldData['id'], $data);
+                // PERBAIKAN 2: Menggunakan $oldData->id bukan $oldData['id']
+                $this->model->update($oldData->id, $data);
 
                 logActivity(
                     "Update",
                     "Site settings updated",
                     "settings",
-                    $oldData['id'],
-                    $oldData,
+                    $oldData->id, // UBAH KE OBJECT SYNTAX
+                    (array)$oldData, // Cast ke array jika logActivity butuh array, atau biarkan object jika support
                     $data
                 );
             } else {
@@ -141,7 +124,6 @@ class SiteSettingsController extends Controller
                 'success' => true,
                 'message' => 'Site Settings berhasil disimpan'
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

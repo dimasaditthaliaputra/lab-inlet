@@ -120,7 +120,7 @@ return prefix('admin', route_group([
     get('/site-settings', [SiteSettingsController::class, 'index']),
     post('/site-settings/store', [SiteSettingsController::class, 'store']),
 
-        // Gallery Image
+    // Gallery Image
     get('/gallery/image', [GalleryController::class, 'imageIndex']),
     get('/gallery/image/data', [GalleryController::class, 'imageData']),
     post('/gallery/image', [GalleryController::class, 'imageStore']),
@@ -136,8 +136,7 @@ return prefix('admin', route_group([
     put('/gallery/video/{id}', [GalleryController::class, 'videoUpdate']),
     delete('/gallery/video/{id}', [GalleryController::class, 'videoDestroy']),
 
-
-        // Product
+    // Product
     get('/product', [ProductController::class, 'index']),
     get('/product/data', [ProductController::class, 'data']),
     get('/product/create', [ProductController::class, 'create']),
@@ -146,14 +145,11 @@ return prefix('admin', route_group([
     post('/product/{id}', [ProductController::class, 'update']),
     delete('/product/{id}', [ProductController::class, 'destroy']),
 
-
-        // Hero Slider
+    // Hero Slider
     get('/hero-slider', [HeroSliderController::class, 'index']),
     get('/hero-slider/data', [HeroSliderController::class, 'data']),
     post('/hero-slider', [HeroSliderController::class, 'store']),
     get('/hero-slider/{id}/edit', [HeroSliderController::class, 'edit']),
     put('/hero-slider/{id}', [HeroSliderController::class, 'update']),
     delete('/hero-slider/{id}', [HeroSliderController::class, 'destroy']),
-
-
 ]));

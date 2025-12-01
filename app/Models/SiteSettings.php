@@ -10,6 +10,6 @@ class SiteSettings extends Model
 
     public function getAll()
     {
-        return $this->db->query("SELECT * FROM {$this->table}")->fetchAll();
+        return $this->db->query("SELECT * FROM {$this->table} WHERE id = 1")->fetch();
     }
 }

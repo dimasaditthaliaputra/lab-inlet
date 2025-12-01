@@ -8,7 +8,10 @@
 </style>
 <?php $pageStyle = ob_get_clean(); ?>
 
-<?php $site = $data ?? null; ?>
+<?php 
+// Pastikan $site adalah object atau null
+$site = $data ?? null; 
+?>
 
 <div class="page-heading">
     <h3><?= $title ?></h3>
@@ -29,29 +32,29 @@
                             <div class="col-md-12 mb-3">
                                 <label class="form-label required">Site Name</label>
                                 <input type="text" class="form-control" name="site_name"
-                                    value="<?= $site['site_name'] ?? '' ?>">
+                                    value="<?= $site->site_name ?? '' ?>">
                             </div>
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label required">Email</label>
                                 <input type="email" class="form-control" name="email"
-                                    value="<?= $site['email'] ?? '' ?>">
+                                    value="<?= $site->email ?? '' ?>">
                             </div>
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Phone</label>
                                 <input type="text" class="form-control" name="phone"
-                                    value="<?= $site['phone'] ?? '' ?>">
+                                    value="<?= $site->phone ?? '' ?>">
                             </div>
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Address</label>
-                                <textarea class="form-control" name="map_embed_url"><?= $site['address'] ?? '' ?></textarea>
+                                <textarea class="form-control" name="address" id="address"><?= $site->address ?? '' ?></textarea>
                             </div>
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Map Embed URL</label>
-                                <textarea class="form-control" name="map_embed_url"><?= $site['map_embed_url'] ?? '' ?></textarea>
+                                <textarea class="form-control" name="map_embed_url"><?= $site->map_embed_url ?? '' ?></textarea>
                             </div>
 
                             <div class="col-md-12 mb-3">
@@ -59,8 +62,10 @@
                                 <input type="file" name="logo_path" class="form-control" id="logo_path" accept="image/*">
 
                                 <?php
-                                $logoUrl = !empty($site['logo_path']) ? base_url('uploads/settings/' . $site['logo_path']) : '';
-                                $logoDisplay = !empty($site['logo_path']) ? '' : 'display:none;';
+                                // UBAH: Cek property object
+                                $logoPath = $site->logo_path ?? '';
+                                $logoUrl = !empty($logoPath) ? base_url('uploads/settings/' . $logoPath) : '';
+                                $logoDisplay = !empty($logoPath) ? '' : 'display:none;';
                                 ?>
                                 <img src="<?= $logoUrl ?>" class="img-thumbnail mt-2" id="logo-preview"
                                     style="max-width:150px; <?= $logoDisplay ?>">
@@ -69,22 +74,26 @@
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Favicon</label>
                                 <input type="text" class="form-control" name="favicon"
-                                    value="<?= $site['favicon'] ?? '' ?>">
+                                    value="<?= $site->favicon ?? '' ?>">
                             </div>
 
                             <h6 class="mt-3">Social Links</h6>
+                            <?php 
+                                // Parsing JSON dari object properti
+                                $social = json_decode($site->social_links ?? '{}'); 
+                            ?>
                             <div class="col-md-12 mb-3">
                                 <input type="text" class="form-control" name="facebook"
                                     placeholder="Facebook URL"
-                                    value="<?= json_decode($site['social_links'] ?? '{}')->facebook ?? '' ?>">
+                                    value="<?= $social->facebook ?? '' ?>">
 
                                 <input type="text" class="form-control mt-2" name="instagram"
                                     placeholder="Instagram URL"
-                                    value="<?= json_decode($site['social_links'] ?? '{}')->instagram ?? '' ?>">
+                                    value="<?= $social->instagram ?? '' ?>">
 
                                 <input type="text" class="form-control mt-2" name="youtube"
                                     placeholder="YouTube URL"
-                                    value="<?= json_decode($site['social_links'] ?? '{}')->youtube ?? '' ?>">
+                                    value="<?= $social->youtube ?? '' ?>">
                             </div>
 
                             <div class="d-flex justify-content-end mt-4">
@@ -131,10 +140,8 @@
             showPreview(this, '#logo-preview')
         });
 
-        $('#favicon_path').change(function() {
-            showPreview(this, '#favicon-preview')
-        });
-
+        // Script Ajax Submit tetap sama karena Ajax menghandle form data,
+        // tidak terpengaruh perubahan tampilan PHP di atas.
         $('#formData').submit(function(event) {
             event.preventDefault()
             let btn = $('#btnSubmit')
