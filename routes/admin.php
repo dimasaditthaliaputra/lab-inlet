@@ -14,6 +14,11 @@ use App\Controllers\UserRedirectController;
 use App\Controllers\KategoriProjectController;
 use App\Controllers\ProjectLabController;
 use App\Controllers\SiteSettingsController;
+use App\Controllers\GalleryController;
+use App\Controllers\ProductController;
+use App\Controllers\HeroSliderController;
+
+
 
 return prefix('admin', route_group([
 
@@ -114,5 +119,41 @@ return prefix('admin', route_group([
     // Site Settings
     get('/site-settings', [SiteSettingsController::class, 'index']),
     post('/site-settings/store', [SiteSettingsController::class, 'store']),
+
+        // Gallery Image
+    get('/gallery/image', [GalleryController::class, 'imageIndex']),
+    get('/gallery/image/data', [GalleryController::class, 'imageData']),
+    post('/gallery/image', [GalleryController::class, 'imageStore']),
+    get('/gallery/image/{id}/edit', [GalleryController::class, 'imageEdit']),
+    put('/gallery/image/{id}', [GalleryController::class, 'imageUpdate']),
+    delete('/gallery/image/{id}', [GalleryController::class, 'imageDestroy']),
+
+    // Gallery Video
+    get('/gallery/video', [GalleryController::class, 'videoIndex']),
+    get('/gallery/video/data', [GalleryController::class, 'videoData']),
+    post('/gallery/video', [GalleryController::class, 'videoStore']),
+    get('/gallery/video/{id}/edit', [GalleryController::class, 'videoEdit']),
+    put('/gallery/video/{id}', [GalleryController::class, 'videoUpdate']),
+    delete('/gallery/video/{id}', [GalleryController::class, 'videoDestroy']),
+
+
+        // Product
+    get('/product', [ProductController::class, 'index']),
+    get('/product/data', [ProductController::class, 'data']),
+    get('/product/create', [ProductController::class, 'create']),
+    post('/product/store', [ProductController::class, 'store']),
+    get('/product/{id}/edit', [ProductController::class, 'edit']),
+    post('/product/{id}', [ProductController::class, 'update']),
+    delete('/product/{id}', [ProductController::class, 'destroy']),
+
+
+        // Hero Slider
+    get('/hero-slider', [HeroSliderController::class, 'index']),
+    get('/hero-slider/data', [HeroSliderController::class, 'data']),
+    post('/hero-slider', [HeroSliderController::class, 'store']),
+    get('/hero-slider/{id}/edit', [HeroSliderController::class, 'edit']),
+    put('/hero-slider/{id}', [HeroSliderController::class, 'update']),
+    delete('/hero-slider/{id}', [HeroSliderController::class, 'destroy']),
+
 
 ]));

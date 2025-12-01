@@ -71,6 +71,28 @@ function isSubmenuActive($children)
                         'icon' => 'bi bi-briefcase-fill',
                         'link' => base_url('admin/partner'),
                     ],
+                    [
+                        'title' => 'Gallery',
+                        'icon'  => 'bi bi-images',
+                        'children' => [
+                            ['title' => 'Image', 'link' => base_url('admin/gallery/image')],
+                            ['title' => 'Video', 'link' => base_url('admin/gallery/video')],
+                        ]
+                    ],
+
+                    [
+                        'title' => 'Product',
+                        'icon'  => 'bi bi-box-seam',
+                        'link'  => base_url('admin/product'),
+                    ],
+
+                    [
+                        'title' => 'Hero Slider',
+                        'icon'  => 'bi bi-sliders',
+                        'link'  => base_url('admin/hero-slider'),
+                    ],
+
+
 
                     // 3. SYSTEM MANAGEMENT
                     ['header' => 'System Management'],
