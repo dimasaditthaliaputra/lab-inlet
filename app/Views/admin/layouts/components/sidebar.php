@@ -110,6 +110,11 @@ function isSubmenuActive($children)
                         'icon'  => 'bi bi-file-earmark-text-fill',
                         'link'  => base_url('admin/log-activity'),
                     ],
+                    [
+                        'title' => 'Research Focus',
+                        'icon' => 'bi bi-lightbulb-fill',
+                        'link' => base_url('admin/research-focus'),
+                    ],
                 ];
 
                 foreach ($menus as $menu):

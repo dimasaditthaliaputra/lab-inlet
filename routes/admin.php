@@ -152,4 +152,12 @@ return prefix('admin', route_group([
     get('/hero-slider/{id}/edit', [HeroSliderController::class, 'edit']),
     put('/hero-slider/{id}', [HeroSliderController::class, 'update']),
     delete('/hero-slider/{id}', [HeroSliderController::class, 'destroy']),
+
+    // Research Focus
+    get('/research-focus',        [ResearchFocusController::class, 'index']),
+    get('/research-focus/data',   [ResearchFocusController::class, 'data']),
+    post('/research-focus',       [ResearchFocusController::class, 'store']),
+    get('/research-focus/{id}/edit', [ResearchFocusController::class, 'edit']),
+    put('/research-focus/{id}',   [ResearchFocusController::class, 'update']),
+    delete('/research-focus/{id}',[ResearchFocusController::class, 'destroy']),
 ]));
