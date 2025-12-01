@@ -60,19 +60,23 @@ $formAction = $isEdit && isset($facility->id)
                             <div class="col-12">
                                 <div class="form-group mb-3">
                                     <label class="form-label required">Description</label>
-                                    <textarea name="description" id="description"
-                                        class="form-control"><?= $facility->description ?? '' ?></textarea>
+                                    <input type="text" name="description" class="form-control"
+                                        value="<?= htmlspecialchars($facility->description ?? '') ?>"
+                                        placeholder="Facility Description">
                                 </div>
                             </div>
 
                             <div class="col-12">
-                                <div class="form-group mb-3">
-                                    <label class="form-label required">Condition</label>
-                                    <input type="text" name="condition" class="form-control"
-                                        value="<?= $facility->condition ?? '' ?>"
-                                        placeholder=" Good / Medium / Bad">
+                                <label for="id_roles" class="form-label required">Condition</label>
+                                <div class="col-md-14">
+                                    <select class="form-select" name="id" id="id" required>
+                                        <option value=""> Select Condition  </option>
+                                        <option value="good">Good</option>
+                                        <option value="bad">Bad</option>
+                                    </select>
                                 </div>
                             </div>
+
 
                             <div class="col-12">
                                 <div class="form-group mb-3">
@@ -121,7 +125,8 @@ $formAction = $isEdit && isset($facility->id)
                                 </div>
                             </div>
 
-                        </div> </form>
+                        </div>
+                    </form>
                 </div>
 
             </div>

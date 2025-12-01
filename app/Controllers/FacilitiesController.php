@@ -22,7 +22,7 @@ class FacilitiesController extends Controller
     public function index()
     {
         $data = [
-            'title' => 'Facilities',
+            'title' => 'facilities',
         ];
 
         view_with_layout('admin/facilities/index', $data);
@@ -63,7 +63,7 @@ class FacilitiesController extends Controller
     public function create()
     {
         return view_with_layout('admin/facilities/form', [
-            'title' => 'Create Facilities'
+            'title' => 'Create facilities'
         ]);
     }
 
@@ -137,6 +137,9 @@ class FacilitiesController extends Controller
                 'qty'         => $validation['data']['qty'],
                 'image_name'  => $imageName
             ];
+
+            var_dump($data);
+            die;
 
             $id = $this->facilitiesModel->create($data);
 

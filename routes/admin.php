@@ -4,6 +4,7 @@ use App\Controllers\AboutUsController;
 use App\Controllers\AttendanceSettingsController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
+use App\Controllers\FacilitiesController;
 use App\Controllers\LogActivityController;
 use App\Controllers\NewsController;
 use App\Controllers\RolesController;
@@ -17,6 +18,7 @@ use App\Controllers\SiteSettingsController;
 use App\Controllers\GalleryController;
 use App\Controllers\ProductController;
 use App\Controllers\HeroSliderController;
+use App\Controllers\ResearchFocusController;
 
 
 
@@ -159,5 +161,13 @@ return prefix('admin', route_group([
     post('/research-focus',       [ResearchFocusController::class, 'store']),
     get('/research-focus/{id}/edit', [ResearchFocusController::class, 'edit']),
     put('/research-focus/{id}',   [ResearchFocusController::class, 'update']),
-    delete('/research-focus/{id}',[ResearchFocusController::class, 'destroy']),
+    delete('/research-focus/{id}',[ResearchFocusController::class, 'destroy']),
+    //Facilities
+    get('/facilities', [FacilitiesController::class, 'index']),
+    get('/facilities/data', [FacilitiesController::class, 'data']),
+    get('/facilities/create', [FacilitiesController::class, 'create']),
+    post('/facilities/store', [FacilitiesController::class, 'store']),
+    get('/facilities/{id}/edit', [FacilitiesController::class, 'edit']),
+    post('/facilities/{id}', [FacilitiesController::class, 'update']),
+    delete('/facilities/{id}', [FacilitiesController::class, 'destroy']),
 ]));
