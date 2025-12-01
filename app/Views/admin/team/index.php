@@ -1,5 +1,12 @@
 <div class="page-heading">
-    <h3 class="page-title"><?php echo e($title ?? 'Judul Halaman'); ?></h3>
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3><?= $title ?? 'Team'; ?></h3>
+                <p class="text-subtitle text-muted">List Team Members.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="page-content">
@@ -8,22 +15,24 @@
             <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Daftar Team</h4>
-                        <a href="<?php echo base_url('admin/team/create'); ?>" class="btn btn-primary">Tambah Team Baru</a>
+                        <h4 class="card-title">Team List</h4>
+                        <a href="<?= base_url('admin/team/create') ?>" class="btn btn-primary">
+                            <i class="bi bi-plus me-1"></i> Add New Team
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover" id="data-tables">
+                        <table class="table table-striped table-hover" id="table-team">
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
+                                    <th width="10%">Image</th>
                                     <th>Name</th>
-                                    <th>Position</th>
                                     <th>NIP</th>
                                     <th>NIDN</th>
-                                    <th>Study Program</th>
-                                    <th width="20%">Action</th>
+                                    <th>Lab Position</th>
+                                    <th width="14%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,128 +44,50 @@
         </div>
     </section>
 
-    <div
-        class="modal fade"
-        id="modalForm"
-        tabindex="-1"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        team="dialog"
-        aria-labelledby="modalTitleId"
-        aria-hidden="true">
-        <div
-            class="modal-dialog modal-dialog-scrollable modal-dialog-top modal-lg"
-            team="document">
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitleId">
-                        Form Team
-                    </h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <h5 class="modal-title">Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="formData">
-                    <div class="modal-body">
-                        <input type="hidden" name="primary_id" id="primary_id">
-
-                        <div class="row mb-3 align-items-center">
-                            <label for="name" class="col-md-3 col-form-label">Team Name</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan nama team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="position" class="col-md-3 col-form-label">Team Position</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="position" id="position" placeholder="Masukkan position team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="nip" class="col-md-3 col-form-label">Team nip</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="nip" id="nip" placeholder="Masukkan nip team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="nidn" class="col-md-3 col-form-label">Team nidn</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="nidn" id="nidn" placeholder="Masukkan nidn team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="study_program" class="col-md-3 col-form-label">Team study_program</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="study_program" id="study_program" placeholder="Masukkan study_program team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="description" class="col-md-3 col-form-label">Team description</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="description" id="description" placeholder="Masukkan description team">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="social_media" class="col-md-3 col-form-label">Team social_media</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control d-none" name="social_media" id="social_media" placeholder="Masukkan social_media team">
-                                <input type="text" name="linkedin" class="form-control" placeholder="LinkedIn">
-                                <input type="text" name="Google Scholar" class="form-control" placeholder="Google Scholar">
-                                <input type="text" name="Sinta" class="form-control" placeholder="Sinta">
-                                <input type="text" name="Email" class="form-control" placeholder="Email">
-                                <input type="text" name="CV" class="form-control" placeholder="CV">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                            Close
-                        </button>
-                        <button type="submit" class="btn btn-primary" id="btnSubmit">
-                            <span class="spinner-border spinner-border-sm me-2 d-none" team="status" aria-hidden="true"></span>
-                            Save
-                        </button>
-                    </div>
-                </form>
+                <div class="modal-body text-center">
+                    <img src="" id="modalImageFull" class="img-fluid" alt="Image Preview">
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
-<?php
-ob_start();
-?>
+<?php ob_start(); ?>
 <script>
-    var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
+    var audio = new Audio("<?= base_url('assets/audio/success.wav'); ?>");
 
     $(document).ready(function() {
-        $('#data-tables').DataTable({
+        const table = $('#table-team').DataTable({
             processing: true,
-            responsive: true,
+            serverSide: false,
+            responsive: false,
             autoWidth: false,
-            ajax: '<?php echo base_url('admin/team/data'); ?>',
+            ajax: '<?= base_url('admin/team/data'); ?>',
             columns: [{
                     data: null,
-                    name: 'ordering',
+                    sortable: false,
+                    render: (data, type, row, meta) =>
+                        meta.row + meta.settings._iDisplayStart + 1
+                },
+                {
+                    data: 'image_name',
+                    name: 'image_name',
                     orderable: false,
                     searchable: false,
-                    render: function(data, type, row, meta) {
-                        return meta.row + 1;
-                    }
+                    className: 'text-center',
+                    render: (data) =>
+                        data ? `<img src="${data}" class="img-thumbnail img-clickable" style="max-height:50px; cursor:pointer;" />` : '-'
                 },
                 {
                     data: 'name',
                     name: 'name'
-                },
-                {
-                    data: 'position',
-                    name: 'position'
                 },
                 {
                     data: 'nip',
@@ -167,26 +98,34 @@ ob_start();
                     name: 'nidn'
                 },
                 {
-                    data: 'study_program',
-                    name: 'study_program'
+                    data: 'lab_position',
+                    name: 'lab_position'
                 },
                 {
                     data: null,
                     name: 'action',
                     orderable: false,
                     searchable: false,
-                    className: 'text-center',
+                    className: 'text-center text-nowrap',
                     render: function(data, type, row) {
                         let editUrl = '<?php echo base_url('admin/team'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/team'); ?>/' + row.id;
 
                         return `
-                            <a href="${editUrl}" class="btn btn-warning btn-sm">Edit</a>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
-                        `;
+                <a href="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit" title="Edit">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete" title="Delete">
+                    <i class="fas fa-trash"></i> Delete
+                </button>`;
                     }
-                },
+                }
             ]
+        });
+
+        $(document).on('click', '.img-clickable', function() {
+            $('#modalImageFull').attr('src', $(this).attr('src'));
+            $('#imageModal').modal('show');
         });
 
         $(document).on('click', '#btnDelete', function(e) {
@@ -196,18 +135,12 @@ ob_start();
 
             Swal.fire({
                 title: "Are you sure?",
-                text: "You won't be able to revert this!",
+                text: "You can't undo this action!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: "No, cancel!",
-                didOpen: () => {
-                    const confirmButton = Swal.getConfirmButton();
-                    if (confirmButton) {
-                        confirmButton.style.setProperty('background-color', '#d33', 'important');
-                    }
-                }
+                cancelButtonText: "Cancel",
+                confirmButtonColor: '#d33'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -216,16 +149,15 @@ ob_start();
                         dataType: 'JSON',
                         success: function(res) {
                             if (res.success) {
-                                $('#data-tables').DataTable().ajax.reload();
-
+                                table.ajax.reload();
                                 audio.play();
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Success',
+                                    title: 'Deleted',
                                     text: res.message,
                                     showConfirmButton: false,
                                     timer: 1500
-                                })
+                                });
                             }
                         },
                         error: function(xhr, status, error) {
@@ -252,23 +184,19 @@ ob_start();
                 }
             });
         });
+
+        <?php if (isset($_SESSION['success_message'])): ?>
+            audio.play();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '<?= $_SESSION['success_message']; ?>',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
     });
-
-    <?php if (isset($_SESSION['success_message'])): ?>
-        var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
-
-        audio.play();
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: '<?php echo $_SESSION['success_message']; ?>',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    <?php
-        unset($_SESSION['success_message']);
-    endif;
-    ?>
 </script>
 <?php
 $pageScripts = ob_get_clean();
