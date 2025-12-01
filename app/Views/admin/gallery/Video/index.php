@@ -25,7 +25,7 @@
                                     <th width="5%">No</th>
                                     <th>Title</th>
                                     <th>Description</th>
-                                    <th>Preview</th>
+                                    <th class="text-center">Preview</th> <!-- header center -->
                                     <th width="15%">Action</th>
                                 </tr>
                             </thead>
@@ -38,6 +38,7 @@
         </div>
     </section>
 
+    <!-- MODAL FORM -->
     <div
         class="modal fade"
         id="modalForm"
@@ -121,7 +122,7 @@ ob_start();
         let embedUrl = url;
 
         try {
-            // contoh: https://www.youtube.com/watch?v=VIDEO_ID
+            // https://www.youtube.com/watch?v=VIDEO_ID
             if (url.includes('youtube.com/watch')) {
                 const u = new URL(url);
                 const v = u.searchParams.get('v');
@@ -129,7 +130,7 @@ ob_start();
                     embedUrl = 'https://www.youtube.com/embed/' + v;
                 }
             }
-            // contoh: https://youtu.be/VIDEO_ID
+            // https://youtu.be/VIDEO_ID
             else if (url.includes('youtu.be/')) {
                 const parts = url.split('youtu.be/')[1].split(/[?&]/);
                 const id = parts[0];
@@ -160,6 +161,9 @@ ob_start();
     }
 
     $(document).ready(function() {
+        // =========================
+        // DataTables
+        // =========================
         $('#data-tables').DataTable({
             processing: true,
             responsive: true,
@@ -191,6 +195,7 @@ ob_start();
                     name: 'url',
                     orderable: false,
                     searchable: false,
+                    className: 'text-center',   // isi kolom preview center
                     render: function(data) {
                         return getVideoPreviewHtml(data);
                     }
@@ -214,7 +219,9 @@ ob_start();
             ]
         });
 
-        // Edit
+        // =========================
+        //  Edit
+        // =========================
         $(document).on('click', '#btnEdit', function(e) {
             e.preventDefault();
 
@@ -237,6 +244,7 @@ ob_start();
             });
         });
 
+        // Reset modal
         $('#modalForm').on('hidden.bs.modal', function(event) {
             $('#formData')[0].reset();
 
@@ -245,6 +253,9 @@ ob_start();
             $('#primary_id').val('');
         });
 
+        // =========================
+        //  Submit (Create & Update)
+        // =========================
         $('#formData').submit(function(e) {
             e.preventDefault();
 
@@ -255,16 +266,24 @@ ob_start();
             spinner.removeClass('d-none');
 
             let id = $('#primary_id').val();
-            let formData = $(this).serialize();
             let baseUrl = '<?php echo base_url('admin/gallery/video'); ?>';
             let url = id ? baseUrl + '/' + id : baseUrl;
-            let method = id ? 'PUT' : 'POST';
+
+            // pakai FormData + _method=PUT untuk edit (supaya sama dengan modul lain)
+            let formElement = this;
+            let formData = new FormData(formElement);
+
+            if (id) {
+                formData.append('_method', 'PUT');
+            }
 
             $.ajax({
                 url: url,
-                type: method,
+                type: 'POST',           // <- SELALU POST
                 data: formData,
                 dataType: 'JSON',
+                processData: false,
+                contentType: false,
                 success: function(res) {
                     if (res.success) {
                         $('#modalForm').modal('hide');
@@ -314,6 +333,9 @@ ob_start();
             });
         });
 
+        // =========================
+        //  Delete
+        // =========================
         $(document).on('click', '#btnDelete', function(e) {
             e.preventDefault();
 

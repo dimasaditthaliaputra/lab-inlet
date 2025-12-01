@@ -38,7 +38,7 @@
         </div>
     </section>
 
-    <!-- Modal -->
+    <!-- Modal Form -->
     <div
         class="modal fade"
         id="modalForm"
@@ -109,6 +109,20 @@
         </div>
     </div>
 
+    <!-- 🔍 Modal Preview Image -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" id="modalImageFull" class="img-fluid" alt="Preview Image">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php
@@ -143,7 +157,12 @@ ob_start();
                     render: function(data, type, row) {
                         if (!data) return '-';
                         let src = baseImageUrl + '/' + data;
-                        return `<img src="${src}" alt="${row.title ?? ''}" class="img-thumbnail" style="max-height:80px;">`;
+                        return `
+                            <img src="${src}"
+                                 alt="${row.title ?? ''}"
+                                 class="img-thumbnail img-clickable"
+                                 style="max-height:80px; cursor:pointer;">
+                        `;
                     }
                 },
                 {
@@ -176,7 +195,7 @@ ob_start();
             ]
         });
 
-        // Preview image
+        // Preview image di form
         $('#image').on('change', function() {
             const [file] = this.files;
             if (file) {
@@ -185,6 +204,13 @@ ob_start();
             } else {
                 $('#previewImage').addClass('d-none').attr('src', '');
             }
+        });
+
+        // 🔍 Klik thumbnail -> buka modal preview
+        $(document).on('click', '.img-clickable', function() {
+            var src = $(this).attr('src');
+            $('#modalImageFull').attr('src', src);
+            $('#imageModal').modal('show');
         });
 
         // Edit
@@ -227,7 +253,7 @@ ob_start();
             $('#previewImage').addClass('d-none').attr('src', '');
         });
 
-        // Submit (create & update) - pakai POST + _method untuk update (supaya $_FILES kebaca)
+        // Submit (create & update)
         $('#formData').submit(function(e) {
             e.preventDefault();
 
