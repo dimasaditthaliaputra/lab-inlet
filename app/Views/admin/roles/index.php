@@ -9,12 +9,10 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Roles List</h4>
-                        <?php if ($buttonSts) : ?>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
-                                <i class="bi bi-plus me-1" role="img" aria-label="Add new role"></i>
-                                Add New Role
-                            </button>
-                        <?php endif; ?>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                            <i class="bi bi-plus me-1" role="img" aria-label="Add new roles"></i>
+                            Add New Roles
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">

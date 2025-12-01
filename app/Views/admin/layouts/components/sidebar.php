@@ -54,6 +54,13 @@ function isSubmenuActive($children)
                         'link' => base_url('admin/kategori-project'),
                     ],
 
+                    ['header' => 'Attendance'],
+                    [
+                        'title' => 'Time Setting',
+                        'icon' => 'bi bi-clock-fill',
+                        'link' => base_url('admin/attendance-settings'),
+                    ],
+
                     // 2. LANDING PAGE (Team, About Us, Partner)
                     ['header' => 'CMS'],
                     [

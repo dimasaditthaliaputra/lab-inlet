@@ -109,25 +109,15 @@ ob_start();
                     name: 'content',
                     searchable: false,
                     orderable: false,
-                    render: function(data, type, row) {
-                        if (data) {
-                            let plainText = data.replace(/<\/?[^>]+(>|$)/g, "");
-
-                            if (plainText.length > 50) {
-                                return plainText.substr(0, 50) + '...';
-                            }
-                            return plainText;
-                        }
-                        return '-';
-                    }
+                    default: '-'
                 },
                 {
-                    data: 'publish',
-                    name: 'publish',
+                    data: 'is_publish',
+                    name: 'is_publish',
                     className: 'text-center',
                     render: function(data) {
                         if (data) return '<span class="badge bg-success"><i class="fas fa-check"></i> Published</span>';
-                        return '<span class="badge bg-secondary"><i class="fas fa-times"></i> Draft</span>';
+                        return '<span class="badge bg-secondary"><i class="fas fa-eye"></i> Draft</span>';
                     }
                 },
                 {

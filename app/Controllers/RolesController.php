@@ -73,13 +73,11 @@ class RolesController extends Controller
 
             $insertId = $this->rolesModel->create($data);
 
-            $role = $this->rolesModel->find($insertId);
-
             logActivity(
                 "Create",
-                "Role {$role->role_name} successfully created",
+                "Role {$validation['data']['role_name']} successfully created",
                 "roles",
-                $role->id,
+                $insertId,
                 null,
                 $data
             );
@@ -164,7 +162,6 @@ class RolesController extends Controller
                 $oldData,
                 $newData
             );
-
 
             return response()->json([
                 'success' => true,
