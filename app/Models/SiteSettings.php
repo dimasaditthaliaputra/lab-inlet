@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Core\Model;
 
-class Team extends Model
+class SiteSettings extends Model
 {
-    protected $table = 'attendance_settings';
+    protected $table = 'site_settings';
 
     public function getAll()
     {
