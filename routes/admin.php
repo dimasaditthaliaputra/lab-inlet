@@ -29,6 +29,7 @@ return prefix('admin', route_group([
 
     // Dashboard
     get('/dashboard', [DashboardController::class, 'index']),
+    get('/dashboard/activity-data', [DashboardController::class, 'activity_data']),
 
     // Roles
     get('/roles', [RolesController::class, 'index']),

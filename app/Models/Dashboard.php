@@ -8,7 +8,6 @@ class Dashboard extends Model
 {
     public function getSummaryStats()
     {
-        // Menggunakan fetch() karena view ini hanya mengembalikan 1 baris rangkuman
         return $this->db->query("SELECT * FROM v_dashboard_summary_cards")->fetch();
     }
 
@@ -17,9 +16,29 @@ class Dashboard extends Model
         return $this->db->query("SELECT * FROM v_dashboard_attendance_today")->fetch();
     }
 
-    public function getActivityTrend()
+    public function getActivityTrend($range = 'week')
     {
-        return $this->db->query("SELECT * FROM mv_dashboard_activity_trend")->fetchAll();
+        $interval = ($range == 'month') ? "30 days" : "7 days";
+
+        $sql = "SELECT 
+                    log_date, 
+                    total_activity,
+                    CASE 
+                        WHEN :range = 'month' THEN date_label 
+                        ELSE day_name 
+                    END as label
+                FROM mv_dashboard_activity_trend 
+                WHERE log_date >= CURRENT_DATE - INTERVAL '$interval'
+                ORDER BY log_date ASC";
+
+        return $this->db->query($sql)
+            ->bind(':range', $range)
+            ->fetchAll();
+    }
+
+    public function getLatestLogs()
+    {
+        return $this->db->query("SELECT * FROM v_dashboard_latest_logs")->fetchAll();
     }
 
     public function getUserDistribution()
@@ -40,10 +59,10 @@ class Dashboard extends Model
     public function refreshAnalyticsData()
     {
         try {
-            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_user_distribution");
-            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_activity_trend");
-            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_project_stats");
-            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_student_year");
+            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_user_distribution")->execute();
+            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_activity_trend")->execute();
+            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_project_stats")->execute();
+            $this->db->query("REFRESH MATERIALIZED VIEW mv_dashboard_student_year")->execute();
             return true;
         } catch (\Exception $e) {
             return false;
@@ -55,6 +74,7 @@ class Dashboard extends Model
         return [
             'summary'     => $this->getSummaryStats(),
             'attendance'  => $this->getAttendanceToday(),
+            'logs'        => $this->getLatestLogs(),
             'charts'      => [
                 'activity' => $this->getActivityTrend(),
                 'roles'    => $this->getUserDistribution(),

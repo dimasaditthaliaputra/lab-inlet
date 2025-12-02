@@ -129,8 +129,8 @@
                                     <small class="text-muted">Monitoring aktivitas harian pengguna</small>
                                 </div>
                                 <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-outline-primary active">Minggu</button>
-                                    <button type="button" class="btn btn-sm btn-outline-primary">Bulan</button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary active filter-btn" data-filter="week">Minggu</button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary filter-btn" data-filter="month">Bulan</button>
                                 </div>
                             </div>
                         </div>
@@ -194,10 +194,9 @@
                                 <div class="timeline-item px-4 py-3">
                                     <div class="d-flex gap-3">
                                         <div class="avatar-wrapper">
-                                            <div class="avatar avatar-sm bg-light-primary">
-                                                <span class="avatar-content">
-                                                    <i class="bi bi-person-fill"></i>
-                                                </span>
+                                            <div class="avatar avatar-md2">
+                                                <img src="<?php echo asset('assets/mazer/static/images/faces/2.jpg'); ?>"
+                                                    alt="Avatar">
                                             </div>
                                             <div class="timeline-line"></div>
                                         </div>
@@ -367,7 +366,7 @@ $chartStudents = $stats['charts']['students'] ?? [];
      * Data format: [{ key: value, key2: value2 }, ...]
      */
     const rawActivity = <?php echo json_encode($chartActivity); ?>;
-    const rawRoles    = <?php echo json_encode($chartRoles); ?>;
+    const rawRoles = <?php echo json_encode($chartRoles); ?>;
     const rawProjects = <?php echo json_encode($chartProjects); ?>;
     const rawStudents = <?php echo json_encode($chartStudents); ?>;
 
@@ -377,16 +376,18 @@ $chartStudents = $stats['charts']['students'] ?? [];
     var optionsActivity = {
         series: [{
             name: 'Total Aktivitas',
-            // Mapping langsung di JS ke format {x, y}
             data: rawActivity.map(item => ({
-                x: item.day_name,
+                x: item.label,
                 y: parseInt(item.total_activity)
             }))
         }],
         chart: {
             height: 320,
             type: 'area',
-            toolbar: { show: false },
+            id: 'activity-chart',
+            toolbar: {
+                show: false
+            },
             fontFamily: 'inherit',
         },
         colors: ['#667eea'],
@@ -402,33 +403,71 @@ $chartStudents = $stats['charts']['students'] ?? [];
             curve: 'smooth',
             width: 3
         },
-        dataLabels: { enabled: false },
+        dataLabels: {
+            enabled: false
+        },
         xaxis: {
-            // Tidak perlu 'categories' terpisah, ApexCharts membaca dari property 'x' di data
-            type: 'category', 
+            type: 'category',
             labels: {
-                style: { colors: '#9ca3af', fontSize: '12px' }
+                style: {
+                    colors: '#9ca3af',
+                    fontSize: '12px'
+                }
             }
         },
         yaxis: {
             labels: {
-                style: { colors: '#9ca3af', fontSize: '12px' }
+                style: {
+                    colors: '#9ca3af',
+                    fontSize: '12px'
+                }
             }
         },
         grid: {
             borderColor: '#f1f1f1',
-            strokeDashArray: 4,
+            strokeDashArray: 4
         },
-        tooltip: { theme: 'light' }
+        tooltip: {
+            theme: 'light'
+        },
+        noData: {
+            text: 'Loading...'
+        }
     };
-    new ApexCharts(document.querySelector("#chart-activity-trend"), optionsActivity).render();
 
+    var chartActivity = new ApexCharts(document.querySelector("#chart-activity-trend"), optionsActivity);
+    chartActivity.render();
+
+    $('.filter-btn').click(function() {
+        // 1. Visual update tombol aktif
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+
+        // 2. Ambil filter data
+        var filter = $(this).data('filter');
+        var url = '<?php echo base_url('admin/dashboard/activity-data'); ?>?filter=' + filter;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'JSON',
+            success: function(response) {
+                if (response.success) {
+                    chartActivity.updateSeries([{
+                        name: 'Total Aktivitas',
+                        data: response.data
+                    }]);
+                }
+            },
+            error: function(xhr) {
+                console.error("Error fetching data");
+            }
+        });
+    });
 
     // --------------------------------------------------------
     // 2. CHART ROLE DISTRIBUTION (Donut)
     // --------------------------------------------------------
-    // Untuk Pie/Donut, ApexCharts membutuhkan array terpisah untuk series dan labels
-    // Kita lakukan pemisahan (map) di Client-side (JS), bukan di Server-side (PHP)
     var optionsRoles = {
         series: rawRoles.map(item => parseInt(item.total_user)),
         labels: rawRoles.map(item => item.role_name),
@@ -441,7 +480,9 @@ $chartStudents = $stats['charts']['students'] ?? [];
         colors: ['#667eea', '#4facfe', '#43e97b', '#fa709a', '#ffd56b'],
         legend: {
             position: 'bottom',
-            labels: { colors: '#6b7280' }
+            labels: {
+                colors: '#6b7280'
+            }
         },
         plotOptions: {
             pie: {
@@ -461,9 +502,14 @@ $chartStudents = $stats['charts']['students'] ?? [];
         },
         dataLabels: {
             enabled: true,
-            style: { fontSize: '12px', fontWeight: 600 }
+            style: {
+                fontSize: '12px',
+                fontWeight: 600
+            }
         },
-        stroke: { width: 0 }
+        stroke: {
+            width: 0
+        }
     };
     new ApexCharts(document.querySelector("#chart-role-distribution"), optionsRoles).render();
 
@@ -474,16 +520,17 @@ $chartStudents = $stats['charts']['students'] ?? [];
     var optionsProject = {
         series: [{
             name: 'Jumlah Proyek',
-            // Mapping ke format {x, y}
             data: rawProjects.map(item => ({
                 x: item.category_name,
-                y: parseInt(item.total_project)
+                y: parseInt(item.total_projects)
             }))
         }],
         chart: {
             type: 'bar',
             height: 320,
-            toolbar: { show: false },
+            toolbar: {
+                show: false
+            },
             fontFamily: 'inherit',
         },
         plotOptions: {
@@ -491,7 +538,9 @@ $chartStudents = $stats['charts']['students'] ?? [];
                 borderRadius: 8,
                 horizontal: true,
                 distributed: true,
-                dataLabels: { position: 'top' }
+                dataLabels: {
+                    position: 'top'
+                }
             }
         },
         colors: ['#667eea', '#4facfe', '#43e97b', '#fa709a', '#ffd56b', '#c084fc'],
@@ -500,23 +549,32 @@ $chartStudents = $stats['charts']['students'] ?? [];
             offsetX: 30,
             style: {
                 fontSize: '12px',
-                colors: ['#fff'],
-                fontWeight: 600
+                colors: ['#1e293b'],
+                fontWeight: 700
             }
         },
         xaxis: {
-            // Axis categories otomatis diambil dari property 'x'
             labels: {
-                style: { colors: '#9ca3af', fontSize: '12px' }
+                style: {
+                    colors: '#9ca3af',
+                    fontSize: '12px'
+                }
             }
         },
         yaxis: {
             labels: {
-                style: { colors: '#6b7280', fontSize: '12px' }
+                style: {
+                    colors: '#6b7280',
+                    fontSize: '12px'
+                }
             }
         },
-        grid: { borderColor: '#f1f1f1' },
-        legend: { show: false }
+        grid: {
+            borderColor: '#f1f1f1'
+        },
+        legend: {
+            show: false
+        }
     };
     new ApexCharts(document.querySelector("#chart-project-category"), optionsProject).render();
 
@@ -536,7 +594,9 @@ $chartStudents = $stats['charts']['students'] ?? [];
         chart: {
             type: 'bar',
             height: 320,
-            toolbar: { show: false },
+            toolbar: {
+                show: false
+            },
             fontFamily: 'inherit',
         },
         colors: ['#4facfe'],
@@ -556,7 +616,9 @@ $chartStudents = $stats['charts']['students'] ?? [];
                 borderRadius: 8,
                 horizontal: false,
                 columnWidth: '60%',
-                dataLabels: { position: 'top' }
+                dataLabels: {
+                    position: 'top'
+                }
             }
         },
         dataLabels: {
@@ -570,19 +632,27 @@ $chartStudents = $stats['charts']['students'] ?? [];
         },
         xaxis: {
             labels: {
-                style: { colors: '#9ca3af', fontSize: '12px' }
+                style: {
+                    colors: '#9ca3af',
+                    fontSize: '12px'
+                }
             }
         },
         yaxis: {
             labels: {
-                style: { colors: '#9ca3af', fontSize: '12px' }
+                style: {
+                    colors: '#9ca3af',
+                    fontSize: '12px'
+                }
             }
         },
         grid: {
             borderColor: '#f1f1f1',
             strokeDashArray: 4,
         },
-        tooltip: { theme: 'light' }
+        tooltip: {
+            theme: 'light'
+        }
     };
     new ApexCharts(document.querySelector("#chart-student-growth"), optionsStudent).render();
 </script>
