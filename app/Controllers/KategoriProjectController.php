@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\KategoriProject;
+use App\Models\Permissions;
 use Core\Controller;
 
 class KategoriProjectController extends Controller
 {
     protected $kategoriModel;
+    protected $permissionsModel;
 
     public function __construct()
     {
@@ -17,12 +19,18 @@ class KategoriProjectController extends Controller
         }
 
         $this->kategoriModel = new KategoriProject();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/kategori-project');
         $data = [
             'title' => 'Kategori Project',
+            'access' => $access
         ];
 
         view_with_layout('admin/kategori_project/index', $data);

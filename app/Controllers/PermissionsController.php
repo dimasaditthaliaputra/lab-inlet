@@ -21,9 +21,15 @@ class PermissionsController extends Controller
     public function index()
     {
         $listRoles = $this->permissionsModel->getRoles();
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/permissions');
+
         $data = [
             'title' => 'Permissions Management',
-            'listRoles' => $listRoles
+            'listRoles' => $listRoles,
+            'access' => $access
         ];
 
         view_with_layout('admin/permissions/index', $data);

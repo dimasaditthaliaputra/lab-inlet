@@ -10,9 +10,9 @@
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Attendance List</h4>
                         <div id="about-content" class="card border-0 shadow-sm" style="display: none;"></div>
-                        <?php if (empty($data)) : ?>
+                        <?php if (in_array('create', $access) && empty($data)) : ?>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
-                                <i class="bi bi-plus me-1" role="img" aria-label="Add new Attendance"></i>
+                                <i class="bi bi-plus me-1"></i>
                                 Add New Attendance
                             </button>
                         <?php endif ?>
@@ -111,6 +111,10 @@ ob_start();
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
+    const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE);
+
     $(document).ready(function() {
         $('#data-tables').DataTable({
             processing: true,
@@ -144,14 +148,22 @@ ob_start();
                     orderable: false,
                     searchable: false,
                     className: 'text-center',
+                    visible: showAction,
                     render: function(data, type, row) {
                         let editUrl = '<?php echo base_url('admin/attendance-settings'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/attendance-settings'); ?>/' + row.id;
 
-                        return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
-                        `;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i> Delete</button>`;
+                        }
+
+                        return buttons;
                     }
                 },
             ]

@@ -2,12 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\Permissions;
 use App\Models\ResearchFocus;
 use Core\Controller;
 
 class ResearchFocusController extends Controller
 {
     protected $researchModel;
+    protected $permissionsModel;
 
     public function __construct()
     {
@@ -17,12 +19,19 @@ class ResearchFocusController extends Controller
         }
 
         $this->researchModel = new ResearchFocus();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/research-focus');
+
         $data = [
             'title' => 'Research Focus',
+            'access' => $access
         ];
 
         view_with_layout('admin/research_focus/index', $data);

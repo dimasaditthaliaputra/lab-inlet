@@ -16,10 +16,12 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">List News</h4>
-                        <a href="<?= base_url('admin/news/create') ?>" class="btn btn-primary">
-                            <i class="bi bi-plus me-1" role="img" aria-label="Add new news"></i>
-                            Add New News
-                        </a>
+                        <?php if (in_array('create', $access)): ?>
+                            <a href="<?= base_url('admin/news/create') ?>" class="btn btn-primary">
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new news"></i>
+                                Add New News
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -65,6 +67,11 @@ ob_start();
 ?>
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
+
+    const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
 
     $(document).ready(function() {
         $('#table-news').DataTable({
@@ -133,22 +140,32 @@ ob_start();
                     orderable: false,
                     searchable: false,
                     className: 'text-center text-nowrap',
+                    visible: showAction,
                     render: function(data, type, row) {
                         let disablePublish = row.is_publish == 1 ? 'disabled' : '';
                         let publishUrl = '<?php echo base_url('admin/news/publish'); ?>/' + row.id;
                         let editUrl = '<?php echo base_url('admin/news'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/news'); ?>/' + row.id;
 
-                        return `
-                <button type="button" data-url="${publishUrl}" class="btn btn-info btn-sm ${disablePublish}" id="btnPublish" title="Publish">
-                    <i class="fas fa-eye"></i> Publish
-                </button>
-                <a href="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit" title="Edit">
-                    <i class="fas fa-edit"></i> Edit
-                </a>
-                <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete" title="Delete">
-                    <i class="fas fa-trash"></i> Delete
-                </button>`;
+                        let buttons = '';
+
+                        buttons += `<button type="button" data-url="${publishUrl}" class="btn btn-info btn-sm ${disablePublish}" id="btnPublish" title="Publish">
+                                        <i class="fas fa-eye"></i> Publish
+                                    </button>`;
+
+                        if (CAN_UPDATE) {
+                            buttons += `<a href="${editUrl}" class="btn btn-warning btn-sm ms-2" id="btnEdit" title="Edit">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete" title="Delete">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>`;
+                        }
+
+                        return buttons;
                     }
                 }
             ]

@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3><?php echo e($title ?? 'Product'); ?></h3>
-                <p class="text-subtitle text-muted">List produk yang dimiliki lab.</p>
+                <p>List of products.</p>
             </div>
         </div>
     </div>
@@ -16,10 +16,12 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">List Product</h4>
-                        <a href="<?= base_url('admin/product/create') ?>" class="btn btn-primary">
-                            <i class="bi bi-plus me-1" role="img" aria-label="Add new product"></i>
-                            Add New Product
-                        </a>
+                        <?php if (in_array('create', $access)): ?>
+                            <a href="<?= base_url('admin/product/create') ?>" class="btn btn-primary">
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new product"></i>
+                                Add New Product
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -67,6 +69,11 @@ ob_start();
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
+    const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
+
     function featuresToText(features) {
         if (!features || !features.length) return '-';
         if (features.length > 3) {
@@ -97,8 +104,7 @@ ob_start();
             pageLength: 10,
             lengthChange: false,
             ajax: '<?php echo base_url('admin/product/data'); ?>',
-            columns: [
-                {
+            columns: [{
                     data: null,
                     sortable: false,
                     render: function(data, type, row, meta) {
@@ -122,9 +128,9 @@ ob_start();
                     orderable: false,
                     className: 'text-center',
                     render: function(data) {
-                        return data
-                            ? `<img src="${data}" class="img-thumbnail img-clickable" style="max-height: 50px; cursor: pointer;" alt="Thumbnail" />`
-                            : '-';
+                        return data ?
+                            `<img src="${data}" class="img-thumbnail img-clickable" style="max-height: 50px; cursor: pointer;" alt="Thumbnail" />` :
+                            '-';
                     }
                 },
                 {
@@ -172,18 +178,26 @@ ob_start();
                     orderable: false,
                     searchable: false,
                     className: 'text-center text-nowrap',
+                    visible: showAction,
                     render: function(data, type, row) {
-                        let editUrl   = '<?php echo base_url('admin/product'); ?>/' + row.id + '/edit';
+                        let editUrl = '<?php echo base_url('admin/product'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/product'); ?>/' + row.id;
 
-                        return `
-                            <a href="${editUrl}" class="btn btn-warning btn-sm" title="Edit">
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<a href="${editUrl}" class="btn btn-warning btn-sm" title="Edit">
                                 <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete" title="Delete">
+                            </a>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete" title="Delete">
                                 <i class="fas fa-trash"></i> Delete
-                            </button>
-                        `;
+                            </button>`;
+                        }
+
+                        return buttons;
                     }
                 }
             ]
@@ -247,9 +261,9 @@ ob_start();
                                     errorMessage = 'Server terlalu lama merespon (timeout).';
                                     break;
                                 default:
-                                    errorMessage = (xhr.responseJSON && xhr.responseJSON.message)
-                                        ? xhr.responseJSON.message
-                                        : 'Terjadi kesalahan. Silakan coba lagi.';
+                                    errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ?
+                                        xhr.responseJSON.message :
+                                        'Terjadi kesalahan. Silakan coba lagi.';
                             }
 
                             Swal.fire({

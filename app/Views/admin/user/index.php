@@ -9,10 +9,12 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">User List</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
-                            <i class="bi bi-plus me-1" role="img" aria-label="Add new roles"></i>
-                            Add New User
-                        </button>
+                        <?php if (in_array('create', $access)): ?>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new user"></i>
+                                Add New User
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -88,7 +90,7 @@
                         <div class="row mb-3 align-items-center">
                             <label for="role_name" class="col-md-3 col-form-label">Full Name</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" name="full_name" id="full_name" placeholder="example example@mail.com">
+                                <input type="text" class="form-control" name="full_name" id="full_name" placeholder="input your full name">
                             </div>
                         </div>
 
@@ -130,6 +132,11 @@ ob_start();
 ?>
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
+
+    const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
 
     $(document).ready(function() {
         $('#id_roles').select2({
@@ -195,14 +202,22 @@ ob_start();
                     orderable: false,
                     searchable: false,
                     className: 'text-center',
+                    visible: showAction,
                     render: function(data, type, row) {
                         let editUrl = '<?php echo base_url('admin/user'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/user'); ?>/' + row.id;
 
-                        return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
-                        `;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete"><i class="fas fa-trash"></i> Delete</button>`;
+                        }
+
+                        return buttons;
                     }
                 },
             ]

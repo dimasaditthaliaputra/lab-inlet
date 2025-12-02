@@ -12,9 +12,11 @@
             <div id="about-content" class="card border-0 shadow-sm" style="display: none;">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom py-3">
                     <h5 class="card-title m-0 text-primary"><i class="bi bi-info-circle me-2"></i>About Us Information</h5>
-                    <a href="#" id="btn-edit" class="btn btn-warning btn-sm px-4">
-                        <i class="bi bi-pencil-square"></i> Edit Data
-                    </a>
+                    <?php if (in_array('update', $access)): ?>
+                        <a href="#" id="btn-edit" class="btn btn-warning btn-sm px-4">
+                            <i class="bi bi-pencil-square"></i> Edit Data
+                        </a>
+                    <?php endif; ?>
                 </div>
 
                 <div class="card-body p-4">

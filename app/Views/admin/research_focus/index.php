@@ -10,10 +10,12 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">List Research Focus</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
-                            <i class="bi bi-plus me-1" role="img" aria-label="Add new research focus"></i>
-                            Add New Research Focus
-                        </button>
+                        <?php if (in_array('create', $access)): ?>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new research focus"></i>
+                                Add New Research Focus
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -101,8 +103,8 @@
 
                                 <div class="mt-2">
                                     <img id="img-preview" src=""
-                                         alt="Image Preview" class="img-thumbnail"
-                                         style="max-width: 200px; max-height: 200px; display: none;">
+                                        alt="Image Preview" class="img-thumbnail"
+                                        style="max-width: 200px; max-height: 200px; display: none;">
                                 </div>
                             </div>
                         </div>
@@ -153,8 +155,13 @@ ob_start();
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
+    const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
+
     function updateIconImageState() {
-        const iconInput  = $('#icon_name');
+        const iconInput = $('#icon_name');
         const imageInput = $('#image_cover');
 
         const hasIcon = iconInput.val().trim() !== '';
@@ -182,8 +189,7 @@ ob_start();
             responsive: true,
             autoWidth: false,
             ajax: '<?php echo base_url('admin/research-focus/data'); ?>',
-            columns: [
-                {
+            columns: [{
                     data: null,
                     name: 'ordering',
                     orderable: false,
@@ -245,14 +251,22 @@ ob_start();
                     orderable: false,
                     searchable: false,
                     className: 'text-center',
+                    visible: showAction,
                     render: function(data, type, row) {
-                        let editUrl   = '<?php echo base_url('admin/research-focus'); ?>/' + row.id + '/edit';
+                        let editUrl = '<?php echo base_url('admin/research-focus'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/research-focus'); ?>/' + row.id;
 
-                        return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
-                        `;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete"><i class="fas fa-trash"></i> Delete</button>`;
+                        }
+
+                        return buttons;
                     }
                 },
             ]
@@ -345,16 +359,16 @@ ob_start();
         $('#formData').submit(function(e) {
             e.preventDefault();
 
-            var btn     = $('#btnSubmit');
+            var btn = $('#btnSubmit');
             var spinner = btn.find('.spinner-border');
 
             btn.prop('disabled', true);
             spinner.removeClass('d-none');
 
-            let id       = $('#primary_id').val();
+            let id = $('#primary_id').val();
             let formData = new FormData(this);
-            let baseUrl  = '<?php echo base_url('admin/research-focus'); ?>';
-            let url      = id ? baseUrl + '/' + id : baseUrl;
+            let baseUrl = '<?php echo base_url('admin/research-focus'); ?>';
+            let url = id ? baseUrl + '/' + id : baseUrl;
 
             if (id) {
                 formData.append('_method', 'PUT');

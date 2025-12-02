@@ -2,13 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\Permissions;
 use App\Models\Team;
 use Core\Controller;
 
 class TeamController extends Controller
 {
     protected $teamModel;
-
+    protected $permissionsModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -17,11 +18,17 @@ class TeamController extends Controller
         }
 
         $this->teamModel = new Team();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
-        $data = ['title' => 'Team'];
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/team');
+        
+        $data = ['title' => 'Team', 'access' => $access];
         view_with_layout('admin/team/index', $data);
     }
 

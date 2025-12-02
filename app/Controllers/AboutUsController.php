@@ -4,12 +4,14 @@ namespace App\Controllers;
 
 use App\Models\About;
 use App\Models\AboutImages;
+use App\Models\Permissions;
 use Core\Controller;
 
 class AboutUsController extends Controller
 {
     protected $aboutUsModel;
     protected $aboutImagesModel;
+    protected $permissionsModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -19,12 +21,19 @@ class AboutUsController extends Controller
 
         $this->aboutUsModel = new About();
         $this->aboutImagesModel = new AboutImages();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/aboutus');
+
         $data = [
             'title' => 'About Us',
+            'access' => $access
         ];
 
         view_with_layout('admin/aboutus/index', $data);
@@ -70,30 +79,6 @@ class AboutUsController extends Controller
         }
     }
 
-    public function store()
-    {
-        try {
-            $data = [
-                'title'         => request('title'),
-                'description'   => request('description'),
-                'vision'        => request('vision'),
-                'mission'       => request('mission'),
-            ];
-
-            $this->aboutUsModel->create($data);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Success menambahkan data about us',
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan pada server, coba lagi.'
-            ], 500);
-        }
-    }
-
     public function edit($id)
     {
         $rows = $this->aboutUsModel->getById($id);
@@ -118,38 +103,19 @@ class AboutUsController extends Controller
             ];
         }
 
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/aboutus');
+
         $data = [
             'title' => 'Edit About Us',
-            'about' => $about
+            'about' => $about,
+            'access' => $access
         ];
 
         view_with_layout('admin/aboutus/edit', $data);
     }
-
-    // public function edit($id)
-    // {
-    //     try {
-    //         $aboutus = $this->aboutUsModel->findBy('id', $id);
-
-    //         if (!$aboutus) {
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'message' => 'Data tidak ditemukan'
-    //             ], 404);
-    //         }
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => 'Success',
-    //             'data' => $aboutus
-    //         ], 200);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Terjadi kesalahan pada server, coba lagi.'
-    //         ], 500);
-    //     }
-    // }
 
     public function update($id)
     {
@@ -255,38 +221,4 @@ class AboutUsController extends Controller
         $_SESSION['success_message'] = 'Data About Us berhasil diperbarui.';
         redirect(base_url('admin/aboutus'));
     }
-
-    // public function update($id)
-    // {
-    //     try {
-    //         $aboutus = $this->aboutUsModel->find($id);
-
-    //         if (!$aboutus) {
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'message' => 'Data About Us tidak ditemukan.'
-    //             ], 404);
-    //         }
-
-    //         $data = [
-    //             'title'         => request('title'),
-    //             'description'   => request('description'),
-    //             'vision'        => request('vision'),
-    //             'mission'       => request('mission'),
-    //         ];
-
-    //         $this->aboutUsModel->update($id, $data);
-
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => 'Success memperbarui data About Us',
-    //         ], 200);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
 }

@@ -9,7 +9,7 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Gallery Video List</h4>
-                        <?php if ($buttonSts) : ?>
+                        <?php if (in_array('create', $access)) : ?>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
                                 <i class="bi bi-plus me-1" role="img" aria-label="Add new video"></i>
                                 Add New Video
@@ -114,15 +114,15 @@ ob_start();
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
-    // ============================
-    //  Helper: Embed URL & Preview
-    // ============================
+    const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
 
     function getVideoEmbedUrl(url) {
         let embedUrl = url;
 
         try {
-            // https://www.youtube.com/watch?v=VIDEO_ID
             if (url.includes('youtube.com/watch')) {
                 const u = new URL(url);
                 const v = u.searchParams.get('v');
@@ -130,14 +130,13 @@ ob_start();
                     embedUrl = 'https://www.youtube.com/embed/' + v;
                 }
             }
-            // https://youtu.be/VIDEO_ID
             else if (url.includes('youtu.be/')) {
                 const parts = url.split('youtu.be/')[1].split(/[?&]/);
                 const id = parts[0];
                 embedUrl = 'https://www.youtube.com/embed/' + id;
             }
         } catch (e) {
-            // kalau URL tidak valid, biarkan pakai url asli
+            console.log(e);
         }
 
         return embedUrl;
@@ -161,9 +160,6 @@ ob_start();
     }
 
     $(document).ready(function() {
-        // =========================
-        // DataTables
-        // =========================
         $('#data-tables').DataTable({
             processing: true,
             responsive: true,
@@ -195,7 +191,7 @@ ob_start();
                     name: 'url',
                     orderable: false,
                     searchable: false,
-                    className: 'text-center',   // isi kolom preview center
+                    className: 'text-center',
                     render: function(data) {
                         return getVideoPreviewHtml(data);
                     }
@@ -210,10 +206,17 @@ ob_start();
                         let editUrl = '<?php echo base_url('admin/gallery/video'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/gallery/video'); ?>/' + row.id;
 
-                        return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
-                        `;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete"><i class="fas fa-trash"></i> Delete</button>`;
+                        }
+
+                        return buttons;
                     }
                 },
             ]

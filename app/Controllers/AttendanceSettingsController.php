@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\AttendanceSetting;
+use App\Models\Permissions;
 use Core\Controller;
 
 class AttendanceSettingsController extends Controller
 {
     protected $attendanceSettingModel;
+    protected $permissionsModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -16,22 +18,22 @@ class AttendanceSettingsController extends Controller
         }
 
         $this->attendanceSettingModel = new AttendanceSetting();
+        $this->permissionsModel = new Permissions();
     }
-
-    public function create()
-    {
-        return view_with_layout('admin/attendance_settings/create', [
-            'title' => 'Add New Attendance'
-        ]);
-    }
-
 
     public function index()
     {
         $attendanceSettings = $this->attendanceSettingModel->getAll();
+
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/attendance-settings');
+
         $data = [
             'title' => 'Attendance Setting',
-            'data' => $attendanceSettings
+            'data' => $attendanceSettings,
+            'access' => $access
         ];
 
         view_with_layout('admin/attendance_settings/index', $data);

@@ -2,12 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\Permissions;
 use App\Models\Product;
 use Core\Controller;
 
 class ProductController extends Controller
 {
     protected $productModel;
+    protected $permissionsModel;
 
     public function __construct()
     {
@@ -17,14 +19,21 @@ class ProductController extends Controller
         }
 
         $this->productModel = new Product();
+        $this->permissionsModel = new Permissions();
     }
 
     /* ================== INDEX & DATA ================== */
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/product');
+
         $data = [
             'title' => 'Product',
+            'access' => $access
         ];
 
         view_with_layout('admin/product/index', $data);

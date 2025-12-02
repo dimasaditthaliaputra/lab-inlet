@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\Partner;
+use App\Models\Permissions;
 use Core\Controller;
 
 class PartnerController extends Controller
 {
     protected $partnerModel;
+    protected $permissionsModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -16,12 +18,19 @@ class PartnerController extends Controller
         }
 
         $this->partnerModel = new Partner();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/partner');
+
         $data = [
             'title' => 'Partner',
+            'access' => $access
         ];
 
         view_with_layout('admin/partner/index', $data);

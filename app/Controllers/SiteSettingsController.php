@@ -2,12 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\Permissions;
 use App\Models\SiteSettings;
 use Core\Controller;
 
 class SiteSettingsController extends Controller
 {
     protected $model;
+    protected $permissionsModel;
 
     public function __construct()
     {
@@ -17,13 +19,20 @@ class SiteSettingsController extends Controller
         }
 
         $this->model = new SiteSettings();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/site-settings');
+
         $data = [
             'title' => 'Site Settings',
-            'data' => $this->model->getAll()
+            'data' => $this->model->getAll(),
+            'access' => $access
         ];
 
         view_with_layout('admin/site_settings/index', $data);

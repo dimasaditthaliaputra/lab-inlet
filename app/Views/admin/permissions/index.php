@@ -81,11 +81,13 @@
                                     <i class="bi bi-arrow-clockwise me-1"></i>
                                     Reset
                                 </button>
-                                <button type="submit" class="btn btn-primary" id="btnSave">
-                                    <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-                                    <i class="bi bi-save me-1"></i>
-                                    Save Permissions
-                                </button>
+                                <?php if (in_array('update', $access)): ?>
+                                    <button type="submit" class="btn btn-primary" id="btnSave">
+                                        <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                                        <i class="bi bi-save me-1"></i>
+                                        Save Permissions
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </form>
                     </div>
@@ -122,7 +124,7 @@ ob_start();
 
         $('#check_all_read').on('change', function() {
             $('.permission-read').prop('checked', $(this).prop('checked'));
-            
+
             if (!$(this).prop('checked')) {
                 $('.permission-create, .permission-update, .permission-delete').prop('checked', false);
                 $('#check_all_create, #check_all_update, #check_all_delete').prop('checked', false);
@@ -131,7 +133,7 @@ ob_start();
 
         $('#check_all_create').on('change', function() {
             $('.permission-create').prop('checked', $(this).prop('checked'));
-            
+
             if ($(this).prop('checked')) {
                 $('.permission-read').prop('checked', true);
                 $('#check_all_read').prop('checked', true);

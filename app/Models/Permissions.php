@@ -77,7 +77,7 @@ class Permissions extends Model
             $updateSql = "UPDATE role_menus SET permissions = :perms WHERE role_id = :role_id AND menu_id = :menu_id";
 
             foreach ($permissionsData as $menuId => $permsObj) {
-                $permsArray = array_keys(array_filter($permsObj, function($val) {
+                $permsArray = array_keys(array_filter($permsObj, function ($val) {
                     return $val === true;
                 }));
 
@@ -92,14 +92,14 @@ class Permissions extends Model
 
             $this->db->query("COMMIT")->execute();
             return true;
-
         } catch (\Exception $e) {
             $this->db->query("ROLLBACK")->execute();
             throw $e;
         }
     }
 
-    public function getRoles() {
+    public function getRoles()
+    {
         return $this->db->query("SELECT * FROM roles ORDER BY role_name")->fetchAll();
     }
 
@@ -109,7 +109,7 @@ class Permissions extends Model
         $children = [];
 
         foreach ($menus as $menu) {
-            $menu = (array) $menu; 
+            $menu = (array) $menu;
 
             if (empty($menu['parent_id'])) {
                 $parents[] = $menu;
@@ -121,7 +121,7 @@ class Permissions extends Model
         $result = [];
 
         foreach ($parents as $parent) {
-            $parent['level'] = 0; 
+            $parent['level'] = 0;
             $result[] = $parent;
 
             if (isset($children[$parent['id']])) {
@@ -147,8 +147,8 @@ class Permissions extends Model
         $this->db->query($sql);
         $this->db->bind(':role_id', $roleId);
         $this->db->bind(':route', $route);
-        
-        $result = $this->db->single();
+
+        $result = $this->db->fetch();
 
         if ($result && !empty($result->permissions)) {
             return json_decode($result->permissions, true) ?? [];

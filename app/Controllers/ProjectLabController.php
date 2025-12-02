@@ -4,12 +4,14 @@ namespace App\Controllers;
 
 use App\Models\ProjectLab;
 use App\Models\KategoriProject;
+use App\Models\Permissions;
 use Core\Controller;
 
 class ProjectLabController extends Controller
 {
     protected $projectModel;
     protected $kategoriModel;
+    protected $permissionsModel;
 
     public function __construct()
     {
@@ -20,13 +22,20 @@ class ProjectLabController extends Controller
 
         $this->projectModel = new ProjectLab();
         $this->kategoriModel = new KategoriProject();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/project-lab');
+
         $data = [
             'title' => 'Project Lab',
-            'categories' => $this->kategoriModel->getAll()
+            'categories' => $this->kategoriModel->getAll(),
+            'access' => $access
         ];
 
         view_with_layout('admin/project_lab/index', $data);

@@ -16,9 +16,11 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Team List</h4>
-                        <a href="<?= base_url('admin/team/create') ?>" class="btn btn-primary">
-                            <i class="bi bi-plus me-1"></i> Add New Team
-                        </a>
+                        <?php if (in_array('create', $access)): ?>
+                            <a href="<?= base_url('admin/team/create') ?>" class="btn btn-primary">
+                                <i class="bi bi-plus me-1"></i> Add New Team
+                            </a>
+                        <?php endif ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -62,6 +64,11 @@
 <?php ob_start(); ?>
 <script>
     var audio = new Audio("<?= base_url('assets/audio/success.wav'); ?>");
+
+    const CAN_UPDATE = <?= in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?= in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
 
     $(document).ready(function() {
         const table = $('#table-team').DataTable({
@@ -107,17 +114,26 @@
                     orderable: false,
                     searchable: false,
                     className: 'text-center text-nowrap',
+                    visible: showAction,
                     render: function(data, type, row) {
                         let editUrl = '<?php echo base_url('admin/team'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/team'); ?>/' + row.id;
 
-                        return `
-                <a href="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit" title="Edit">
-                    <i class="fas fa-edit"></i> Edit
-                </a>
-                <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete" title="Delete">
-                    <i class="fas fa-trash"></i> Delete
-                </button>`;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<a href="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit" title="Edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete" title="Delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>`;
+                        }
+
+                        return buttons;
                     }
                 }
             ]

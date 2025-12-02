@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\HeroSlider;
+use App\Models\Permissions;
 use Core\Controller;
 
 class HeroSliderController extends Controller
 {
     protected $heroModel;
+    protected $permissionsModel;
 
     public function __construct()
     {
@@ -17,14 +19,19 @@ class HeroSliderController extends Controller
         }
 
         $this->heroModel = new HeroSlider();
+        $this->permissionsModel = new Permissions();
     }
-
-    /* ========== INDEX & DATA ========== */
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/hero-slider');
+
         $data = [
             'title' => 'Hero Slider',
+            'access' => $access
         ];
 
         view_with_layout('admin/hero_slider/index', $data);
@@ -44,8 +51,6 @@ class HeroSliderController extends Controller
                     'subtitle'    => $item->subtitle,
                     'image'       => $item->image_name ? asset('uploads/hero_slider/') . $item->image_name : null,
                     'image_name'  => $item->image_name,
-                    'button_text' => $item->button_text,
-                    'button_url'  => $item->button_url,
                     'sort_order'  => $item->sort_order,
                     'is_active'   => $isActive,
                     'created_at'  => $item->created_at,

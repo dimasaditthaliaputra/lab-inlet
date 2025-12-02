@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\News;
+use App\Models\Permissions;
 use Core\Controller;
 
 class NewsController extends Controller
 {
     protected $newsModel;
+    protected $permissionsModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -16,12 +18,19 @@ class NewsController extends Controller
         }
 
         $this->newsModel = new News();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/news');
+
         $data = [
             'title' => 'News',
+            'access' => $access
         ];
 
         view_with_layout('admin/news/index', $data);

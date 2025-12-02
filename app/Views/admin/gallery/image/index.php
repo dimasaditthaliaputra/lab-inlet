@@ -9,7 +9,7 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">Gallery Image List</h4>
-                        <?php if ($buttonSts) : ?>
+                        <?php if (in_array('create', $access)) : ?>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
                                 <i class="bi bi-plus me-1" role="img" aria-label="Add new image"></i>
                                 Add New Image
@@ -132,6 +132,11 @@ ob_start();
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
     const baseImageUrl = "<?php echo base_url('assets/images/gallery'); ?>";
 
+    var CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    var CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
+
     $(document).ready(function() {
         // Datatable
         $('#data-tables').DataTable({
@@ -182,14 +187,22 @@ ob_start();
                     orderable: false,
                     searchable: false,
                     className: 'text-center',
+                    visible: showAction,
                     render: function(data, type, row) {
                         let editUrl = '<?php echo base_url('admin/gallery/image'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/gallery/image'); ?>/' + row.id;
 
-                        return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
-                        `;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete"><i class="fas fa-trash"></i> Delete</button>`;
+                        }
+
+                        return buttons;
                     }
                 },
             ]

@@ -10,10 +10,12 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">List Partner</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
-                            <i class="bi bi-plus me-1" role="img" aria-label="Add new partner"></i>
-                            Add New Partner
-                        </button>
+                        <?php if (in_array('create', $access)) : ?>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new partner"></i>
+                                Add New Partner
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -25,7 +27,7 @@
                                     <th>Name Partner</th>
                                     <th>Logo</th>
                                     <th>Url</th>
-                                    <th>Action</th>
+                                    <th width="15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,6 +132,11 @@ ob_start();
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
+    const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
+
     $(document).ready(function() {
         $('#data-tables').DataTable({
             processing: true,
@@ -180,10 +187,17 @@ ob_start();
                         let editUrl = '<?php echo base_url('admin/partner'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/partner'); ?>/' + row.id;
 
-                        return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i></button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete"><i class="fas fa-trash"></i></button>
-                        `;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete"><i class="fas fa-trash"></i> Delete</button>`;
+                        }
+
+                        return buttons;
                     }
                 },
             ]

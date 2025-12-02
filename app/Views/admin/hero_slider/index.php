@@ -1,6 +1,6 @@
 <div class="page-heading">
     <h3 class="page-title"><?php echo e($title ?? 'Hero Slider'); ?></h3>
-    <p>Manage hero slider untuk landing page.</p>
+    <p>Manage hero slider for landing page.</p>
 </div>
 
 <div class="page-content">
@@ -10,10 +10,12 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h4 class="card-title">List Hero Slider</h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
-                            <i class="bi bi-plus me-1" role="img" aria-label="Add new slider"></i>
-                            Add New Slider
-                        </button>
+                        <?php if (in_array('create', $access)): ?>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm">
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new slider"></i>
+                                Add New Slider
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -25,7 +27,6 @@
                                     <th>Title</th>
                                     <th>Subtitle</th>
                                     <th>Image</th>
-                                    <th>Button</th>
                                     <th>Sort</th>
                                     <th>Status</th>
                                     <th width="15%">Action</th>
@@ -155,6 +156,11 @@ ob_start();
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
+    var CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    var CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
+
+    var showAction = (CAN_UPDATE || CAN_DELETE);
+
     $(document).ready(function() {
         // DataTables
         $('#data-tables').DataTable({
@@ -162,8 +168,7 @@ ob_start();
             responsive: true,
             autoWidth: false,
             ajax: '<?php echo base_url('admin/hero-slider/data'); ?>',
-            columns: [
-                {
+            columns: [{
                     data: null,
                     name: 'ordering',
                     orderable: false,
@@ -180,6 +185,8 @@ ob_start();
                 {
                     data: 'subtitle',
                     name: 'subtitle',
+                    orderable: false,
+                    searchable: false,
                     render: function(data) {
                         if (!data) return '-';
                         return data.length > 60 ? data.substr(0, 60) + '...' : data;
@@ -204,14 +211,6 @@ ob_start();
                     }
                 },
                 {
-                    data: null,
-                    name: 'button',
-                    render: function(data, type, row) {
-                        if (!row.button_text) return '-';
-                        return `<span class="badge bg-primary">${row.button_text}</span>`;
-                    }
-                },
-                {
                     data: 'sort_order',
                     name: 'sort_order',
                     className: 'text-center',
@@ -222,6 +221,8 @@ ob_start();
                 {
                     data: 'is_active',
                     name: 'is_active',
+                    orderable: false,
+                    searchable: false,
                     className: 'text-center',
                     render: function(data) {
                         if (data) {
@@ -236,18 +237,22 @@ ob_start();
                     orderable: false,
                     searchable: false,
                     className: 'text-center',
+                    visible: showAction,
                     render: function(data, type, row) {
-                        let editUrl   = '<?php echo base_url('admin/hero-slider'); ?>/' + row.id + '/edit';
+                        let editUrl = '<?php echo base_url('admin/hero-slider'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/hero-slider'); ?>/' + row.id;
 
-                        return `
-                            <button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        `;
+                        let buttons = '';
+
+                        if (CAN_UPDATE) {
+                            buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete"><i class="fas fa-trash"></i> Delete</button>`;
+                        }
+
+                        return buttons;
                     }
                 },
             ]
@@ -321,16 +326,16 @@ ob_start();
         $('#formData').submit(function(e) {
             e.preventDefault();
 
-            var btn     = $('#btnSubmit');
+            var btn = $('#btnSubmit');
             var spinner = btn.find('.spinner-border');
 
             btn.prop('disabled', true);
             spinner.removeClass('d-none');
 
-            let id       = $('#primary_id').val();
+            let id = $('#primary_id').val();
             let formData = new FormData(this);
-            let baseUrl  = '<?php echo base_url('admin/hero-slider'); ?>';
-            let url      = id ? baseUrl + '/' + id : baseUrl;
+            let baseUrl = '<?php echo base_url('admin/hero-slider'); ?>';
+            let url = id ? baseUrl + '/' + id : baseUrl;
 
             if (id) {
                 formData.append('_method', 'PUT');
@@ -447,9 +452,9 @@ ob_start();
                                     errorMessage = 'Server terlalu lama merespon (timeout).';
                                     break;
                                 default:
-                                    errorMessage = (xhr.responseJSON && xhr.responseJSON.message)
-                                        ? xhr.responseJSON.message
-                                        : 'Terjadi kesalahan. Silakan coba lagi.';
+                                    errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ?
+                                        xhr.responseJSON.message :
+                                        'Terjadi kesalahan. Silakan coba lagi.';
                             }
 
                             Swal.fire({

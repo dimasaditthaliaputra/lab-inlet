@@ -3,13 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\Roles;
+use App\Models\Permissions;
 use Core\Controller;
-
-use function PHPSTORM_META\map;
 
 class RolesController extends Controller
 {
     protected $rolesModel;
+    protected $permissionsModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -18,12 +18,19 @@ class RolesController extends Controller
         }
 
         $this->rolesModel = new Roles();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/roles');
+
         $data = [
             'title' => 'Roles User',
+            'access' => $access
         ];
 
         view_with_layout('admin/roles/index', $data);

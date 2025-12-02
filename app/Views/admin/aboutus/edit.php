@@ -56,7 +56,7 @@
                                                 <div class="position-relative">
                                                     <img id="preview-exist-<?= $uniqueId ?>" src="<?= $img['image_name'] ?>" class="card-img-top"
                                                         style="width: 100%; aspect-ratio: 5/4; object-fit: cover;">
-                                                    
+
                                                     <div class="badge bg-primary position-absolute top-0 start-0 m-2">Slot <?= $i + 1 ?></div>
                                                 </div>
                                                 <div class="card-body p-3">
@@ -96,7 +96,9 @@
 
                         <div class="d-flex gap-2">
                             <a href="<?= base_url('admin/aboutus') ?>" class="btn btn-secondary">Back</a>
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            <?php if (in_array('update', $access)): ?>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            <?php endif; ?>
                         </div>
                     </form>
 

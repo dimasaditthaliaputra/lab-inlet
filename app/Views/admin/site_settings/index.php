@@ -8,9 +8,9 @@
 </style>
 <?php $pageStyle = ob_get_clean(); ?>
 
-<?php 
+<?php
 // Pastikan $site adalah object atau null
-$site = $data ?? null; 
+$site = $data ?? null;
 ?>
 
 <div class="page-heading">
@@ -78,9 +78,9 @@ $site = $data ?? null;
                             </div>
 
                             <h6 class="mt-3">Social Links</h6>
-                            <?php 
-                                // Parsing JSON dari object properti
-                                $social = json_decode($site->social_links ?? '{}'); 
+                            <?php
+                            // Parsing JSON dari object properti
+                            $social = json_decode($site->social_links ?? '{}');
                             ?>
                             <div class="col-md-12 mb-3">
                                 <input type="text" class="form-control" name="facebook"
@@ -96,15 +96,15 @@ $site = $data ?? null;
                                     value="<?= $social->youtube ?? '' ?>">
                             </div>
 
-                            <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn btn-primary px-4 py-2" id="btnSubmit">
-                                    <span class="spinner-border spinner-border-sm me-2 d-none"></span>
-                                    <i class="fas fa-save"></i> Save
-                                </button>
-                            </div>
-
+                            <?php if (in_array('update', $access)): ?>
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="submit" class="btn btn-primary px-4 py-2" id="btnSubmit">
+                                        <span class="spinner-border spinner-border-sm me-2 d-none"></span>
+                                        <i class="fas fa-save"></i> Save
+                                    </button>
+                                </div>
+                            <?php endif; ?>
                         </div>
-
                     </form>
                 </div>
             </div>

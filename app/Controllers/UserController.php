@@ -4,11 +4,13 @@ namespace App\Controllers;
 
 use App\Models\Roles;
 use App\Models\User;
+use App\Models\Permissions;
 use Core\Controller;
 
 class UserController extends Controller
 {
     protected $userModel;
+    protected $permissionsModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -17,17 +19,24 @@ class UserController extends Controller
         }
 
         $this->userModel = new User();
+        $this->permissionsModel = new Permissions();
     }
 
     public function index()
     {
-        $usersModel = new Roles();
+        $role = new Roles();
 
-        $users = $usersModel->orderBy('role_name', 'ASC');
+        $roles = $role->orderBy('role_name', 'ASC');
+
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/user');
 
         $data = [
             'title' => 'User',
-            'roles' => $users
+            'roles' => $roles,
+            'access' => $access
         ];
 
         view_with_layout('admin/user/index', $data);

@@ -358,7 +358,7 @@ $chartStudents = $stats['charts']['students'] ?? [];
 
 <?php ob_start(); ?>
 <!-- Pastikan memuat ApexCharts JS -->
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="<?= base_url('assets/mazer/extensions/apexcharts/apexcharts.js') ?>"></script>
 
 <script>
     /**

@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\Gallery;
+use App\Models\Permissions;
 use Core\Controller;
 
 class GalleryController extends Controller
 {
     protected $galleryModel;
+    protected $permissionsModel;
     protected $uploadDir;
 
     public function __construct()
@@ -18,24 +20,24 @@ class GalleryController extends Controller
         }
 
         $this->galleryModel = new Gallery();
+        $this->permissionsModel = new Permissions();
 
-        // Folder upload image
         $this->uploadDir = __DIR__ . '/../../public/assets/images/gallery/';
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }
     }
 
-    /* ============================================================
-     *                       IMAGE  (type = 'Photo')
-     * ============================================================
-     */
-
     public function imageIndex()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/gallery/image');
+
         $data = [
             'title'     => 'Gallery Image',
-            'buttonSts' => true,
+            'access'    => $access
         ];
 
         view_with_layout('admin/gallery/image/index', $data);
@@ -289,16 +291,16 @@ class GalleryController extends Controller
         }
     }
 
-    /* ============================================================
-     *                       VIDEO (type = 'Video')
-     * ============================================================
-     */
-
     public function videoIndex()
     {
+        $user = session('user');
+        $roleId = $user->id_roles ?? 0;
+
+        $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/gallery/image');
+
         $data = [
             'title'     => 'Gallery Video',
-            'buttonSts' => true,
+            'access'    => $access
         ];
 
         view_with_layout('admin/gallery/video/index', $data);
