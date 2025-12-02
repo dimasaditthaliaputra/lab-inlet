@@ -1,32 +1,16 @@
-<?php ob_start(); ?>
-<link rel="stylesheet" href="<?= asset('assets/mazer/extensions/summernote/summernote-lite.min.css') ?>">
-
-<style>
-    .note-editor .dropdown-toggle::after {
-        display: none;
-    }
-</style>
-<?php $pageStyle = ob_get_clean(); ?>
-
 <?php
-$facility = $data ?? null;
-$isEdit = !empty($facility);
+$facilities = $data ?? null;
+$isEdit = !empty($facilities);
 
-$formAction = $isEdit && isset($facility->id)
-    ? base_url('admin/facilities/' . $facility->id)
-    : base_url('admin/facilities');
-
-
+$formAction = $isEdit ? base_url('admin/facilities/' . $facilities->id) : base_url('admin/facilities/store');
 ?>
 
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3><?= $title ?></h3>
-                <p class="text-subtitle text-muted">
-                    <?= $isEdit ? 'Form to edit facility.' : 'Form to create facility.' ?>
-                </p>
+                <h3><?php echo e($title ?? 'facilities'); ?></h3>
+                <p class="text-subtitle text-muted">Form to create Facilities.</p>
             </div>
         </div>
     </div>
@@ -42,90 +26,77 @@ $formAction = $isEdit && isset($facility->id)
 
                 <div class="card-body">
                     <form id="formData" enctype="multipart/form-data">
-                        <?php if ($isEdit && !empty($facility->id)) : ?>
-                            <input type="hidden" name="id" value="<?= htmlspecialchars($facility->id) ?>">
+                         <?php if ($isEdit): ?>
+                            <input type="hidden" name="id" value="<?= $facilities->id ?>">
                         <?php endif; ?>
 
                         <div class="row">
-
                             <div class="col-12">
                                 <div class="form-group mb-3">
-                                    <label class="form-label required">Name</label>
-                                    <input type="text" name="name" class="form-control"
-                                        value="<?= htmlspecialchars($facility->name ?? '') ?>"
-                                        placeholder="Facility Name">
+                                    <label for="name" class="form-label required">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="name" value="<?= $isEdit ? e($facilities->name) : '' ?>">
                                 </div>
                             </div>
 
-                            <div class="col-12">
-                                <div class="form-group mb-3">
-                                    <label class="form-label required">Description</label>
-                                    <input type="text" name="description" class="form-control"
-                                        value="<?= htmlspecialchars($facility->description ?? '') ?>"
-                                        placeholder="Facility Description">
-                                </div>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="id_roles" class="form-label required">Condition</label>
-                                <div class="col-md-14">
-                                    <select class="form-select" name="id" id="id" required>
-                                        <option value=""> Select Condition  </option>
-                                        <option value="good">Good</option>
-                                        <option value="bad">Bad</option>
-                                    </select>
-                                </div>
-                            </div>
-
-
-                            <div class="col-12">
-                                <div class="form-group mb-3">
-                                    <label class="form-label <?= $isEdit ? '' : 'required' ?>">Image</label>
-
-                                    <input type="file" name="image" id="image"
-                                        class="form-control" accept="image/*">
-
-                                    <?php if ($isEdit): ?>
-                                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
-                                    <?php endif; ?>
-
-                                    <?php
-                                    $imageUrl = $isEdit && !empty($facility->image_name)
-                                        ? base_url('uploads/facilities/' . $facility->image_name)
-                                        : '';
-
-
-                                    $styleDisplay = $imageUrl ? '' : 'display:none;';
-                                    ?>
-                                    <div class="mt-2">
-                                        <img src="<?= $imageUrl ?>" id="img-preview"
-                                            class="img-thumbnail"
-                                            style="max-width:200px; max-height:200px; <?= $styleDisplay ?>">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mb-3">
+                                        <label for="description" class="form-label required">Description</label>
+                                        <input type="text" class="form-control" id="description" name="description"
+                                            placeholder="description" value="<?= $isEdit ? e($facilities->description) : '' ?>">
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-12">
-                                <div class="form-group mb-3">
-                                    <label class="form-label required">Quantity</label>
-                                    <input type="number" name="qty" class="form-control"
-                                        value="<?= $facility->qty ?? '' ?>" placeholder="Quantity">
-                                </div>
-                            </div>
-
-                            <div class="col-12">
                                 <div class="d-flex justify-content-between">
-                                    <a href="<?= base_url('admin/facilities') ?>"
-                                        class="btn btn-secondary">Back</a>
+                                    <div class="col-6">
+                                        <label for="condition" class="form-label required">Condition</label>
+                                        <div class="col-md-14">
+                                            <select class="form-select" name="condition" id="condition" required>
+                                                <option value="">Select Condition</option>
+                                                <option value="good" <?= $isEdit && $facilities->condition == 'good' ? 'selected' : '' ?>>Good</option>
+                                                <option value="bad" <?= $isEdit && $facilities->condition == 'bad' ? 'selected' : '' ?>>Bad</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
-                                    <button type="submit" class="btn btn-primary" id="btnSubmit">
-                                        <span class="spinner-border spinner-border-sm me-2 d-none"></span>
-                                        <i class="fas fa-save"></i> Save
+                                    <div class="col-3">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label required">Quantity</label>
+                                            <input type="number" name="qty" class="form-control"
+                                                value="<?= $isEdit ? e($facilities->qty) : '' ?>"
+                                                placeholder="Quantity">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-12">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label <?= $isEdit ? '' : 'required' ?>">Image</label>
+                                        <input type="file" class="form-control" name="image_name" id="image_name" accept="image/*">
+                                        <?php if ($isEdit && $facilities->image_name): ?>
+                                            <small class="text-muted">Kosongkan jika tidak ingin mengubah gambar.</small>
+                                        <?php endif; ?>
+                                        <div class="mt-2">
+                                            <?php
+                                            $imageUrl = $isEdit && !empty($facilities->image_name) ? base_url('uploads/facilities/' . $facilities->image_name) : '';
+                                            $displayStyle = ($isEdit && !empty($facilities->image_name)) ? '' : 'display: none;';
+                                            ?>
+                                            <img id="img-preview" src="<?= $imageUrl ?>" alt="Image Preview" class="img-thumbnail" style="max-width:200px; <?= $displayStyle ?>">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-3 d-flex justify-content-end">
+                                    <a href="<?= base_url('admin/facilities') ?>" class="btn btn-secondary">Back</a>
+                                    <button type="submit" class="btn btn-primary ms-2" id="btnSubmit">
+                                        <span class="spinner-border spinner-border-sm d-none me-2"></span>
+                                        Save
                                     </button>
                                 </div>
-                            </div>
 
-                        </div>
+                            </div>
                     </form>
                 </div>
 
@@ -135,62 +106,48 @@ $formAction = $isEdit && isset($facility->id)
 </div>
 
 <?php ob_start(); ?>
-<script src="<?= asset('assets/mazer/extensions/summernote/summernote-lite.min.js') ?>"></script>
-
 <script>
     var audio = new Audio("<?= base_url('assets/audio/success.wav') ?>");
 
     $(document).ready(function() {
-
-        // Summernote untuk Description
-        $('#description').summernote({
-            height: 250,
-            placeholder: 'Write facility description...',
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link']]
-            ]
-        });
-
-        // Image preview
-        $('#image').change(function(e) {
-            const file = e.target.files[0];
-            if (!file) {
+        $('#image_name').change(function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#img-preview').attr('src', e.target.result).show();
+                }
+                reader.readAsDataURL(file);
+            } else {
                 $('#img-preview').hide().attr('src', '');
-                return;
             }
-
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                $('#img-preview').attr('src', e.target.result).show();
-            };
-            reader.readAsDataURL(file);
         });
 
-        // Submit form via AJAX
         $('#formData').submit(function(e) {
             e.preventDefault();
 
-            let btn = $('#btnSubmit');
-            let spinner = btn.find('.spinner-border');
-            let icon = btn.find('i');
+            var btnClicked = $(e.originalEvent.submitter);
+            var statusValue = btnClicked.val();
 
-            btn.prop('disabled', true);
-            spinner.removeClass('d-none');
+            var spinner = btnClicked.find('.spinner-border');
+            var icon = btnClicked.find('i');
+
+            $('button[type="submit"]').prop('disabled', true);
             icon.addClass('d-none');
+            spinner.removeClass('d-none');
 
-            let formData = new FormData(this);
+            var form = this;
+            var formData = new FormData(form);
 
-            <?php if ($isEdit && !empty($facility->id)): ?>
-                formData.append('_method', 'PUT');
-            <?php endif; ?>
+            formData.append('status', statusValue);
+
+            let actionUrl = '<?= $formAction ?>';
 
             $.ajax({
-                url: "<?= $formAction ?>",
-                type: "POST",
+                url: actionUrl,
+                type: 'POST',
                 data: formData,
-                dataType: "JSON",
+                dataType: 'JSON',
                 processData: false,
                 contentType: false,
 
@@ -201,59 +158,72 @@ $formAction = $isEdit && isset($facility->id)
                             icon: 'success',
                             title: 'Success',
                             text: res.message,
-                            timer: 1500,
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            timer: 1500
                         }).then(() => {
-                            window.location.href = "<?= base_url('admin/facilities') ?>";
+                            window.location.href = '<?php echo base_url('admin/facilities'); ?>';
                         });
                     } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error',
+                            title: 'Oops...',
                             text: res.message
                         });
                     }
                 },
-
-                error: function(xhr) {
+                error: function(xhr, status, error) {
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
 
                         $('.text-danger').remove();
 
                         $.each(errors, function(key, value) {
-                            let el = $(`[name="${key}"]`);
+                            let inputEl = $(`[name="${key}"]`);
 
-                            if (key === 'description') {
-                                el = el.next('.note-editor');
+                            if (key === 'content') {
+                                inputEl = inputEl.next('.note-editor');
                             }
 
-                            el.after(`<small class="text-danger d-block mt-1">${value}</small>`);
+                            if (key === 'image') {
+                                let previewDiv = inputEl.next('.mt-2');
+
+                                if (previewDiv.length) {
+                                    inputEl = previewDiv;
+                                }
+                            }
+
+                            if (inputEl.length) {
+                                inputEl.after(`
+                                    <small class="text-danger d-block mt-1" style="font-size: 16px;">
+                                        ${value}
+                                    </small>
+                                `);
+                            }
                         });
 
                         Swal.fire({
                             icon: 'warning',
-                            title: 'Validation Failed',
-                            text: 'Please check your input.'
+                            title: 'Validasi Gagal',
+                            text: 'Mohon periksa kembali inputan anda.'
                         });
+
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Server Error',
-                            text: 'Something went wrong on the server.'
+                            text: 'Terjadi kesalahan pada server.'
                         });
+                        console.error(error);
                     }
                 },
-
                 complete: function() {
-                    btn.prop('disabled', false);
-                    spinner.addClass('d-none');
+                    $('button[type="submit"]').prop('disabled', false);
                     icon.removeClass('d-none');
+                    spinner.addClass('d-none');
                 }
             });
-
         });
-
     });
 </script>
-<?php $pageScripts = ob_get_clean(); ?>
+<?php $pageScripts = ob_get_clean();
+?>
