@@ -2,7 +2,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3><?php echo e($title ?? 'Facilities'); ?></h3>
+                <h3><?php echo e($title ?? 'facilities'); ?></h3>
                 <p class="text-subtitle text-muted">List of facilities used in the system.</p>
             </div>
         </div>
@@ -33,11 +33,12 @@
                                     <th width="25%">Description</th>
                                     <th width="10%">Condition</th>
                                     <th width="15%">Image</th>
-                                    <th width="10%">Qty</th>
+                                    <th width="10%">Quantity</th>
                                     <th width="17%">Action</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -46,7 +47,7 @@
         </div>
     </section>
 
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -54,11 +55,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src="" id="modalImageFull" class="img-fluid" alt="Preview Image">
+                    <img src="" id="modalImageFull" class="img-fluid" alt="Image Preview">
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 </div>
 
@@ -74,70 +76,68 @@
             autoWidth: false,
             pageLength: 10,
             ajax: '<?php echo base_url('admin/facilities/data'); ?>',
-            columns: [
-                {
+            columns: [{
                     data: null,
                     sortable: false,
                     render: function(data, type, row, meta) {
                         return meta.row + 1;
                     }
                 },
-                { data: 'name' },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
                 {
                     data: 'description',
-                    render: function(data) {
-                        if (!data) return '-';
-                        return data.length > 40 ? data.substr(0, 40) + '...' : data;
-                    }
+                    name: 'description'
                 },
-                { data: 'condition' },
+                {
+                    data: 'condition',
+                    name: 'condition'
+                },
                 {
                     data: 'image_name',
+                    name: 'image_name',
                     orderable: false,
                     searchable: false,
                     className: 'text-center',
-                    render: function(data) {
-                        if (!data) return '-';
-                        return `
-                            <img src="<?= base_url('uploads/facilities/') ?>${data}" 
-                                class="img-thumbnail img-clickable"
-                                style="max-height: 50px; cursor:pointer;">
-                        `;
-                    }
+                    render: (data) =>
+                        data ? `<img src="${data}" class="img-thumbnail img-clickable" style="max-height:50px; cursor:pointer;" />` : '-'
                 },
-                { data: 'qty' },
+                {
+                    data: 'qty',
+                    name: 'qty'
+                },
                 {
                     data: null,
-                    className: 'text-center text-nowrap',
+                    name: 'action',
                     orderable: false,
                     searchable: false,
+                    className: 'text-center text-nowrap',
                     render: function(data, type, row) {
                         let editUrl = '<?php echo base_url('admin/facilities'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/facilities'); ?>/' + row.id;
 
                         return `
-                            <a href="${editUrl}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-
-                            <button type="button" data-url="${deleteUrl}" 
-                                class="btn btn-danger btn-sm" id="btnDelete">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        `;
+                <a href="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit" title="Edit">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm" id="btnDelete" title="Delete">
+                    <i class="fas fa-trash"></i> Delete
+                </button>`;
                     }
                 }
             ]
         });
 
-        // 🔍 preview image
         $(document).on('click', '.img-clickable', function() {
             $('#modalImageFull').attr('src', $(this).attr('src'));
             $('#imageModal').modal('show');
         });
 
-        // 🗑 delete (SweetAlert sama seperti News)
-        $(document).on('click', '#btnDelete', function() {
+        $(document).on('click', '#btnDelete', function(e) {
+            e.preventDefault();
+
             let url = $(this).data('url');
 
             Swal.fire({
@@ -147,17 +147,21 @@
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: "No, cancel!",
+                didOpen: () => {
+                    const confirmButton = Swal.getConfirmButton();
+                    if (confirmButton) {
+                        confirmButton.style.setProperty('background-color', '#d33', 'important');
+                    }
+                }
             }).then((result) => {
-
                 if (result.isConfirmed) {
-
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         dataType: 'JSON',
                         success: function(res) {
                             if (res.success) {
-
                                 $('#table-facilities').DataTable().ajax.reload();
 
                                 audio.play();
@@ -167,25 +171,35 @@
                                     text: res.message,
                                     showConfirmButton: false,
                                     timer: 1500
-                                });
+                                })
                             }
                         },
-                        error: function(xhr) {
+                        error: function(xhr, status, error) {
+                            let errorMessage;
+
+                            switch (xhr.status) {
+                                case 404:
+                                    errorMessage = 'Error: Halaman proses login tidak ditemukan (404).';
+                                    break;
+                                case 0:
+                                    errorMessage = 'Server terlalu lama merespon (timeout).';
+                                    break;
+                                default:
+                                    errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Terjadi kesalahan. Silakan coba lagi.';
+                            }
+
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: xhr.responseJSON?.message ?? 'Terjadi kesalahan'
-                            });
+                                text: errorMessage
+                            })
                         }
                     });
-
                 }
-
             });
-
         });
 
     });
 </script>
-<?php $pageScripts = ob_get_clean(); ?>
-
+<?php $pageScripts = ob_get_clean(); 
+?>

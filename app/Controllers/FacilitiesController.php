@@ -40,9 +40,7 @@ class FacilitiesController extends Controller
                     'description' => $item->description,
                     'condition'   => $item->condition,
                     'qty'         => $item->qty,
-                    'image'       => $item->image_name
-                        ? asset('uploads/facilities/' . $item->image_name)
-                        : asset('uploads/no-image.png'),
+                    'image_name' => !empty($item->image_name) ? asset('uploads/facilities/') . $item->image_name : null,
                 ];
             }, $items);
 
@@ -51,7 +49,6 @@ class FacilitiesController extends Controller
                 'message' => 'Success',
                 'data'    => $data
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -62,15 +59,12 @@ class FacilitiesController extends Controller
 
     public function create()
     {
-        return view_with_layout('admin/facilities/form', [
-            'title' => 'Create facilities'
-        ]);
+        view_with_layout('admin/facilities/form');
     }
 
     public function store()
     {
         try {
-            // === VALIDASI ===
             $validation = validate([
                 'name' => [
                     'required' => true,
@@ -98,38 +92,18 @@ class FacilitiesController extends Controller
                 ], 422);
             }
 
-            // === UPLOAD GAMBAR ===
             $imageName = null;
 
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $maxSize = 2 * 1024 * 1024;
+            if (isset($_FILES['image_name']) && $_FILES['image_name']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['image_name'];
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $imageName = md5(time() . $file['name']) . '.' . $ext;
+                $dir = 'uploads/facilities/';
 
-                if ($_FILES['image']['size'] > $maxSize) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Maximum file size is 2MB',
-                        'errors'  => ['image' => 'Maximum file size is 2MB']
-                    ], 422);
-                }
-
-                $fileTmp = $_FILES['image']['tmp_name'];
-                $fileName = $_FILES['image']['name'];
-                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $imageName = md5(time() . $fileName) . '.' . $ext;
-
-                $uploadPath = 'uploads/facilities/';
-                if (!is_dir($uploadPath)) mkdir($uploadPath, 0777, true);
-
-                move_uploaded_file($fileTmp, $uploadPath . $imageName);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors'  => ['image' => 'Image is required']
-                ], 422);
+                if (!is_dir($dir)) mkdir($dir, 0777, true);
+                move_uploaded_file($file['tmp_name'], $dir . $imageName);
             }
 
-            // === SIMPAN DATA ===
             $data = [
                 'name'        => $validation['data']['name'],
                 'description' => $validation['data']['description'],
@@ -137,9 +111,6 @@ class FacilitiesController extends Controller
                 'qty'         => $validation['data']['qty'],
                 'image_name'  => $imageName
             ];
-
-            var_dump($data);
-            die;
 
             $id = $this->facilitiesModel->create($data);
 
@@ -149,7 +120,6 @@ class FacilitiesController extends Controller
                 'success' => true,
                 'message' => 'Facility successfully created',
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -161,24 +131,25 @@ class FacilitiesController extends Controller
     public function edit($id)
     {
         try {
-            $facility = $this->facilitiesModel->find($id);
+            $facilities = $this->facilitiesModel->findBy('id', $id);
 
-            if (!$facility) {
+            if (!$facilities) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data not found'
+                    'message' => 'Data tidak ditemukan'
                 ], 404);
             }
 
-            return view_with_layout('admin/facilities/form', [
+            $data = [
                 'title' => 'Edit Facilities',
-                'data'  => $facility
-            ]);
+                'data' => $facilities
+            ];
 
+            return view_with_layout('admin/facilities/form', $data);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Server error'
+                'message' => 'Terjadi kesalahan pada server, coba lagi.'
             ], 500);
         }
     }
@@ -186,53 +157,54 @@ class FacilitiesController extends Controller
     public function update($id)
     {
         try {
-            $old = $this->facilitiesModel->find($id);
 
-            if (!$old) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Facility not found'
-                ], 404);
-            }
-
-            // === VALIDASI ===
             $validation = validate([
-                'name' => ['required' => true],
-                'description' => ['required' => true],
-                'condition' => ['required' => true],
-                'qty' => ['required' => true],
+                'name' => [
+                    'required' => true,
+                    'messages' => ['required' => 'Facility name is required']
+                ],
+                'description' => [
+                    'required' => true,
+                    'messages' => ['required' => 'Description is required']
+                ],
+                'condition' => [
+                    'required' => true,
+                    'messages' => ['required' => 'Condition is required']
+                ],
+                'qty' => [
+                    'required' => true,
+                    'messages' => ['required' => 'Quantity is required']
+                ],
             ]);
 
             if (!$validation['success']) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Validation failed',
+                    'message' => 'Validasi gagal',
                     'errors' => $validation['errors']
                 ], 422);
             }
 
-            $imageName = $old->image_name;
+            $facilities = $this->facilitiesModel->find($id);
+            if (!$facilities) return response()->json(['success' => false], 404);
 
-            // === Upload gambar baru (opsional) ===
-            if (!empty($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $imageName = $facilities->image_name;
+            if (isset($_FILES['image_name']) && $_FILES['image_name']['error'] === UPLOAD_ERR_OK) {
+                $file = $_FILES['image_name'];
+                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $newImage = md5(time() . $file['name']) . '.' . $ext;
+                $dir = 'uploads/facilities/';
 
-                $fileTmp = $_FILES['image']['tmp_name'];
-                $fileName = $_FILES['image']['name'];
-                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $newFile = md5(time() . $fileName) . '.' . $ext;
+                if (!is_dir($dir)) mkdir($dir, 0777, true);
+                move_uploaded_file($file['tmp_name'], $dir . $newImage);
 
-                $uploadPath = 'uploads/facilities/';
-                if (!is_dir($uploadPath)) mkdir($uploadPath, 0777, true);
-
-                if (move_uploaded_file($fileTmp, $uploadPath . $newFile)) {
-                    if ($old->image_name && file_exists($uploadPath . $old->image_name)) {
-                        unlink($uploadPath . $old->image_name);
-                    }
-                    $imageName = $newFile;
+                if ($facilities->image_name && file_exists($dir . $facilities->image_name)) {
+                    @unlink($dir . $facilities->image_name);
                 }
+
+                $imageName = $newImage;
             }
 
-            // === UPDATE DATA ===
             $data = [
                 'name'        => $validation['data']['name'],
                 'description' => $validation['data']['description'],
@@ -243,13 +215,12 @@ class FacilitiesController extends Controller
 
             $this->facilitiesModel->update($id, $data);
 
-            logActivity("Update", "Facility '{$data['name']}' updated", "facilities", $id, $old, $data);
+            logActivity("Update", "Facility '{$data['name']}' updated", "facilities", $id, $data);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Facility successfully updated',
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -284,7 +255,6 @@ class FacilitiesController extends Controller
                 'success' => true,
                 'message' => 'Facility deleted successfully'
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
