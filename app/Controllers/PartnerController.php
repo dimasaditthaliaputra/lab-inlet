@@ -293,7 +293,7 @@ class PartnerController extends Controller
 
             logActivity(
                 "Delete",
-                "Partner {$partner->title} successfully deleted",
+                "Partner {$partner->partner_logo} successfully deleted",
                 "partner",
                 $id,
                 $partner,
