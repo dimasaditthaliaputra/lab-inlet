@@ -11,7 +11,6 @@ use App\Controllers\RolesController;
 use App\Controllers\TeamController;
 use App\Controllers\UserController;
 use App\Controllers\PartnerController;
-use App\Controllers\UserRedirectController;
 use App\Controllers\KategoriProjectController;
 use App\Controllers\ProjectLabController;
 use App\Controllers\SiteSettingsController;
@@ -19,8 +18,7 @@ use App\Controllers\GalleryController;
 use App\Controllers\ProductController;
 use App\Controllers\HeroSliderController;
 use App\Controllers\ResearchFocusController;
-
-
+use App\Controllers\PermissionsController;
 
 return prefix('admin', route_group([
 
@@ -102,14 +100,6 @@ return prefix('admin', route_group([
     get('/log-activity', [LogActivityController::class, 'index']),
     get('/log-activity/data', [LogActivityController::class, 'data']),
 
-    // Route User Redirect
-    get('/userRedirect', [UserRedirectController::class, 'index']),
-    get('/userRedirect/create', [UserRedirectController::class, 'create']),
-    post('/userRedirect/insert', [UserRedirectController::class, 'store']),
-    get('/userRedirect/{id}/edit', [UserRedirectController::class, 'edit']),
-    put('/userRedirect/{id}/update', [UserRedirectController::class, 'update']),
-    delete('/userRedirect/{id}/delete', [UserRedirectController::class, 'destroy']),
-
     // Attendance
     get('/attendance-settings', [AttendanceSettingsController::class, 'index']),
     get('/attendance-settings/data', [AttendanceSettingsController::class, 'data']),
@@ -161,7 +151,8 @@ return prefix('admin', route_group([
     post('/research-focus',       [ResearchFocusController::class, 'store']),
     get('/research-focus/{id}/edit', [ResearchFocusController::class, 'edit']),
     put('/research-focus/{id}',   [ResearchFocusController::class, 'update']),
-    delete('/research-focus/{id}',[ResearchFocusController::class, 'destroy']),
+    delete('/research-focus/{id}', [ResearchFocusController::class, 'destroy']),
+
     //Facilities
     get('/facilities', [FacilitiesController::class, 'index']),
     get('/facilities/data', [FacilitiesController::class, 'data']),
@@ -170,4 +161,8 @@ return prefix('admin', route_group([
     get('/facilities/{id}/edit', [FacilitiesController::class, 'edit']),
     post('/facilities/{id}', [FacilitiesController::class, 'update']),
     delete('/facilities/{id}', [FacilitiesController::class, 'destroy']),
+
+    get('/permissions', [PermissionsController::class, 'index']),
+    get('/permissions/data/{id}', [PermissionsController::class, 'data']),
+    put('/permissions/update', [PermissionsController::class, 'update']),
 ]));

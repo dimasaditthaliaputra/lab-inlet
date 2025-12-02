@@ -183,7 +183,7 @@ class ProjectLabController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan pada server, coba lagi.'
+                'message' => 'Terjadi kesalahan pada server, coba lagi.' . $e->getMessage()
             ], 500);
         }
     }

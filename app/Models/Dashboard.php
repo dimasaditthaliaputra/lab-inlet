@@ -17,12 +17,6 @@ class Dashboard extends Model
         return $this->db->query("SELECT * FROM v_dashboard_attendance_today")->fetch();
     }
 
-    public function getLatestLogs()
-    {
-        // Menggunakan fetchAll() karena mengembalikan banyak baris
-        return $this->db->query("SELECT * FROM v_dashboard_latest_logs")->fetchAll();
-    }
-
     public function getActivityTrend()
     {
         return $this->db->query("SELECT * FROM mv_dashboard_activity_trend")->fetchAll();
@@ -61,7 +55,6 @@ class Dashboard extends Model
         return [
             'summary'     => $this->getSummaryStats(),
             'attendance'  => $this->getAttendanceToday(),
-            'logs'        => $this->getLatestLogs(),
             'charts'      => [
                 'activity' => $this->getActivityTrend(),
                 'roles'    => $this->getUserDistribution(),

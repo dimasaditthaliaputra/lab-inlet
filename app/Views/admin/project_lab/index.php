@@ -102,8 +102,9 @@
                             <label for="status" class="col-md-3 col-form-label required">Status</label>
                             <div class="col-md-9">
                                 <select class="form-select" name="status" id="status">
-                                    <option value="On Progress">On Progress</option>
-                                    <option value="Completed">Completed</option>
+                                    <option value="archived">Archive</option>
+                                    <option value="in_progress">On Progress</option>
+                                    <option value="completed">Completed</option>
                                 </select>
                             </div>
                         </div>
@@ -210,7 +211,7 @@ ob_start();
                     name: 'kategori_name',
                 },
                 {
-                    data: 'thumbnail', 
+                    data: 'thumbnail',
                     name: 'image_url',
                     orderable: false,
                     render: function(data, type, row) {
