@@ -51,7 +51,6 @@ class SiteSettingsController extends Controller
                 ], 422);
             }
 
-            // $siteSettings ini adalah Object
             $siteSettings = $this->model->getAll();
             $oldData = $siteSettings ?: null;
 
@@ -87,7 +86,6 @@ class SiteSettingsController extends Controller
                 $newName = md5(time()) . '.' . $ext;
 
                 if (move_uploaded_file($_FILES['logo_path']['tmp_name'], $uploadPath . $newName)) {
-                    // PERBAIKAN 1: Mengakses properti object menggunakan tanda panah (->)
                     if ($oldData && !empty($oldData->logo_path) && file_exists($uploadPath . $oldData->logo_path)) {
                         unlink($uploadPath . $oldData->logo_path);
                     }
@@ -96,15 +94,14 @@ class SiteSettingsController extends Controller
             }
 
             if ($oldData) {
-                // PERBAIKAN 2: Menggunakan $oldData->id bukan $oldData['id']
                 $this->model->update($oldData->id, $data);
 
                 logActivity(
                     "Update",
                     "Site settings updated",
                     "settings",
-                    $oldData->id, // UBAH KE OBJECT SYNTAX
-                    (array)$oldData, // Cast ke array jika logActivity butuh array, atau biarkan object jika support
+                    $oldData->id, 
+                    (array)$oldData,
                     $data
                 );
             } else {

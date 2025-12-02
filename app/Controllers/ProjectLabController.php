@@ -89,10 +89,6 @@ class ProjectLabController extends Controller
                     'required' => true,
                     'messages' => ['required' => 'Nama project wajib diisi']
                 ],
-                'id_kategori' => [
-                    'required' => true,
-                    'messages' => ['required' => 'Kategori wajib dipilih']
-                ],
                 'description' => [
                     'required' => true,
                     'messages' => ['required' => 'Deskripsi wajib diisi']
@@ -106,12 +102,12 @@ class ProjectLabController extends Controller
                 ]
             ]);
 
+            if (!isset($_POST['id_kategori']) || !is_array($_POST['id_kategori'])) {
+                return response()->json(['success' => false, 'message' => 'Minimal satu kategori wajib dipilih'], 422);
+            }
+
             if (!$validation['success']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validasi gagal',
-                    'errors' => $validation['errors']
-                ], 422);
+                return response()->json(['success' => false, 'message' => 'Validasi gagal', 'errors' => $validation['errors']], 422);
             }
 
             $uploadedFiles = [];
@@ -157,15 +153,16 @@ class ProjectLabController extends Controller
 
             $data = [
                 'name' => $validation['data']['name'],
-                'id_kategori' => $validation['data']['id_kategori'],
                 'description' => $validation['data']['description'],
                 'status' => $validation['data']['status'],
-                'video_url' => isset($_POST['video_url']) ? $_POST['video_url'] : null,
+                'video_url' => $_POST['video_url'] ?? null,
                 'image_url' => $formattedImage,
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
             $insertId = $this->projectModel->create($data);
+
+            $this->projectModel->assignCategories($insertId, $_POST['id_kategori']);
 
             logActivity(
                 "Create",
@@ -191,7 +188,7 @@ class ProjectLabController extends Controller
     public function edit($id)
     {
         try {
-            $project = $this->projectModel->findBy('id', $id);
+            $project = $this->projectModel->getProjectWithCategories($id);
 
             if (!$project) {
                 return response()->json([
@@ -200,36 +197,10 @@ class ProjectLabController extends Controller
                 ], 404);
             }
 
-            $imageRaw = $project->image_url;
-            $imageList = [];
-
-            if ($imageRaw && strpos($imageRaw, '{') === 0) {
-                $cleaned = trim($imageRaw, '{}');
-                if (!empty($cleaned)) {
-                    $images = explode(',', $cleaned);
-                    foreach ($images as $img) {
-                        $cleanImg = trim($img, '"');
-                        $imageList[] = asset('uploads/project_images/') . $cleanImg;
-                    }
-                }
-            } elseif ($imageRaw) {
-                $imageList[] = asset('uploads/project_images/') . $imageRaw;
-            }
-
-            $data = [
-                'id' => $project->id,
-                'name' => $project->name,
-                'id_kategori' => $project->id_kategori,
-                'description' => $project->description,
-                'video_url' => $project->video_url,
-                'images_list' => $imageList,
-                'status' => $project->status,
-            ];
-
             return response()->json([
                 'success' => true,
                 'message' => 'Success',
-                'data' => $data
+                'data' => $project
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -256,10 +227,6 @@ class ProjectLabController extends Controller
                     'required' => true,
                     'messages' => ['required' => 'Nama project wajib diisi']
                 ],
-                'id_kategori' => [
-                    'required' => true,
-                    'messages' => ['required' => 'Kategori wajib dipilih']
-                ],
                 'description' => [
                     'required' => true,
                     'messages' => ['required' => 'Deskripsi wajib diisi']
@@ -273,13 +240,11 @@ class ProjectLabController extends Controller
                 ]
             ]);
 
-            if (!$validation['success']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validasi gagal',
-                    'errors' => $validation['errors']
-                ], 422);
+            if (!isset($_POST['id_kategori']) || !is_array($_POST['id_kategori'])) {
+                return response()->json(['success' => false, 'message' => 'Minimal satu kategori wajib dipilih'], 422);
             }
+
+            if (!$validation['success']) return response()->json(['success' => false, 'errors' => $validation['errors']], 422);
 
             $uploadedFiles = [];
             $uploadFileDir = 'uploads/project_images/';
@@ -337,10 +302,9 @@ class ProjectLabController extends Controller
 
             $data = [
                 'name' => $validation['data']['name'],
-                'id_kategori' => $validation['data']['id_kategori'],
                 'description' => $validation['data']['description'],
                 'status' => $validation['data']['status'],
-                'video_url' => isset($_POST['video_url']) ? $_POST['video_url'] : null,
+                'video_url' => $_POST['video_url'] ?? null,
             ];
 
             if (!empty($uploadedFiles)) {
@@ -348,6 +312,8 @@ class ProjectLabController extends Controller
             }
 
             $this->projectModel->update($id, $data);
+
+            $this->projectModel->assignCategories($id, $_POST['id_kategori']);
 
             logActivity(
                 "Update",

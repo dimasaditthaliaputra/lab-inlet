@@ -396,7 +396,7 @@ ob_start();
                         $('.text-danger').remove();
 
                         $.each(errors, function(key, value) {
-                            let inputEl = $(#${key});
+                            let inputEl = $(`[name="${key}"]`);
                             if (inputEl.length) {
                                 inputEl.after(`
                                     <small class="text-danger d-block mt-1">

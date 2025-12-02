@@ -75,8 +75,7 @@
                         <div class="row mb-3 align-items-center">
                             <label for="id_kategori" class="col-md-3 col-form-label required">Category</label>
                             <div class="col-md-9">
-                                <select class="form-select" name="id_kategori" id="id_kategori">
-                                    <option value="">Pilih Kategori</option>
+                                <select class="form-select" name="id_kategori[]" id="id_kategori" multiple="multiple">
                                     <?php foreach ($categories as $cat) : ?>
                                         <option value="<?= $cat->id ?>"><?= $cat->name ?></option>
                                     <?php endforeach; ?>
@@ -172,10 +171,9 @@ ob_start();
         $('#id_kategori').select2({
             theme: 'bootstrap-5',
             dropdownParent: $('#modalForm'),
-            placeholder: 'Pilih Kategori',
+            placeholder: 'Pilih Kategori (Bisa lebih dari satu)',
             width: '100%',
-            allowClear: true,
-            minimumResultsForSearch: Infinity
+            closeOnSelect: false
         });
 
         $('#status').select2({
@@ -209,6 +207,26 @@ ob_start();
                 {
                     data: 'kategori_name',
                     name: 'kategori_name',
+                    render: function(data, type, row) {
+                        if (data) {
+                            const colors = [
+                                'bg-primary',
+                                'bg-secondary',
+                                'bg-success',
+                                'bg-danger',
+                                'bg-warning text-dark',
+                                'bg-info text-dark',
+                                'bg-dark'
+                            ];
+
+                            return data.split(',').map(function(cat) {
+                                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                                return `<span class="badge ${randomColor} me-1">${cat.trim()}</span>`;
+                            }).join(' ');
+                        }
+                        return '-';
+                    }
                 },
                 {
                     data: 'thumbnail',
@@ -238,10 +256,13 @@ ob_start();
                     data: 'status',
                     name: 'status',
                     render: function(data, type, row) {
-                        if (data == 'Completed') {
-                            return `<span class="badge bg-success">Completed</span>`;
-                        } else {
-                            return `<span class="badge bg-danger">On Progress</span>`;
+                        switch (data) {
+                            case 'completed':
+                                return `<span class="badge bg-success">Completed</span>`;
+                            case 'in_progress':
+                                return `<span class="badge bg-warning">On Progress</span>`;
+                            default:
+                                return `<span class="badge bg-danger">Archived</span>`;
                         }
                     }
                 },
@@ -330,10 +351,14 @@ ob_start();
                         $('#modalTitleId').html('Form Edit Project');
                         $('#primary_id').val(res.data.id);
                         $('#name').val(res.data.name);
-                        $('#id_kategori').val(res.data.id_kategori);
+                        if (res.data.category_ids) {
+                            $('#id_kategori').val(res.data.category_ids).trigger('change');
+                        } else {
+                            $('#id_kategori').val(null).trigger('change');
+                        }
                         $('#description').val(res.data.description);
                         $('#video_url').val(res.data.video_url);
-                        $('#status').val(res.data.status);
+                        $('#status').val(res.data.status).change();
 
                         var container = $('#preview-container');
                         container.empty();
@@ -361,10 +386,10 @@ ob_start();
             $('#modalTitleId').html('Form Project');
             $('#primary_id').val('');
             $('#name').val('');
-            $('#id_kategori').val('');
+            $('#id_kategori').val(null).trigger('change');
             $('#description').val('');
             $('#video_url').val('');
-            $('#status').val('Active');
+            $('#status').val('').change();
             $('#preview-container').empty();
         });
 

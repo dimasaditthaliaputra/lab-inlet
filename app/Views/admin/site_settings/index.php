@@ -49,7 +49,7 @@ $site = $data ?? null;
 
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Address</label>
-                                <textarea class="form-control" name="address" id="address"><?= $site->address ?? '' ?></textarea>
+                                <input type="text" class="form-control" name="address" id="address" value="<?= $site->address ?? '' ?>"></input>
                             </div>
 
                             <div class="col-md-12 mb-3">
@@ -119,12 +119,6 @@ $site = $data ?? null;
     var audio = new Audio("<?= base_url('assets/audio/success.wav') ?>");
 
     $(document).ready(function() {
-
-        $('#address').summernote({
-            height: 200,
-            placeholder: 'Type address...',
-        });
-
         function showPreview(input, previewID) {
             let file = input.files[0]
             if (file) {
@@ -140,8 +134,6 @@ $site = $data ?? null;
             showPreview(this, '#logo-preview')
         });
 
-        // Script Ajax Submit tetap sama karena Ajax menghandle form data,
-        // tidak terpengaruh perubahan tampilan PHP di atas.
         $('#formData').submit(function(event) {
             event.preventDefault()
             let btn = $('#btnSubmit')
