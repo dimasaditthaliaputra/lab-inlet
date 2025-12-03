@@ -104,7 +104,7 @@ class ResearchFocusController extends Controller
 
         if (move_uploaded_file($fileTmpPath, $uploadFileDir . $newFileName)) {
             if ($oldImageName) {
-                $oldPath = _DIR_ . '/../../public/uploads/research_focus/' . $oldImageName;
+                $oldPath = __DIR__ . '/../../public/uploads/research_focus/' . $oldImageName;
                 if (file_exists($oldPath)) {
                     @unlink($oldPath);
                 }
@@ -337,7 +337,7 @@ class ResearchFocusController extends Controller
 
             // Kalau user isi icon, kita buang image lama (switch dari image → icon)
             if ($newIcon !== '' && $oldData->image_cover && !$hasNewFile) {
-                $oldPath = _DIR_ . '/../../public/uploads/research_focus/' . $oldData->image_cover;
+                $oldPath =__DIR__ . '/../../public/uploads/research_focus/' . $oldData->image_cover;
                 if (file_exists($oldPath)) {
                     @unlink($oldPath);
                 }
@@ -402,7 +402,7 @@ class ResearchFocusController extends Controller
             }
 
             if (!empty($item->image_cover)) {
-                $path = _DIR_ . '/../../public/uploads/research_focus/' . $item->image_cover;
+                $path = __DIR__ . '/../../public/uploads/research_focus/' . $item->image_cover;
                 if (file_exists($path)) {
                     @unlink($path);
                 }

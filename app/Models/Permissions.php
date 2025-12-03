@@ -61,6 +61,27 @@ class Permissions extends Model
         $this->db->execute();
     }
 
+    public function generatePermissions($roleId)
+    {
+        try {
+            $sql = "INSERT INTO role_menus (role_id, menu_id, permissions)
+                SELECT :role_id, id, COALESCE(m.permissions, '[]')
+                FROM app_menus m
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM role_menus rm 
+                    WHERE rm.menu_id = m.id AND rm.role_id = :role_id
+                )";
+
+            $this->db->query($sql);
+            $this->db->bind(':role_id', $roleId);
+            $this->db->execute();
+
+            return true;
+        } catch (\exception $e) {
+            return false;
+        }
+    }
+
     /**
      * Update permissions berdasarkan input dari Frontend.
      */

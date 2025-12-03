@@ -69,7 +69,7 @@ class PermissionsController extends Controller
 
         if (!$input || empty($input['role_id'])) {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Invalid data provided.'
             ], 400);
         }
@@ -84,11 +84,44 @@ class PermissionsController extends Controller
                 'success' => true,
                 'message' => 'Permissions saved successfully.'
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to save: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function generatePermissions()
+    {
+        $roleId = 1;
+
+        if (empty($roleId)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Role ID is required.',
+                'data' => []
+            ], 400);
+        }
+
+        try {
+            $permissions = $this->permissionsModel->generatePermissions($roleId);
+
+            if (!$permissions) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to generate permissions.'
+                ], 500);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Success'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server Error: ' . $e->getMessage()
             ], 500);
         }
     }

@@ -166,4 +166,5 @@ return prefix('admin', route_group([
     get('/permissions', [PermissionsController::class, 'index']),
     get('/permissions/data/{id}', [PermissionsController::class, 'data']),
     put('/permissions/update', [PermissionsController::class, 'update']),
+    get('/permissions/generate', [PermissionsController::class, 'generatePermissions']),
 ]));
