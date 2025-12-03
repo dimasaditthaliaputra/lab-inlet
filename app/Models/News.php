@@ -15,4 +15,16 @@ class News extends Model
          LEFT JOIN users u ON n.created_by = u.id
          ORDER BY \"id\"")->fetchAll();
     }
+
+    public function getNewsWithCreator($id)
+    {
+        return $this->db->query(
+            "SELECT n.*, u.full_name as created_by 
+         FROM {$this->table} n 
+         LEFT JOIN users u ON n.created_by = u.id
+         WHERE n.id = :id",
+        )
+        ->bind(':id', $id)
+        ->fetch();
+    }
 }

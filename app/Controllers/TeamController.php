@@ -138,7 +138,6 @@ class TeamController extends Controller
                 ]),
             ];
 
-
             $insertId = $this->teamModel->create($data);
 
             logActivity("Create", "Create Team {$data['full_name']}", "team", $insertId, null, $data);

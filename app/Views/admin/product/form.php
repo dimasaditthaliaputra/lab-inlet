@@ -159,7 +159,7 @@ if ($isEdit && $product->specification) {
                                     </button>
                                 </div>
                             </div>
-                        </div> <!-- /row -->
+                        </div>
                     </form>
                 </div>
             </div>

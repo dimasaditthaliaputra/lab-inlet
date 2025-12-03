@@ -34,8 +34,6 @@
                                     <th width="10%">Thumbnail</th>
                                     <th width="20%">Description</th>
                                     <th width="10%" class="text-center">Release Date</th>
-                                    <th width="15%">Feature</th>
-                                    <th width="15%">Specification</th>
                                     <th width="10%">Action</th>
                                 </tr>
                             </thead>
@@ -155,24 +153,6 @@ ob_start();
                     }
                 },
                 {
-                    data: 'feature',
-                    name: 'feature',
-                    searchable: false,
-                    orderable: false,
-                    render: function(data) {
-                        return featuresToText(data);
-                    }
-                },
-                {
-                    data: 'specification',
-                    name: 'specification',
-                    searchable: false,
-                    orderable: false,
-                    render: function(data) {
-                        return specsToText(data);
-                    }
-                },
-                {
                     data: null,
                     name: 'action',
                     orderable: false,
@@ -180,13 +160,18 @@ ob_start();
                     className: 'text-center text-nowrap',
                     visible: showAction,
                     render: function(data, type, row) {
+                        let viewUrl = '<?php echo base_url('admin/product'); ?>/' + row.id + '/view';
                         let editUrl = '<?php echo base_url('admin/product'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/product'); ?>/' + row.id;
 
                         let buttons = '';
 
+                        buttons += `<a href="${viewUrl}" class="btn btn-success btn-sm" title="View">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>`;
+
                         if (CAN_UPDATE) {
-                            buttons += `<a href="${editUrl}" class="btn btn-warning btn-sm" title="Edit">
+                            buttons += `<a href="${editUrl}" class="btn btn-warning btn-sm ms-2" title="Edit">
                                 <i class="fas fa-edit"></i> Edit
                             </a>`;
                         }

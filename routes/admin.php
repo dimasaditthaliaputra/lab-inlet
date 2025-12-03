@@ -77,6 +77,7 @@ return prefix('admin', route_group([
     get('/news/create', [NewsController::class, 'create']),
     post('/news/store', [NewsController::class, 'store']),
     get('/news/{id}/edit', [NewsController::class, 'edit']),
+    get('/news/{id}/view', [NewsController::class, 'viewNews']),
     post('/news/{id}', [NewsController::class, 'update']),
     put('/news/publish/{id}', [NewsController::class, 'publish']),
     delete('/news/{id}', [NewsController::class, 'destroy']),
@@ -135,6 +136,7 @@ return prefix('admin', route_group([
     get('/product/create', [ProductController::class, 'create']),
     post('/product/store', [ProductController::class, 'store']),
     get('/product/{id}/edit', [ProductController::class, 'edit']),
+    get('/product/{id}/view', [ProductController::class, 'viewProduct']),
     post('/product/{id}', [ProductController::class, 'update']),
     delete('/product/{id}', [ProductController::class, 'destroy']),
 

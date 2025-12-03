@@ -22,8 +22,6 @@ class ProductController extends Controller
         $this->permissionsModel = new Permissions();
     }
 
-    /* ================== INDEX & DATA ================== */
-
     public function index()
     {
         $user = session('user');
@@ -54,8 +52,6 @@ class ProductController extends Controller
                     'image'         => $item->image_name ? asset('uploads/product/') . $item->image_name : null,
                     'description'   => $item->description,
                     'release_date'  => $item->release_date ? date('d M Y', strtotime($item->release_date)) : null,
-                    'feature'       => $features ?: [],
-                    'specification' => $specs ?: [],
                 ];
             }, $products);
 
@@ -154,8 +150,6 @@ class ProductController extends Controller
 
         return json_encode($specAssoc, JSON_UNESCAPED_UNICODE);
     }
-
-    /* ================== CREATE & STORE ================== */
 
     public function create()
     {
@@ -338,8 +332,6 @@ class ProductController extends Controller
         }
     }
 
-    /* ================== DESTROY ================== */
-
     public function destroy($id)
     {
         try {
@@ -377,6 +369,28 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function viewProduct($id)
+    {
+        try {
+            $product = $this->productModel->find($id);
+
+            if (!$product) {
+                redirect(base_url('admin/product'));
+                exit;
+            }
+
+            $data = [
+                'title' => 'View Product',
+                'product' => $product
+            ];
+
+            view_with_layout('admin/product/view', $data);
+        } catch (\Exception $e) {
+            redirect(base_url('admin/product'));
+            exit;
         }
     }
 }

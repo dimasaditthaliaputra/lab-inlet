@@ -129,7 +129,7 @@ class NewsController extends Controller
                     'success' => false,
                     'message' => 'Validasi gagal',
                     'errors'  => [
-                        'image' => 'Gambar wajib diupload' 
+                        'image' => 'Gambar wajib diupload'
                     ]
                 ], 422);
             }
@@ -276,8 +276,8 @@ class NewsController extends Controller
                 "News '{$validation['data']['title']}' successfully updated",
                 "news",
                 $id,
-                $oldData, 
-                $newData  
+                $oldData,
+                $newData
             );
 
             return response()->json([
@@ -289,6 +289,28 @@ class NewsController extends Controller
                 'success' => false,
                 'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function viewNews($id)
+    {
+        try {
+            $news = $this->newsModel->getNewsWithCreator($id);
+
+            if (!$news) {
+                redirect(base_url('admin/news'));
+                exit;
+            }
+
+            $data = [
+                'title' => 'View News',
+                'news' => $news
+            ];
+
+            view_with_layout('admin/news/view', $data);
+        } catch (\Exception $e) {
+            redirect(base_url('admin/news'));
+            exit;
         }
     }
 

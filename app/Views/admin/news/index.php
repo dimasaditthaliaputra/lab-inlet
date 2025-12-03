@@ -143,25 +143,30 @@ ob_start();
                     visible: showAction,
                     render: function(data, type, row) {
                         let disablePublish = row.is_publish == 1 ? 'disabled' : '';
+                        let viewUrl = '<?php echo base_url('admin/news'); ?>/' + row.id + '/view';
                         let publishUrl = '<?php echo base_url('admin/news/publish'); ?>/' + row.id;
                         let editUrl = '<?php echo base_url('admin/news'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/news'); ?>/' + row.id;
 
                         let buttons = '';
 
-                        buttons += `<button type="button" data-url="${publishUrl}" class="btn btn-info btn-sm ${disablePublish}" id="btnPublish" title="Publish">
-                                        <i class="fas fa-eye"></i> Publish
+                        buttons += `<a href="${viewUrl}" class="btn btn-success btn-sm" id="btnView" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>`;
+
+                        buttons += `<button type="button" data-url="${publishUrl}" class="btn btn-info btn-sm ms-2 ${disablePublish}" id="btnPublish" title="Publish">
+                                        <i class="fas fa-globe text-white"></i>
                                     </button>`;
 
                         if (CAN_UPDATE) {
                             buttons += `<a href="${editUrl}" class="btn btn-warning btn-sm ms-2" id="btnEdit" title="Edit">
-                                            <i class="fas fa-edit"></i> Edit
+                                            <i class="fas fa-edit"></i>
                                         </a>`;
                         }
 
                         if (CAN_DELETE) {
                             buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete" title="Delete">
-                                            <i class="fas fa-trash"></i> Delete
+                                            <i class="fas fa-trash"></i>
                                         </button>`;
                         }
 
