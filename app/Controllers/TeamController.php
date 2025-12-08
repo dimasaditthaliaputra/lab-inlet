@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Permissions;
+use App\Models\SocialLinks;
 use App\Models\Team;
 use Core\Controller;
 
@@ -10,6 +11,8 @@ class TeamController extends Controller
 {
     protected $teamModel;
     protected $permissionsModel;
+    protected $socialModel;
+
     public function __construct()
     {
         if (!attempt_auto_login()) {
@@ -19,7 +22,9 @@ class TeamController extends Controller
 
         $this->teamModel = new Team();
         $this->permissionsModel = new Permissions();
+        $this->socialModel = new SocialLinks();
     }
+
 
     public function index()
     {
@@ -27,8 +32,13 @@ class TeamController extends Controller
         $roleId = $user->id_roles ?? 0;
 
         $access = $this->permissionsModel->getPermissionByRoute($roleId, 'admin/team');
-        
-        $data = ['title' => 'Team', 'access' => $access];
+
+        $data = [
+            'title' => 'Team Member',
+            'socialMedias' => $this->socialModel->getAll(),
+            'access' => $access
+        ];
+
         view_with_layout('admin/team/index', $data);
     }
 
@@ -37,211 +47,142 @@ class TeamController extends Controller
         try {
             $teams = $this->teamModel->getAll();
 
-            $data = array_map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->full_name,
-                    'nip' => $item->nip,
-                    'nidn' => $item->nidn,
-                    'lab_position' => $item->lab_position,
-                    'academic_position' => $item->academic_position,
-                    'study_program' => $item->study_program,
-                    'email' => $item->email,
-                    'office_address' => $item->office_address,
-                    'image_name' => !empty($item->image_name) ? asset('uploads/team/') . $item->image_name : null,
-                    'expertise' => $item->expertise,
-                    'education' => $item->education,
-                    'certifications' => $item->certifications,
-                    'courses_taught' => $item->courses_taught,
-                    'social_links' => $item->social_links,
-                ];
-            }, $teams);
-
             return response()->json([
                 'success' => true,
                 'message' => 'Success',
-                'data' => $data
+                'data' => $teams
             ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return $this->serverError($e);
+        }
+    }
+
+    public function getSocialMedia()
+    {
+        try {
+            $socialMedias = $this->socialModel->getAll();
+
+            return response()->json([
+                'success' => true,
+                'data' => $socialMedias
+            ]);
+        } catch (\Exception $e) {
+            return $this->serverError($e);
         }
     }
 
     public function create()
     {
-        return view_with_layout('admin/team/form', ['title' => 'Add Team']);
+        return view_with_layout('admin/team/form', [
+            'title' => 'Add Team',
+            'socialMediaOptions' => $this->socialModel->getAll()
+        ]);
     }
 
     public function store()
     {
         try {
-            $imageName = null;
+            $imageName = $this->uploadImage('image', 'uploads/team/');
 
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $file = $_FILES['image'];
-                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                $imageName = md5(time() . $file['name']) . '.' . $ext;
-                $dir = 'uploads/team/';
+            $insertData = $this->prepareTeamData();
+            $insertData['image_name'] = $imageName;
 
-                if (!is_dir($dir)) mkdir($dir, 0777, true);
-                move_uploaded_file($file['tmp_name'], $dir . $imageName);
-            }
+            $teamId = $this->teamModel->create($insertData);
 
-            $certNames = request('cert_name') ?? [];
-            $certPublishers = request('cert_publisher') ?? [];
-            $certifications = [];
-            for ($i = 0; $i < count($certNames); $i++) {
-                $name = trim($certNames[$i]);
-                if ($name === '') continue;
-                $certifications[] = [
-                    'name' => $name,
-                    'publisher' => isset($certPublishers[$i]) ? trim($certPublishers[$i]) : ''
-                ];
-            }
-
-            $data = [
-                'full_name'         => request('full_name'),
-                'nip'               => request('nip'),
-                'nidn'              => request('nidn'),
-                'lab_position'      => request('lab_position'),
-                'academic_position' => request('academic_position'),
-                'study_program'     => request('study_program'),
-                'email'             => request('email'),
-                'office_address'    => request('office_address'),
-                'image_name'        => $imageName,
-                'expertise' => json_encode(array_values(array_filter(request('expertise') ?? []))),
-                'education' => json_encode([
-                    'S1' => [
-                        'university' => request('education_s1_university'),
-                        'major'      => request('education_s1_major'),
-                    ],
-                    'S2' => [
-                        'university' => request('education_s2_university'),
-                        'major'      => request('education_s2_major'),
-                    ],
-                    'S3' => [
-                        'university' => request('education_s3_university'),
-                        'major'      => request('education_s3_major'),
-                    ],
-                ]),
-                'certifications' => json_encode($certifications),
-                'courses_taught' => json_encode([
-                    'ganjil' => array_values(array_filter(request('courses_ganjil') ?? [])),
-                    'genap'  => array_values(array_filter(request('courses_genap') ?? [])),
-                ]),
-                'social_links' => json_encode([
-                    'linkedin'       => request('linkedin'),
-                    'google_scholar' => request('google_scholar'),
-                    'sinta'          => request('sinta'),
-                    'email_contact'  => request('social_email'),
-                    'cv'             => request('cv'),
-                ]),
-            ];
-
-            $insertId = $this->teamModel->create($data);
-
-            logActivity("Create", "Create Team {$data['full_name']}", "team", $insertId, null, $data);
+            $socialData = $this->prepareSocialMediaData();
+            $this->teamModel->assignSocialMedias($teamId, $socialData);
 
             return response()->json(['success' => true, 'message' => 'Team added successfully']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return $this->serverError($e);
         }
     }
 
+
     public function edit($id)
     {
-        $team = $this->teamModel->find($id);
-
+        $team = $this->teamModel->getTeamDetail($id);
         if (!$team) return redirect(base_url('admin/team'));
 
         return view_with_layout('admin/team/form', [
             'title' => 'Edit Team',
-            'team'  => $team
+            'team'  => $team,
+            'socialMediaOptions' => $this->socialModel->getAll()
         ]);
     }
 
     public function update($id)
     {
         try {
-            $team = $this->teamModel->find($id);
+            $team = $this->teamModel->getTeamDetail($id);
             if (!$team) return response()->json(['success' => false], 404);
 
-            $imageName = $team->image_name;
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $file = $_FILES['image'];
-                $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-                $newImage = md5(time() . $file['name']) . '.' . $ext;
-                $dir = 'uploads/team/';
+            $imageName = $this->uploadImage('image', 'uploads/team/', $team['image_name']);
 
-                if (!is_dir($dir)) mkdir($dir, 0777, true);
-                move_uploaded_file($file['tmp_name'], $dir . $newImage);
+            $updateData = $this->prepareTeamData();
+            $updateData['image_name'] = $imageName;
 
-                if ($team->image_name && file_exists($dir . $team->image_name)) {
-                    @unlink($dir . $team->image_name);
-                }
+            $this->teamModel->update($id, $updateData);
 
-                $imageName = $newImage;
+            $socialData = $this->prepareSocialMediaData();
+            $this->teamModel->assignSocialMedias($id, $socialData);
+
+            return response()->json(['success' => true, 'message' => 'Team updated']);
+        } catch (\Exception $e) {
+            return $this->serverError($e);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $team = $this->teamModel->getTeamDetail($id);
+
+            if (!$team) {
+                redirect(base_url('admin/team'));
+                exit;
             }
 
-            $certNames = request('cert_name') ?? [];
-            $certPublishers = request('cert_publisher') ?? [];
-            $certifications = [];
-            for ($i = 0; $i < count($certNames); $i++) {
-                $name = trim($certNames[$i]);
-                if ($name === '') continue;
-                $certifications[] = [
-                    'name' => $name,
-                    'publisher' => isset($certPublishers[$i]) ? trim($certPublishers[$i]) : ''
-                ];
-            }
+            $decode = function ($json) {
+                if (empty($json)) return [];
+                if (is_array($json)) return $json;
+                $decoded = json_decode($json, true);
+                return (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [];
+            };
 
-            $newData = [
-                'full_name'         => request('full_name'),
-                'nip'               => request('nip'),
-                'nidn'              => request('nidn'),
-                'lab_position'      => request('lab_position'),
-                'academic_position' => request('academic_position'),
-                'study_program'     => request('study_program'),
-                'email'             => request('email'),
-                'office_address'    => request('office_address'),
-                'image_name'        => $imageName,
-                'expertise' => json_encode(array_values(array_filter(request('expertise') ?? []))),
-                'education' => json_encode([
-                    'S1' => [
-                        'university' => request('education_s1_university'),
-                        'major'      => request('education_s1_major'),
-                    ],
-                    'S2' => [
-                        'university' => request('education_s2_university'),
-                        'major'      => request('education_s2_major'),
-                    ],
-                    'S3' => [
-                        'university' => request('education_s3_university'),
-                        'major'      => request('education_s3_major'),
-                    ],
-                ]),
-                'certifications' => json_encode($certifications),
-                'courses_taught' => json_encode([
-                    'ganjil' => array_values(array_filter(request('courses_ganjil') ?? [])),
-                    'genap'  => array_values(array_filter(request('courses_genap') ?? [])),
-                ]),
-                'social_links' => json_encode([
-                    'linkedin'       => request('linkedin'),
-                    'google_scholar' => request('google_scholar'),
-                    'sinta'          => request('sinta'),
-                    'email_contact'  => request('social_email'),
-                    'cv'             => request('cv'),
-                ]),
+            $expertises     = $decode($team['expertise'] ?? null);
+            $educations     = $decode($team['education'] ?? null);
+            $certifications = $decode($team['certifications'] ?? null);
+            $courses        = $decode($team['courses_taught'] ?? null);
+            
+            $defaultEdu = ['university' => '', 'major' => ''];
+            $team['education'] = [
+                'S1' => $educations['S1'] ?? $defaultEdu,
+                'S2' => $educations['S2'] ?? $defaultEdu,
+                'S3' => $educations['S3'] ?? $defaultEdu,
             ];
 
+            $team['courses_taught'] = [
+                'ganjil' => $courses['ganjil'] ?? [],
+                'genap'  => $courses['genap']  ?? []
+            ];
 
-            $this->teamModel->update($id, $newData);
+            $team['certifications'] = is_array($certifications) ? $certifications : [];
+            $team['expertise']      = is_array($expertises) ? $expertises : [];
 
-            logActivity("Update", "Update Team {$team->full_name}", "team", $id, $team, $newData);
+            if (!isset($team['social_medias']) || !is_array($team['social_medias'])) {
+                $team['social_medias'] = [];
+            }
 
-            return response()->json(['success' => true, 'message' => 'Team updated successfully']);
+            $data = [
+                'title' => 'View Team',
+                'team' => $team
+            ];
+
+            view_with_layout('admin/team/view', $data);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            redirect(base_url('admin/team'));
+            exit;
         }
     }
 
@@ -251,18 +192,114 @@ class TeamController extends Controller
             $team = $this->teamModel->find($id);
             if (!$team) return response()->json(['success' => false], 404);
 
-            $dir = "uploads/team/";
-            if ($team->image_name && file_exists($dir . $team->image_name)) {
-                @unlink($dir . $team->image_name);
+            if ($team->image_name && file_exists('uploads/team/' . $team->image_name)) {
+                unlink('uploads/team/' . $team->image_name);
             }
 
             $this->teamModel->delete($id);
 
-            logActivity("Delete", "Delete Team {$team->full_name}", "team", $id, $team);
-
-            return response()->json(['success' => true, 'message' => 'Team deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Team deleted']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return $this->serverError($e);
         }
+    }
+
+    private function uploadImage($input, $dir, $old = null)
+    {
+        if (!isset($_FILES[$input]) || $_FILES[$input]['error'] === UPLOAD_ERR_NO_FILE) {
+            return $old;
+        }
+
+        $file = $_FILES[$input];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $newName = md5(time() . $file['name']) . '.' . $ext;
+
+        if (!is_dir($dir)) mkdir($dir, 0777, true);
+        move_uploaded_file($file['tmp_name'], $dir . $newName);
+
+        if ($old && file_exists($dir . $old)) unlink($dir . $old);
+
+        return $newName;
+    }
+
+
+    private function prepareTeamData()
+    {
+        $expertise = array_values(array_filter(request('expertise') ?? []));
+
+        $education = [
+            'S1' => [
+                'university' => request('education_s1_univ'),
+                'major'      => request('education_s1_major')
+            ],
+            'S2' => [
+                'university' => request('education_s2_univ'),
+                'major'      => request('education_s2_major')
+            ],
+            'S3' => [
+                'university' => request('education_s3_univ'),
+                'major'      => request('education_s3_major')
+            ]
+        ];
+
+        $certNames = request('cert_name') ?? [];
+        $certPubs  = request('cert_publisher') ?? [];
+        $certYears = request('cert_year') ?? [];
+
+        $certifications = [];
+        foreach ($certNames as $index => $name) {
+            if (!empty($name)) {
+                $certifications[] = [
+                    'name'      => $name,
+                    'publisher' => $certPubs[$index] ?? '',
+                    'year'      => $certYears[$index] ?? ''
+                ];
+            }
+        }
+
+        $coursesTaught = [
+            'ganjil' => array_values(array_filter(request('courses_ganjil') ?? [])),
+            'genap'  => array_values(array_filter(request('courses_genap') ?? []))
+        ];
+
+        return [
+            'full_name'         => request('full_name'),
+            'nip'               => request('nip'),
+            'nidn'              => request('nidn'),
+            'lab_position'      => request('lab_position'),
+            'academic_position' => request('academic_position'),
+            'study_program'     => request('study_program'),
+            'email'             => request('email'),
+            'office_address'    => request('office_address'),
+            'expertise'         => json_encode($expertise),
+            'education'         => json_encode($education),
+            'certifications'    => json_encode($certifications),
+            'courses_taught'    => json_encode($coursesTaught),
+        ];
+    }
+
+    private function prepareSocialMediaData()
+    {
+        $socialMediaIds   = request('social_media_id') ?? [];
+        $socialMediaLinks = request('social_media_link') ?? [];
+
+        $socialData = [];
+        foreach ($socialMediaIds as $i => $id) {
+            if (!empty($id) && !empty($socialMediaLinks[$i])) {
+                $socialData[] = [
+                    'id_social_media' => $id,
+                    'link_sosmed'     => $socialMediaLinks[$i]
+                ];
+            }
+        }
+        return $socialData;
+    }
+
+    private function serverError($e)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage() . ' Line: ' . $e->getLine()
+        ], 500);
     }
 }

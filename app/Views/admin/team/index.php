@@ -30,10 +30,9 @@
                                 <tr>
                                     <th width="5%">No</th>
                                     <th width="10%">Image</th>
-                                    <th>Name</th>
+                                    <th>Name & Position</th>
                                     <th>NIP</th>
                                     <th>NIDN</th>
-                                    <th>Lab Position</th>
                                     <th width="14%">Action</th>
                                 </tr>
                             </thead>
@@ -90,11 +89,22 @@
                     searchable: false,
                     className: 'text-center',
                     render: (data) =>
-                        data ? `<img src="${data}" class="img-thumbnail img-clickable" style="max-height:50px; cursor:pointer;" />` : '-'
+                        data ?
+                        `<img src="<?php echo asset('uploads/team/'); ?>/${data}" class="img-thumbnail img-clickable" style="max-height:50px; cursor:pointer;" />` : '-'
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: null,
+                    name: 'full_name',
+                    render: (data, type, row) => `
+                    <div>
+                        <strong>${row.full_name ?? '-'}</strong><br>
+                        ${
+                            row.lab_position 
+                            ? `<span class="badge bg-primary-subtle text-primary mt-1">${row.lab_position}</span>`
+                            : ''
+                        }
+                    </div>
+                `
                 },
                 {
                     data: 'nip',
@@ -105,10 +115,6 @@
                     name: 'nidn'
                 },
                 {
-                    data: 'lab_position',
-                    name: 'lab_position'
-                },
-                {
                     data: null,
                     name: 'action',
                     orderable: false,
@@ -116,11 +122,15 @@
                     className: 'text-center text-nowrap',
                     visible: showAction,
                     render: function(data, type, row) {
+                        let viewUrl = '<?= base_url('admin/team'); ?>/' + row.id;
                         let editUrl = '<?php echo base_url('admin/team'); ?>/' + row.id + '/edit';
                         let deleteUrl = '<?php echo base_url('admin/team'); ?>/' + row.id;
 
                         let buttons = '';
 
+                        buttons += `<a href="${viewUrl}" class="btn btn-info btn-sm me-1" title="View Details">
+                        <i class="fas fa-eye"></i>
+                        </a>`;
                         if (CAN_UPDATE) {
                             buttons += `<a href="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit" title="Edit">
                                 <i class="fas fa-edit"></i> Edit

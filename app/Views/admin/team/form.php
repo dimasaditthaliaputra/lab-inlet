@@ -1,10 +1,5 @@
-<?php ob_start(); ?>
-<link rel="stylesheet" href="<?= asset('assets/mazer/extensions/summernote/summernote-lite.min.css') ?>">
-
-<?php $pageStyle = ob_get_clean(); ?>
-
 <?php
-$team = $data['team'] ?? null;
+$team = isset($data['team']) ? (object) $data['team'] : null;
 $isEdit = !empty($team);
 $formAction = $isEdit ? base_url('admin/team/' . $team->id) : base_url('admin/team');
 ?>
@@ -36,13 +31,22 @@ $formAction = $isEdit ? base_url('admin/team/' . $team->id) : base_url('admin/te
                         <?php endif; ?>
 
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label for="full_name" class="form-label required">Name</label>
-                                    <input type="text" class="form-control" id="full_name" name="full_name"
-                                        placeholder="full_name" value="<?= $isEdit ? e($team->full_name) : '' ?>">
+                                    <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Full Name"
+                                        value="<?= $isEdit ? e($team->full_name) : '' ?>" required>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="lab_position" class="form-label">Lab Position</label>
+                                    <input type="text" class="form-control" id="lab_position" name="lab_position" placeholder="Lab Position"
+                                        value="<?= $isEdit ? e($team->lab_position) : '' ?>">
+                                </div>
+                            </div>
+
 
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
@@ -57,14 +61,6 @@ $formAction = $isEdit ? base_url('admin/team/' . $team->id) : base_url('admin/te
                                     <label for="nidn" class="form-label">NIDN</label>
                                     <input type="text" class="form-control" id="nidn" name="nidn" placeholder="nidn"
                                         value="<?= $isEdit ? e($team->nidn) : '' ?>">
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group mb-3">
-                                    <label for="lab_position" class="form-label">Lab Position</label>
-                                    <input type="text" class="form-control" id="lab_position" name="lab_position" placeholder="lab position"
-                                        value="<?= $isEdit ? e($team->lab_position) : '' ?>">
                                 </div>
                             </div>
 
@@ -168,7 +164,6 @@ $formAction = $isEdit ? base_url('admin/team/' . $team->id) : base_url('admin/te
                                 </div>
                             </div>
 
-
                             <div class="card border mt-3 col-12">
                                 <div class="card-header fw-bold d-flex justify-content-between align-items-center">
                                     <span>Certifications</span>
@@ -204,25 +199,14 @@ $formAction = $isEdit ? base_url('admin/team/' . $team->id) : base_url('admin/te
                             </div>
 
                             <div class="col-12 mt-3">
-                                <label class="form-label fw-bold mb-2">Social Links</label>
-
-                                <input type="text" name="linkedln" class="form-control mb-2"
-                                    placeholder="Linkedln URL"
-                                    value="<?= $isEdit ? e(json_decode($team->social_links, true)['Linkedln'] ?? '') : '' ?>">
-
-                                <input type="text" name="googleScholar" class="form-control mb-2"
-                                    placeholder="Google Scholar URL"
-                                    value="<?= $isEdit ? e(json_decode($team->social_links, true)['Google Scholar'] ?? '') : '' ?>">
-
-                                <input type="text" name="sinta" class="form-control mb-2"
-                                    placeholder="Sinta URL"
-                                    value="<?= $isEdit ? e(json_decode($team->social_links, true)['Sinta'] ?? '') : '' ?>">
-
-                                <input type="text" name="cv" class="form-control mb-2"
-                                    placeholder="CV URL"
-                                    value="<?= $isEdit ? e(json_decode($team->social_links, true)['CV'] ?? '') : '' ?>">
+                                <div class="card border">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">Social Links</span>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="addSocialBtn">+ Tambah Social Media</button>
+                                    </div>
+                                    <div class="card-body" id="socialContainer"></div>
+                                </div>
                             </div>
-
 
                             <div class="col-12 mt-3 d-flex justify-content-end">
                                 <a href="<?= base_url('admin/team') ?>" class="btn btn-secondary">Back</a>
@@ -242,138 +226,174 @@ $formAction = $isEdit ? base_url('admin/team/' . $team->id) : base_url('admin/te
 
 <?php ob_start(); ?>
 <script>
-    var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
+    var audio = new Audio("<?= base_url('assets/audio/success.wav'); ?>");
 
     let expertiseIndex = 0;
     let certIndex = 0;
     let ganjilIndex = 0;
     let genapIndex = 0;
+    let socialIndex = 0;
+
+    let socialMediaOptions = <?= json_encode($socialMediaOptions) ?> ?? [];
 
     function addExpertise(value = '') {
         $("#expertiseContainer").append(`
-      <div class="input-group mb-2" id="exp-${expertiseIndex}">
-        <input type="text" class="form-control" name="expertise[]" placeholder="Ex: IoT Security" value="${value}">
-        <button class="btn btn-outline-danger" type="button" onclick="$('#exp-${expertiseIndex}').remove()">Hapus</button>
-      </div>
-    `);
+            <div class="input-group mb-2" id="exp-${expertiseIndex}">
+                <input type="text" class="form-control" name="expertise[]" placeholder="Ex: IoT Security" value="${value}">
+                <button class="btn btn-outline-danger" type="button" onclick="$('#exp-${expertiseIndex}').remove()">Hapus</button>
+            </div>
+        `);
         expertiseIndex++;
     }
     $("#addExpertiseBtn").on("click", () => addExpertise());
 
     function addCertification(name = '', publisher = '', year = '') {
         $("#certContainer").append(`
-      <div class="row mb-2 align-items-center" id="cert-${certIndex}">
-        <div class="col-md-5">
-          <input type="text" class="form-control" name="cert_name[]" placeholder="Certification Name" value="${name}">
-        </div>
-        <div class="col-md-4">
-          <input type="text" class="form-control" name="cert_publisher[]" placeholder="Publisher" value="${publisher}">
-        </div>
-
-        <div class="col-md-2">
-          <input type="text" class="form-control" name="cert_year[]" placeholder="Year" value="${year}">
-        </div>
-
-        <div class="col-md-1 text-end">
-          <button class="btn btn-outline-danger btn-sm" type="button" onclick="$('#cert-${certIndex}').remove()">Hapus</button>
-        </div>
-
-      </div>
-    `);
+            <div class="row mb-2 align-items-center" id="cert-${certIndex}">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" name="cert_name[]" placeholder="Certification Name" value="${name}">
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="cert_publisher[]" placeholder="Publisher" value="${publisher}">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" name="cert_year[]" placeholder="Year" value="${year}">
+                </div>
+                <div class="col-md-1 text-end">
+                    <button class="btn btn-outline-danger btn-sm" type="button" onclick="$('#cert-${certIndex}').remove()">Hapus</button>
+                </div>
+            </div>
+        `);
         certIndex++;
     }
-
     $("#addCertBtn").on("click", () => addCertification());
-
 
     function addCourse(type = "ganjil", value = '') {
         let idx = type === "ganjil" ? ganjilIndex : genapIndex;
         let container = type === "ganjil" ? "#ganjilContainer" : "#genapContainer";
 
         $(container).append(`
-      <div class="input-group mb-2" id="${type}-${idx}">
-        <input type="text" class="form-control" name="courses_${type}[]" placeholder="Course Name" value="${value}">
-        <button class="btn btn-outline-danger" type="button" onclick="$('#${type}-${idx}').remove()">Hapus</button>
-      </div>
-    `);
+            <div class="input-group mb-2" id="${type}-${idx}">
+                <input type="text" class="form-control" name="courses_${type}[]" placeholder="Course Name" value="${value}">
+                <button class="btn btn-outline-danger" type="button" onclick="$('#${type}-${idx}').remove()">Hapus</button>
+            </div>
+        `);
 
         (type === "ganjil") ? ganjilIndex++ : genapIndex++;
     }
     $("#addGanjilBtn").on("click", () => addCourse("ganjil"));
     $("#addGenapBtn").on("click", () => addCourse("genap"));
 
-    $(document).ready(function() {
-        $('#image').change(function(e) {
-            let file = e.target.files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = e => $('#img-preview').attr('src', e.target.result).show();
-                reader.readAsDataURL(file);
-            } else {
-                $('#img-preview').hide().attr('src', '');
-            }
+    function addSocialMedia(selectedId = '', linkValue = '') {
+        let options = '<option value="">-- Pilih Social Media --</option>';
+
+        socialMediaOptions.forEach(sm => {
+            let selected = sm.id == selectedId ? 'selected' : '';
+            options += `<option value="${sm.id}" ${selected}>${sm.name}</option>`;
         });
 
-        <?php if ($isEdit):
-            $expertise = json_decode($team->expertise ?? '[]', true) ?: [];
-            $certs = json_decode($team->certifications ?? '[]', true) ?: [];
-            $courses = json_decode($team->courses_taught ?? '{}', true) ?: [];
-            $ganjil = $courses['ganjil'] ?? [];
-            $genap = $courses['genap'] ?? [];
-        ?>
-            <?php foreach ($expertise as $exp): ?>
-                addExpertise("<?= e($exp) ?>");
-            <?php endforeach; ?>
+        $("#socialContainer").append(`
+            <div class="row mb-2 align-items-center" id="social-${socialIndex}">
+                <div class="col-md-4">
+                    <select class="form-select" name="social_media_id[]" required>${options}</select>
+                </div>
+                <div class="col-md-7">
+                    <input type="text" class="form-control" name="social_media_link[]" placeholder="https://..." value="${linkValue}" required>
+                </div>
+                <div class="col-md-1 text-end">
+                    <button class="btn btn-outline-danger btn-sm" type="button" onclick="$('#social-${socialIndex}').remove()">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `);
 
-            <?php foreach ($certs as $c): ?>
-                addCertification("<?= e($c['name'] ?? '') ?>", "<?= e($c['publisher'] ?? '') ?>");
-            <?php endforeach; ?>
+        socialIndex++;
+    }
 
-            <?php foreach ($ganjil as $c): ?>
-                addCourse("ganjil", "<?= e($c) ?>");
-            <?php endforeach; ?>
+    $("#addSocialBtn").on("click", () => addSocialMedia());
 
-            <?php foreach ($genap as $c): ?>
-                addCourse("genap", "<?= e($c) ?>");
+    $(document).ready(function() {
+
+        <?php if ($isEdit && !empty($team->social_medias)): ?>
+            <?php foreach ($team->social_medias as $sos): ?>
+                addSocialMedia(
+                    "<?= $sos->id ?>",
+                    "<?= htmlspecialchars($sos->link_sosmed, ENT_QUOTES) ?>"
+                );
             <?php endforeach; ?>
+        <?php endif; ?>
+
+        $('#image').on("change", function(e) {
+            let file = e.target.files[0];
+            if (!file) return;
+            let reader = new FileReader();
+            reader.onload = e => $('#img-preview').attr('src', e.target.result).show();
+            reader.readAsDataURL(file);
+        });
+
+        <?php if ($isEdit): ?>
+            <?php
+            $expertises = $team->expertise;
+            if (is_string($expertises)) {
+                $expertises = json_decode(stripslashes($expertises), true);
+            }
+            if (!empty($expertises)):
+                foreach ($expertises as $exp):
+            ?>
+                    addExpertise("<?= e($exp) ?>");
+            <?php endforeach;
+            endif; ?>
+        <?php endif; ?>
+
+        <?php if ($isEdit && !empty($team->courses_taught)): ?>
+            <?php
+            $courses = is_string($team->courses_taught) ? json_decode($team->courses_taught, true) : $team->courses_taught;
+            ?>
+
+            <?php if (!empty($courses['ganjil'])): ?>
+                <?php foreach ($courses['ganjil'] as $c): ?>
+                    addCourse("ganjil", "<?= e($c) ?>");
+                <?php endforeach; ?>
+            <?php endif; ?>
+
+            <?php if (!empty($courses['genap'])): ?>
+                <?php foreach ($courses['genap'] as $c): ?>
+                    addCourse("genap", "<?= e($c) ?>");
+                <?php endforeach; ?>
+            <?php endif; ?>
         <?php endif; ?>
 
         $("#formData").submit(function(e) {
             e.preventDefault();
-
             let btn = $("#btnSubmit");
             let spinner = btn.find(".spinner-border");
             btn.prop("disabled", true);
             spinner.removeClass("d-none");
 
-            let formData = new FormData(this);
-
             $.ajax({
-                url: '<?= $formAction ?>',
+                url: "<?= $formAction ?>",
                 type: "POST",
-                data: formData,
+                data: new FormData(this),
                 processData: false,
                 contentType: false,
                 success: function(res) {
-
                     audio.play();
 
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
                         text: res.message,
-                        showConfirmButton: false,
-                        timer: 1500
+                        timer: 1500,
+                        showConfirmButton: false
                     }).then(() => {
                         if (res.success) {
-                            window.location.href = '<?= base_url("admin/team") ?>';
+                            window.location.href = "<?= base_url('admin/team') ?>";
                         }
                     });
                 },
-                error: (xhr) => {
-                    let msg = 'Server Error';
-                    if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-                    Swal.fire("Error", msg, "error");
+                error: xhr => {
+                    Swal.fire("Error", xhr.responseJSON?.message || "Server Error", "error");
                 },
                 complete: () => {
                     btn.prop("disabled", false);
@@ -383,4 +403,5 @@ $formAction = $isEdit ? base_url('admin/team/' . $team->id) : base_url('admin/te
         });
     });
 </script>
+
 <?php $pageScripts = ob_get_clean(); ?>

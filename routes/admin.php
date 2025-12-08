@@ -19,6 +19,7 @@ use App\Controllers\ProductController;
 use App\Controllers\HeroSliderController;
 use App\Controllers\ResearchFocusController;
 use App\Controllers\PermissionsController;
+use App\Controllers\SocialLinksController;
 
 return prefix('admin', route_group([
 
@@ -53,6 +54,7 @@ return prefix('admin', route_group([
     get('/team/create', [TeamController::class, 'create']),
     get('/team/data', [TeamController::class, 'data']),
     post('/team', [TeamController::class, 'store']),
+    get('/team/{id}', [TeamController::class, 'show']),
     get('/team/{id}/edit', [TeamController::class, 'edit']),
     put('/team/{id}', [TeamController::class, 'update']),
     delete('/team/{id}', [TeamController::class, 'destroy']),
@@ -168,5 +170,13 @@ return prefix('admin', route_group([
     get('/permissions', [PermissionsController::class, 'index']),
     get('/permissions/data/{id}', [PermissionsController::class, 'data']),
     put('/permissions/update', [PermissionsController::class, 'update']),
+
+    //Social Links
+    get('/social-links',        [SocialLinksController::class, 'index']),
+    get('/social-links/data',   [SocialLinksController::class, 'data']),
+    post('/social-links',       [SocialLinksController::class, 'store']),
+    get('/social-links/{id}/edit', [SocialLinksController::class, 'edit']),
+    put('/social-links/{id}',   [SocialLinksController::class, 'update']),
+    delete('/social-links/{id}', [SocialLinksController::class, 'destroy']),
     get('/permissions/generate', [PermissionsController::class, 'generatePermissions']),
 ]));
