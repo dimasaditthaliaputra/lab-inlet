@@ -1,9 +1,9 @@
-window.addEventListener("load", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-});
+// window.addEventListener("load", () => {
+//   window.scrollTo({
+//     top: 0,
+//     behavior: "smooth",
+//   });
+// });
 
 // Count
 function animateCount(el, duration = 1200) {
@@ -620,3 +620,108 @@ document.addEventListener("DOMContentLoaded", function () {
     requestAnimationFrame(step);
   }
 });
+
+const filterBtns = document.querySelectorAll(".filter-btn");
+const projectCards = document.querySelectorAll(".project-card");
+
+filterBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    filterBtns.forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const filter = btn.dataset.filter;
+
+    projectCards.forEach((card) => {
+      if (filter === "all" || card.dataset.category === filter) {
+        card.style.display = "block";
+        setTimeout(() => {
+          card.style.opacity = "1";
+          card.style.transform = "scale(1)";
+        }, 10);
+      } else {
+        card.style.opacity = "0";
+        card.style.transform = "scale(0.8)";
+        setTimeout(() => {
+          card.style.display = "none";
+        }, 300);
+      }
+    });
+  });
+});
+
+// Gallery Carousel
+const carousel = document.querySelector(".gallery-carousel");
+const slides = document.querySelectorAll(".gallery-slide");
+const prevBtn = document.querySelector(".gallery-nav.prev");
+const nextBtn = document.querySelector(".gallery-nav.next");
+const indicators = document.querySelectorAll(".gallery-indicator");
+
+let currentIndex = 0;
+const slidesToShow = window.innerWidth <= 768 ? 1 : 3;
+const maxIndex = Math.ceil(slides.length / slidesToShow) - 1;
+
+function updateCarousel() {
+  const slideWidth = slides[0].offsetWidth + 20; // width + gap
+  const offset = -currentIndex * slideWidth * slidesToShow;
+  carousel.style.transform = `translateX(${offset}px)`;
+
+  // Update indicators
+  indicators.forEach((indicator, index) => {
+    indicator.classList.toggle("active", index === currentIndex);
+  });
+}
+
+prevBtn.addEventListener("click", () => {
+  currentIndex = currentIndex > 0 ? currentIndex - 1 : maxIndex;
+  updateCarousel();
+});
+
+nextBtn.addEventListener("click", () => {
+  currentIndex = currentIndex < maxIndex ? currentIndex + 1 : 0;
+  updateCarousel();
+});
+
+indicators.forEach((indicator, index) => {
+  indicator.addEventListener("click", () => {
+    currentIndex = index;
+    updateCarousel();
+  });
+});
+
+// Auto-slide every 4 seconds
+setInterval(() => {
+  currentIndex = currentIndex < maxIndex ? currentIndex + 1 : 0;
+  updateCarousel();
+}, 4000);
+
+// Handle window resize
+window.addEventListener("resize", () => {
+  updateCarousel();
+});
+
+// Touch/swipe support for mobile
+let touchStartX = 0;
+let touchEndX = 0;
+
+carousel.addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+carousel.addEventListener("touchend", (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+});
+
+function handleSwipe() {
+  if (touchStartX - touchEndX > 50) {
+    // Swipe left
+    currentIndex = currentIndex < maxIndex ? currentIndex + 1 : 0;
+    updateCarousel();
+  }
+
+  if (touchEndX - touchStartX > 50) {
+    // Swipe right
+    currentIndex = currentIndex > 0 ? currentIndex - 1 : maxIndex;
+    updateCarousel();
+  }
+}

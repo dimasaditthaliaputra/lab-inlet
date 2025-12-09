@@ -1,3 +1,4 @@
+<!-- 1. Home Section -->
 <section class="home" id="home">
     <div class="home-slider">
         <div class="home-list">
@@ -39,12 +40,13 @@
     </div>
 </section>
 
+<!-- 2. About Us Section -->
 <section class="about-us" id="about">
     <div class="container-about">
         <div class="about-content">
             <div class="about-text">
-                <h2 class="about-title text-slide-animate text-slide-left" data-text="About Us">About Us</h2>
-                <p class="description fade-animate fade-in-left" data-text="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati quae, iusto quod culpa vitae harum repudiandae reiciendis rerum, tempora odit minus in eum facere. Dolores harum ipsam, et porro non totam exercitationem.">
+                <h2 class="about-title" data-text="About Us">About Us</h2>
+                <p class="description" data-text="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Obcaecati quae, iusto quod culpa vitae harum repudiandae reiciendis rerum, tempora odit minus in eum facere. Dolores harum ipsam, et porro non totam exercitationem.">
                     Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                     Obcaecati quae, iusto quod culpa vitae harum repudiandae reiciendis rerum,
                     tempora odit minus in eum facere. Dolores harum ipsam, et porro non totam exercitationem.
@@ -53,23 +55,23 @@
             <div class="card-stat-container">
                 <div class="card-stat">
                     <h3 class="count-up" data-target="11">11</h3>
-                    <p class="text text-slide-animate" data-text="Active Members">Active Members</p>
+                    <p class="text" data-text="Active Members">Active Members</p>
                 </div>
                 <div class="card-stat">
                     <h3 class="count-up" data-target="50"> 50</h3>
-                    <p class="text text-slide-animate" data-text="Related Articles">Related Articles</p>
+                    <p class="text" data-text="Related Articles">Related Articles</p>
                 </div>
                 <div class="card-stat">
                     <h3 class="count-up" data-target="5">5</h3>
-                    <p class="text text-slide-animate" data-text="Prototypes">Prototypes</p>
+                    <p class="text" data-text="Prototypes">Prototypes</p>
                 </div>
                 <div class="card-stat">
                     <h3 class="count-up" data-target="50"> 50</h3>
-                    <p class="text text-slide-animate" data-text="Student Involved">Student Involved</p>
+                    <p class="text" data-text="Student Involved">Student Involved</p>
                 </div>
             </div>
         </div>
-        <div class="image-content fade-animate fade-in fade-delay-400">
+        <div class="image-content">
             <!-- Foto 1 - Kiri Atas -->
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="blob-1">
                 <defs>
@@ -128,6 +130,484 @@
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="blob-bg blob-bg-4">
                 <path fill="#D46B08" d="M48.2,-56.7C61.3,-48.3,70.2,-32.3,73.8,-15C77.4,2.3,75.7,20.9,67.4,35.9C59.1,50.9,44.2,62.3,27.6,67.5C11,72.7,-7.3,71.7,-24.1,65.8C-40.9,59.9,-56.2,49.1,-64.8,34.2C-73.4,19.3,-75.3,0.3,-71.1,-16.5C-66.9,-33.3,-56.6,-47.9,-43.2,-56.2C-29.8,-64.5,-13.2,-66.5,2.3,-69.3C17.8,-72.1,35.1,-65.1,48.2,-56.7Z" transform="translate(100 100)" />
             </svg>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Research Focus Section -->
+<section id="research-focus">
+    <div style="max-width: 1200px; width: 100%;">
+        <h2 class="section-title">Core Research Focus</h2>
+        <div class="research-grid">
+            <div class="research-card">
+                <i class="fas fa-robot research-icon"></i>
+                <h3>Artificial Intelligence</h3>
+                <p>Advanced machine learning algorithms and neural networks for intelligent systems</p>
+            </div>
+            <div class="research-card">
+                <i class="fas fa-microchip research-icon"></i>
+                <h3>Internet of Things</h3>
+                <p>Smart sensor networks and connected devices for automation solutions</p>
+            </div>
+            <div class="research-card">
+                <i class="fas fa-database research-icon"></i>
+                <h3>Big Data Analytics</h3>
+                <p>Processing and analyzing large-scale datasets for actionable insights</p>
+            </div>
+            <div class="research-card">
+                <i class="fas fa-shield-alt research-icon"></i>
+                <h3>Cybersecurity</h3>
+                <p>Protecting systems and networks from digital threats and vulnerabilities</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Team Section -->
+<section id="team">
+    <h2 class="section-title">Our Dedicated Team</h2>
+    <div class="team-grid">
+        <div class="team-card">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" alt="Dr. Ahmad Santoso" class="team-image">
+            <div class="team-info">
+                <h3 class="team-name">Dr. Ahmad Santoso, M.T.</h3>
+                <p class="team-position">Lab Head / Professor</p>
+                <div class="team-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" alt="Siti Rahma" class="team-image">
+            <div class="team-info">
+                <h3 class="team-name">Siti Rahma, S.Kom, M.Kom</h3>
+                <p class="team-position">Senior Researcher</p>
+                <div class="team-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" alt="Budi Prasetyo" class="team-image">
+            <div class="team-info">
+                <h3 class="team-name">Budi Prasetyo, M.Sc</h3>
+                <p class="team-position">Research Associate</p>
+                <div class="team-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" alt="Diana Kartika" class="team-image">
+            <div class="team-info">
+                <h3 class="team-name">Diana Kartika, S.T.</h3>
+                <p class="team-position">Lab Assistant</p>
+                <div class="team-social">
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Facilities Section -->
+<section id="facilities">
+    <div class="facilities-container">
+        <h2 class="section-title">Lab Facilities & Equipment</h2>
+
+        <div class="facility-item">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop" alt="High-Performance Computing Cluster" class="facility-image">
+            <div class="facility-content">
+                <h3>High-Performance Computing Cluster</h3>
+                <p>State-of-the-art computing infrastructure with 128 CPU cores and 512GB RAM for intensive computational tasks and simulations.</p>
+                <div class="facility-meta">
+                    <span class="facility-tag">Operational</span>
+                    <span class="facility-tag">Qty: 2</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="facility-item">
+            <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop" alt="IoT Development Kits" class="facility-image">
+            <div class="facility-content">
+                <h3>IoT Development Kits</h3>
+                <p>Complete sets of Arduino, Raspberry Pi, and ESP32 boards with various sensors for prototyping smart systems and embedded solutions.</p>
+                <div class="facility-meta">
+                    <span class="facility-tag">Operational</span>
+                    <span class="facility-tag">Qty: 25</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="facility-item">
+            <img src="https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=600&h=400&fit=crop" alt="VR Development Lab" class="facility-image">
+            <div class="facility-content">
+                <h3>VR Development Lab</h3>
+                <p>Professional virtual reality equipment including Oculus Quest 2, HTC Vive, and development workstations for immersive applications.</p>
+                <div class="facility-meta">
+                    <span class="facility-tag">Operational</span>
+                    <span class="facility-tag">Qty: 5</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Projects Section -->
+<section id="projects">
+    <div style="max-width: 1200px; width: 100%;">
+        <h2 class="section-title">Featured Lab Projects</h2>
+
+        <div class="project-filters">
+            <button class="filter-btn active" data-filter="all">All Projects</button>
+            <button class="filter-btn" data-filter="ai">AI & ML</button>
+            <button class="filter-btn" data-filter="iot">IoT</button>
+            <button class="filter-btn" data-filter="web">Web Development</button>
+            <button class="filter-btn" data-filter="mobile">Mobile Apps</button>
+        </div>
+
+        <div class="projects-grid">
+            <div class="project-card" data-category="ai">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop" alt="Smart Assistant" class="project-image">
+                <div class="project-content">
+                    <div class="project-tags">
+                        <span class="project-tag">#AI</span>
+                        <span class="project-tag">#NLP</span>
+                    </div>
+                    <h3>AI-Powered Smart Assistant</h3>
+                    <p>Intelligent virtual assistant using natural language processing and machine learning for automated customer support.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="iot">
+                <img src="https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=600&h=400&fit=crop" alt="Smart Home" class="project-image">
+                <div class="project-content">
+                    <div class="project-tags">
+                        <span class="project-tag">#IoT</span>
+                        <span class="project-tag">#Automation</span>
+                    </div>
+                    <h3>Smart Home Automation System</h3>
+                    <p>IoT-based home automation with energy monitoring, security features, and mobile control interface.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="web">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop" alt="Analytics Dashboard" class="project-image">
+                <div class="project-content">
+                    <div class="project-tags">
+                        <span class="project-tag">#Web</span>
+                        <span class="project-tag">#Analytics</span>
+                    </div>
+                    <h3>Real-Time Analytics Dashboard</h3>
+                    <p>Web-based dashboard for visualizing complex datasets with interactive charts and real-time updates.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="mobile">
+                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop" alt="Health App" class="project-image">
+                <div class="project-content">
+                    <div class="project-tags">
+                        <span class="project-tag">#Mobile</span>
+                        <span class="project-tag">#Health</span>
+                    </div>
+                    <h3>Personal Health Tracker</h3>
+                    <p>Mobile application for tracking health metrics, medications, and appointments with AI-powered insights.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="ai">
+                <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=400&fit=crop" alt="Image Recognition" class="project-image">
+                <div class="project-content">
+                    <div class="project-tags">
+                        <span class="project-tag">#AI</span>
+                        <span class="project-tag">#Vision</span>
+                    </div>
+                    <h3>Computer Vision Detection System</h3>
+                    <p>Advanced image recognition system for object detection and classification using deep learning.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="iot">
+                <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&h=400&fit=crop" alt="Agriculture" class="project-image">
+                <div class="project-content">
+                    <div class="project-tags">
+                        <span class="project-tag">#IoT</span>
+                        <span class="project-tag">#AgriTech</span>
+                    </div>
+                    <h3>Smart Agriculture Monitoring</h3>
+                    <p>IoT sensor network for monitoring soil conditions, weather, and crop health in real-time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. News Section -->
+<section id="news">
+    <div style="max-width: 1200px; width: 100%;">
+        <h2 class="section-title">Latest News & Announcements</h2>
+        <div class="news-grid">
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop" alt="Conference" class="news-image">
+                <div class="news-content">
+                    <div class="news-date">December 5, 2025</div>
+                    <h3>Lab Team Presents Research at International AI Conference</h3>
+                    <a href="#" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop" alt="Award" class="news-image">
+                <div class="news-content">
+                    <div class="news-date">November 28, 2025</div>
+                    <h3>Awarded Best Innovation Grant for Smart City Project</h3>
+                    <a href="#" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="news-card">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" alt="Workshop" class="news-image">
+                <div class="news-content">
+                    <div class="news-date">November 15, 2025</div>
+                    <h3>Upcoming Workshop: Introduction to Machine Learning</h3>
+                    <a href="#" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Partners Section -->
+<section id="partners">
+    <div style="width:100%;">
+        <h2 class="section-title">Our Valued Partners</h2>
+
+        <div class="slider">
+            <div class="slide-track">
+                <!-- gunakan logo transparan -->
+                <div class="slide"><img src="https://icon.horse/icon/google.com" alt="Google"></div>
+                <div class="slide"><img src="https://icon.horse/icon/microsoft.com" alt="Microsoft"></div>
+                <div class="slide"><img src="https://icon.horse/icon/apple.com" alt="Apple"></div>
+                <div class="slide"><img src="https://icon.horse/icon/amazon.com" alt="Amazon"></div>
+                <div class="slide"><img src="https://icon.horse/icon/netflix.com" alt="Netflix"></div>
+                <div class="slide"><img src="https://icon.horse/icon/spotify.com" alt="Spotify"></div>
+                <div class="slide"><img src="https://icon.horse/icon/meta.com" alt="Meta"></div>
+
+                <!-- duplikasi untuk infinite slide -->
+                <div class="slide"><img src="https://icon.horse/icon/google.com" alt="Google"></div>
+                <div class="slide"><img src="https://icon.horse/icon/microsoft.com" alt="Microsoft"></div>
+                <div class="slide"><img src="https://icon.horse/icon/apple.com" alt="Apple"></div>
+                <div class="slide"><img src="https://icon.horse/icon/amazon.com" alt="Amazon"></div>
+                <div class="slide"><img src="https://icon.horse/icon/netflix.com" alt="Netflix"></div>
+                <div class="slide"><img src="https://icon.horse/icon/spotify.com" alt="Spotify"></div>
+                <div class="slide"><img src="https://icon.horse/icon/meta.com" alt="Meta"></div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Product -->
+<section id="products">
+    <div style="max-width: 1200px; width: 100%;">
+        <h2 class="section-title">Latest Products</h2>
+        <div class="product-grid">
+
+            <!-- Product 1 -->
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop"
+                        alt="Nama Produk" class="product-image">
+                    <span class="product-release-tag">Rilis: 15 Jan 2025</span>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Nama Produk Inovatif Terbaru</h3>
+                    <p class="product-description">
+                        Inovasi teknologi yang dirancang untuk memudahkan pekerjaanmu.
+                    </p>
+                    <a href="detail-product.html?id=1" class="btn-detail">
+                        Lihat Detail <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop"
+                        alt="Nama Produk" class="product-image">
+                    <span class="product-release-tag">Rilis: 15 Jan 2025</span>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Nama Produk Inovatif Terbaru</h3>
+                    <p class="product-description">
+                        Inovasi baru yang lebih efisien dan ramah lingkungan.
+                    </p>
+                    <a href="detail-product.html?id=1" class="btn-detail">
+                        Lihat Detail <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop"
+                        alt="Nama Produk" class="product-image">
+                    <span class="product-release-tag">Rilis: 15 Jan 2025</span>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Nama Produk Inovatif Terbaru</h3>
+                    <p class="product-description">
+                        Inovasi baru yang lebih efisien dan ramah lingkungan.
+                    </p>
+                    <a href="detail-product.html?id=1" class="btn-detail">
+                        Lihat Detail <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop"
+                        alt="Nama Produk" class="product-image">
+                    <span class="product-release-tag">Rilis: 15 Jan 2025</span>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Nama Produk Inovatif Terbaru</h3>
+                    <p class="product-description">
+                        Inovasi baru yang lebih efisien dan ramah lingkungan.
+                    </p>
+                    <a href="detail-product.html?id=1" class="btn-detail">
+                        Lihat Detail <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-container">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop"
+                        alt="Nama Produk" class="product-image">
+                    <span class="product-release-tag">Rilis: 15 Jan 2025</span>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Nama Produk Inovatif Terbaru</h3>
+                    <p class="product-description">
+                        Inovasi baru yang lebih efisien dan ramah lingkungan.
+                    </p>
+                    <a href="detail-product.html?id=1" class="btn-detail">
+                        Lihat Detail <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery">
+    <div style="max-width: 1200px; width: 100%;">
+        <h2 class="section-title">Lab Snapshot</h2>
+
+        <div class="gallery-carousel-container">
+            <button class="gallery-nav prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="gallery-carousel">
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=500&fit=crop" alt="Lab Equipment">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Modern Lab Equipment</div>
+                        <div class="gallery-overlay-desc">State-of-the-art technology for research</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&h=500&fit=crop" alt="Team Collaboration">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Team Collaboration</div>
+                        <div class="gallery-overlay-desc">Working together on innovative projects</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=600&h=500&fit=crop" alt="Workshop Session">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Workshop Session</div>
+                        <div class="gallery-overlay-desc">Hands-on training and learning</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=500&fit=crop" alt="Research Discussion">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Research Discussion</div>
+                        <div class="gallery-overlay-desc">Sharing ideas and insights</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&h=500&fit=crop" alt="Development Work">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Development Work</div>
+                        <div class="gallery-overlay-desc">Building next-gen solutions</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=500&fit=crop" alt="Team Meeting">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Team Meeting</div>
+                        <div class="gallery-overlay-desc">Planning and strategy sessions</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=600&h=500&fit=crop" alt="VR Testing">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">VR Testing</div>
+                        <div class="gallery-overlay-desc">Exploring immersive technologies</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=500&fit=crop" alt="Data Analysis">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Data Analysis</div>
+                        <div class="gallery-overlay-desc">Processing and visualizing insights</div>
+                    </div>
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=500&fit=crop" alt="Presentation">
+                    <div class="gallery-overlay">
+                        <div class="gallery-overlay-title">Project Presentation</div>
+                        <div class="gallery-overlay-desc">Showcasing our achievements</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="gallery-nav next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="gallery-indicators">
+            <div class="gallery-indicator active"></div>
+            <div class="gallery-indicator"></div>
+            <div class="gallery-indicator"></div>
         </div>
     </div>
 </section>

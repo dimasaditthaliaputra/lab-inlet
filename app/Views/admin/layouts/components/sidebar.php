@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\Menu;
+use App\Models\SiteSettings;
 
 $menuModel = new Menu();
+$siteSetting = new SiteSettings();
 
 $user = session('user');
 $roleId = $user->id_roles ?? 0;
@@ -32,6 +34,17 @@ if (!function_exists('isSubmenuActive')) {
         return false;
     }
 }
+
+$configLogo = $siteSetting->getConfig('logo_path');
+
+$path = __DIR__ . '/../../../../../public/uploads/settings/' . $configLogo->logo_path;
+
+$logo = '';
+if ($configLogo->logo_path && file_exists($path)) {
+    $logo = asset('uploads/settings/' . $configLogo->logo_path);
+} else {
+    $logo = asset('uploads/settings/logo.png');
+}
 ?>
 
 <div id="sidebar">
@@ -40,7 +53,7 @@ if (!function_exists('isSubmenuActive')) {
             <div class="d-flex justify-content-between align-items-center">
                 <div class="logo">
                     <a href="<?= base_url('admin/dashboard') ?>">
-                        <img src="<?= asset('assets/logo/logo.png') ?>" alt="Logo" class="logo-image">
+                        <img src="<?= $logo ?>" alt="Logo" class="logo-image">
                     </a>
                 </div>
             </div>

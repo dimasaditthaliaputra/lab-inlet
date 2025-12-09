@@ -105,6 +105,8 @@ class SiteSettingsController extends Controller
             if ($oldData) {
                 $this->model->update($oldData->id, $data);
 
+                $this->updateEnvFile('APP_NAME', request('site_name'));
+
                 logActivity(
                     "Update",
                     "Site settings updated",
@@ -115,6 +117,8 @@ class SiteSettingsController extends Controller
                 );
             } else {
                 $insertId = $this->model->create($data);
+
+                $this->updateEnvFile('APP_NAME', request('site_name'));
 
                 logActivity(
                     "Create",
@@ -136,5 +140,36 @@ class SiteSettingsController extends Controller
                 'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    private function updateEnvFile($key, $value)
+    {
+        $path = __DIR__ . '/../../.env'; 
+        
+        if (function_exists('base_path')) {
+            $path = base_path('.env');
+        } elseif (defined('FCPATH')) {
+            $path = FCPATH . '../.env';
+        }
+
+        if (!file_exists($path)) {
+            return;
+        }
+
+        $oldContent = file_get_contents($path);
+
+        if (strpos($value, ' ') !== false && strpos($value, '"') === false) {
+            $value = '"' . $value . '"';
+        }
+
+        $pattern = "/^{$key}=.*/m";
+
+        if (preg_match($pattern, $oldContent)) {
+            $newContent = preg_replace($pattern, "{$key}={$value}", $oldContent);
+        } else {
+            $newContent = $oldContent . PHP_EOL . "{$key}={$value}";
+        }
+
+        file_put_contents($path, $newContent);
     }
 }

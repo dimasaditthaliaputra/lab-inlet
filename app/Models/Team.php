@@ -35,7 +35,12 @@ class Team extends Model
         LEFT JOIN social_team st ON tm.id = st.id_team
         LEFT JOIN social_links sl ON st.id_social_media = sl.id
         GROUP BY tm.id
-        ORDER BY tm.id DESC
+        ORDER BY 
+            CASE 
+                WHEN tm.lab_position = 'Kepala Laboratorium' THEN 1
+                ELSE 2
+            END,
+            tm.id DESC
     ")->fetchAll();
 
         return $data;
@@ -104,7 +109,7 @@ class Team extends Model
         }
     }
 
-     public function getTeamWithCreator($id)
+    public function getTeamWithCreator($id)
     {
         return $this->db->query(
             "SELECT t.*, u.* 
@@ -112,8 +117,7 @@ class Team extends Model
          LEFT JOIN social_team s ON t.id = s.id_team
          WHERE t.id = :id",
         )
-        ->bind(':id', $id)
-        ->fetch();
+            ->bind(':id', $id)
+            ->fetch();
     }
-    
 }
