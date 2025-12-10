@@ -145,12 +145,6 @@ class SiteSettingsController extends Controller
     private function updateEnvFile($key, $value)
     {
         $path = __DIR__ . '/../../.env'; 
-        
-        if (function_exists('base_path')) {
-            $path = base_path('.env');
-        } elseif (defined('FCPATH')) {
-            $path = FCPATH . '../.env';
-        }
 
         if (!file_exists($path)) {
             return;

@@ -43,7 +43,7 @@ $logo = '';
 if ($configLogo->logo_path && file_exists($path)) {
     $logo = asset('uploads/settings/' . $configLogo->logo_path);
 } else {
-    $logo = asset('uploads/settings/logo.png');
+    $logo = asset('assets/logo/logo.png');
 }
 ?>
 

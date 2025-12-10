@@ -4,14 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'MVC App' ?></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <title><?= $title ?? 'Lab Inlet' ?></title>
+    <link href="<?= asset('assets/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
+    <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/@fortawesome/fontawesome-free/css/all.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/bootstrap-icons/font/bootstrap-icons.css') ?>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('css/style.css') ?>">
 </head>
 
 <body>
-
     <?php include_once __DIR__ . '/component/navbar.php'; ?>
 
     <main class="content">
@@ -20,13 +23,6 @@
 
     <?php include_once __DIR__ . '/component/footer.php'; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="<?= asset('assets/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     <script src="<?= asset('js/script.js') ?>"></script>
-
-    <script>
-        initTextSlideOnScroll('.about-us .text-slide-animate', {
-            charDelay: 0.01,
-            baseDelay: 0
-        });
-    </script>
 </body>
