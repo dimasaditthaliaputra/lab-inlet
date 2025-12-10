@@ -720,92 +720,139 @@ const initProjects = async () => {
 };
 
 const initNews = async () => {
-  const container = document.getElementById("news-container");
+    const track = document.getElementById("news-track");
+    const dotsContainer = document.getElementById("news-indicators");
+    const prevBtn = document.getElementById("news-prev");
+    const nextBtn = document.getElementById("news-next");
 
-  // Safety Check
-  if (!container) return;
+    if (!track) return;
 
-  // --- 1. INJECT SKELETON LOADING ---
-  // Kita buat 2 skeleton items karena layoutnya 2 kolom
-  const skeletonItem = `
-    <div class="col-md-6">
-        <div class="card h-100 border-0 shadow-sm" aria-hidden="true">
-            <div class="row g-0 h-100">
-                <div class="col-4 placeholder-glow">
-                    <span class="placeholder w-100 h-100 bg-secondary opacity-25" style="min-height: 150px; display:block;"></span>
-                </div>
-                <div class="col-8">
-                    <div class="card-body py-3 placeholder-glow">
-                        <span class="placeholder col-4 mb-2"></span>
-                        
-                        <h5 class="card-title mt-1 h6 fw-bold">
-                            <span class="placeholder col-10"></span>
-                        </h5>
-                        
-                        <p class="card-text small">
-                            <span class="placeholder col-12"></span>
-                            <span class="placeholder col-8"></span>
-                        </p>
-                        
-                        <span class="placeholder col-3 btn btn-sm disabled p-0"></span>
-                    </div>
-                </div>
+    // --- 1. SKELETON LOADING ---
+    const skeletonHTML = `
+        <div class="news-card active" style="z-index: 20; opacity: 1; visibility: visible;">
+            <div class="news-card-img placeholder-glow">
+                <span class="placeholder w-100 h-100 bg-secondary opacity-25"></span>
+            </div>
+            <div class="news-card-body placeholder-glow">
+                <span class="placeholder col-4 mb-2"></span>
+                <span class="placeholder col-10 mb-3" style="height: 2rem;"></span>
+                <span class="placeholder col-12"></span>
+                <span class="placeholder col-8"></span>
             </div>
         </div>
-    </div>
-  `;
-  container.innerHTML = skeletonItem.repeat(2);
+    `;
+    track.innerHTML = skeletonHTML;
 
-  try {
-    // --- 2. FETCH REAL API ---
-    const response = await fetch("http://inlet-lab.test/api/news");
+    try {
+        // --- 2. FETCH API ---
+        const response = await fetch("http://inlet-lab.test/api/news");
+        if (!response.ok) throw new Error("Network Error");
+        const result = await response.json();
 
-    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        if (result.success && Array.isArray(result.data)) {
+            let newsData = result.data;
 
-    const result = await response.json();
+            if (newsData.length === 0) {
+                track.innerHTML = `<div class="text-white text-center w-100 pt-5">No news available.</div>`;
+                return;
+            }
 
-    if (result.success && Array.isArray(result.data)) {
-      if (result.data.length === 0) {
-        container.innerHTML = `<div class="col-12 text-center text-muted">No news available.</div>`;
-        return;
-      }
+            // --- 3. RENDER ITEMS ---
+            track.innerHTML = ""; // Clear skeleton
+            dotsContainer.innerHTML = "";
 
-      // --- 3. RENDER DATA ---
-      container.innerHTML = result.data
-        .map((n) => {
-          // Fallback image jika null/empty
-          const imgUrl = n.image_name && n.image_name !== "" 
-            ? n.image_name 
-            : "https://placehold.co/400x300?text=News";
+            // Render Card Elements
+            newsData.forEach((n, index) => {
+                const imgUrl = n.image_name || "https://placehold.co/400x300?text=News";
+                const date = new Date(n.publish_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
-          return `
-            <div class="col-md-6">
-                <article class="card h-100 border-0 shadow-sm">
-                    <div class="row g-0 h-100">
-                        <div class="col-4">
-                            <img src="${imgUrl}" class="img-fluid rounded-start h-100 object-fit-cover" alt="${n.title}" loading="lazy" style="min-height: 100%;">
-                        </div>
-                        <div class="col-8">
-                            <div class="card-body py-3">
-                                <small class="text-primary fw-bold">${new Date(n.publish_date).toLocaleDateString()}</small>
-                                <h5 class="card-title font-heading mt-1 h6 fw-bold">${n.title}</h5>
-                                <p class="card-text small text-muted line-clamp-2">${n.excerpt}</p>
-                                <a href="/news/${n.slug}" class="btn btn-link btn-sm p-0 text-decoration-none stretched-link">Read More &rarr;</a>
-                            </div>
-                        </div>
+                const card = document.createElement("div");
+                card.className = "news-card"; // Base class (hidden by default via CSS)
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <div class="news-card-img">
+                        <img src="${imgUrl}" alt="${n.title}" loading="lazy">
                     </div>
-                </article>
-            </div>
-        `;
-        })
-        .join("");
-    } else {
-      throw new Error("Invalid API Data");
+                    <div class="news-card-body">
+                        <div class="news-date">${date}</div>
+                        <h3 class="news-title">${n.title}</h3>
+                        <div class="news-desc">${n.excerpt}</div>
+                        <a href="/news/${n.slug}" class="btn btn-sm btn-outline-light rounded-pill px-4 mt-2 align-self-start">Read More</a>
+                    </div>
+                `;
+                track.appendChild(card);
+
+                // Render Dot
+                const dot = document.createElement("div");
+                dot.className = "news-dot";
+                dot.addEventListener("click", () => updateCarousel(index));
+                dotsContainer.appendChild(dot);
+            });
+
+            // --- 4. CAROUSEL STATE LOGIC ---
+            const items = document.querySelectorAll(".news-card");
+            const dots = document.querySelectorAll(".news-dot");
+            const totalItems = items.length;
+            let currentIndex = 0;
+
+            const updateCarousel = (newIndex) => {
+                // Handle Infinite Loop limits
+                if (newIndex < 0) newIndex = totalItems - 1;
+                if (newIndex >= totalItems) newIndex = 0;
+                
+                currentIndex = newIndex;
+
+                // Calculate Indices
+                // Gunakan modulo aritmatika untuk circular index
+                const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
+                const nextIndex = (currentIndex + 1) % totalItems;
+
+                // Reset Class Names untuk semua item
+                items.forEach(item => {
+                    item.className = "news-card"; // Reset ke default (hidden)
+                });
+
+                dots.forEach(dot => dot.classList.remove("active"));
+
+                // Apply Classes sesuai spesifikasi
+                // 1. Active (Tengah, Terbesar, Z-Index Tertinggi)
+                items[currentIndex].classList.add("active");
+                
+                // 2. Prev (Kiri, Kecil, Di bawah)
+                // Hanya tampilkan jika total item > 1
+                if (totalItems > 1) items[prevIndex].classList.add("prev");
+
+                // 3. Next (Kanan, Kecil, Di bawah)
+                // Hanya tampilkan jika total item > 2 (agar tidak tumpang tindih jika cuma 2 item)
+                if (totalItems > 2) items[nextIndex].classList.add("next");
+
+                // Update Dot Active
+                if(dots[currentIndex]) dots[currentIndex].classList.add("active");
+            };
+
+            // --- 5. EVENT LISTENERS ---
+            nextBtn.addEventListener("click", () => updateCarousel(currentIndex + 1));
+            prevBtn.addEventListener("click", () => updateCarousel(currentIndex - 1));
+
+            // Mobile Swipe Logic
+            let touchStartX = 0;
+            track.addEventListener("touchstart", e => touchStartX = e.touches[0].clientX);
+            track.addEventListener("touchend", e => {
+                const touchEndX = e.changedTouches[0].clientX;
+                if (touchStartX - touchEndX > 50) updateCarousel(currentIndex + 1); // Swipe Left -> Next
+                if (touchEndX - touchStartX > 50) updateCarousel(currentIndex - 1); // Swipe Right -> Prev
+            });
+
+            // Initialize First State
+            updateCarousel(0);
+
+        } else {
+            throw new Error("Invalid API Data");
+        }
+    } catch (error) {
+        console.error("News API Error:", error);
+        track.innerHTML = `<div class="text-white text-center w-100 pt-5">Failed to load news.</div>`;
     }
-  } catch (error) {
-    console.error("News API Fetch Failed:", error);
-    container.innerHTML = `<div class="col-12 text-center text-muted">Failed to load news.</div>`;
-  }
 };
 
 const initPartners = async () => {

@@ -58,7 +58,7 @@
             <p class="text-muted mx-auto" style="max-width: 600px;">
                 We continue to expand our research focus in areas such as climate change, renewable energy, and sustainable development, aiming to deliver impactful work and an excellent learning environment.
             </p>
-            </div>
+        </div>
         <div id="research-container" class="row g-4 justify-content-center">
             <div class="col-12 text-center text-muted">Loading research areas...</div>
         </div>
@@ -107,10 +107,30 @@
     </div>
 </section>
 
-<section id="news" class="py-section">
-    <div class="container">
-        <h2 class="fw-bold font-heading mb-5">Latest News & Announcements</h2>
-        <div id="news-container" class="row g-4">
+<section id="news" class="py-section bg-black overflow-hidden position-relative" style="min-height: 700px;">
+    <div class="position-absolute top-50 start-50 translate-middle" style="width: 100%; height: 100%; background: radial-gradient(circle, rgba(20, 20, 20, 1) 0%, rgba(0,0,0,1) 80%); z-index: 0;"></div>
+
+    <div class="container position-relative h-100 d-flex flex-column justify-content-center" style="z-index: 1;">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold font-heading text-white">Latest News</h2>
+            <p class="text-white-50">Updates from our laboratory</p>
+        </div>
+
+        <div class="news-3d-container position-relative w-100" style="height: 350px;">
+            <div id="news-track" class="news-track h-100 w-100 position-relative">
+                </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center gap-4 mt-5">
+            <button class="news-nav-btn prev" id="news-prev" aria-label="Previous">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            
+            <div id="news-indicators" class="d-flex gap-2"></div>
+
+            <button class="news-nav-btn next" id="news-next" aria-label="Next">
+                <i class="bi bi-arrow-right"></i>
+            </button>
         </div>
     </div>
 </section>
