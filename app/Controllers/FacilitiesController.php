@@ -22,7 +22,7 @@ class FacilitiesController extends Controller
     public function index()
     {
         $data = [
-            'title' => 'facilities',
+            'title' => 'Facilities',
         ];
 
         view_with_layout('admin/facilities/index', $data);

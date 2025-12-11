@@ -7,6 +7,16 @@
   --bg-light: #f8fafc;
   --card-shadow: 0 6px 18px rgba(16, 24, 40, 0.04);
   --hover-shadow: 0 12px 24px rgba(16, 24, 40, 0.08);
+
+  --tech-blue: #0d6efd;
+  --tech-black: #050505;
+  --tech-card-bg: #111;
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  --card-hover-shadow: 0 20px 40px rgba(0, 50, 150, 0.1);
 }
 
 ::-webkit-scrollbar {
@@ -61,54 +71,53 @@ body {
 }
 
 .nav-link {
-    color: #1E293B;
-    font-weight: 500;
-    margin: 0 10px;
-    padding: 10px 0;
-    position: relative;
-    opacity: 0.8;
-    transition: color 0.4s ease, opacity 0.4s ease;
+  color: #1e293b;
+  font-weight: 500;
+  margin: 0 10px;
+  padding: 10px 0;
+  position: relative;
+  opacity: 0.8;
+  transition: color 0.4s ease, opacity 0.4s ease;
 }
 
 .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0%; 
-    height: 3px;
-    background-color: #0066FF; 
-    border-radius: 10px;
-    opacity: 0;
-    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                opacity 0.3s ease;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0%;
+  height: 3px;
+  background-color: #0066ff;
+  border-radius: 10px;
+  opacity: 0;
+  transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    color: #0066FF !important;
-    font-weight: 600;
-    opacity: 1;
+  color: #0066ff !important;
+  font-weight: 600;
+  opacity: 1;
 }
 
 .nav-link:hover::after,
 .nav-link.active::after {
-    width: 25px; 
-    opacity: 1;
+  width: 25px;
+  opacity: 1;
 }
 
 /* Optional: Garis bawah kecil untuk active state */
 .nav-link.active::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 2px;
-    background: #0066FF;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 2px;
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: #0066ff;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
 }
 
 .logo {
@@ -461,32 +470,66 @@ section {
 }
 
 /* 2. Team Cards */
-.team-slider-wrapper {
+#team-carousel {
+  background: #f8fafc; /* Fallback */
+  background: radial-gradient(circle at 10% 20%, rgb(239, 246, 255) 0%, rgb(250, 250, 255) 90%);
+  position: relative;
   overflow: hidden;
+}
+
+/* Dekorasi Background (Blurry Blobs) */
+.bg-decoration {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(180deg, rgba(0, 102, 255, 0.15) 0%, rgba(0, 102, 255, 0.05) 100%);
+  filter: blur(80px);
+  border-radius: 50%;
+  z-index: 0;
+  animation: float-blob 10s infinite alternate ease-in-out;
+}
+.blob-1 {
+  top: -100px;
+  left: -100px;
+}
+.blob-2 {
+  bottom: -100px;
+  right: -100px;
+  background: rgba(255, 0, 150, 0.05);
+}
+
+@keyframes float-blob {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(30px, 50px);
+  }
+}
+
+/* --- Slider Layout --- */
+.team-slider-wrapper {
   position: relative;
   width: 100%;
-  padding: 2rem 0; /* Padding atas/bawah agar hover effect tidak terpotong */
-  background: #fff;
+  padding: 3rem 0;
+  z-index: 1; /* Di atas decoration */
 }
 
 .team-track {
   display: flex;
-  width: max-content; /* Penting agar item berjejer horizontal tanpa wrap */
-  animation: scroll-left 30s linear infinite; /* Kecepatan loop */
-  gap: 0; /* Gap dihandle via padding item agar kalkulasi width akurat */
+  width: max-content;
+  animation: scroll-left 40s linear infinite; /* Sedikit diperlambat agar elegan */
 }
 
-/* Pause Animation on Hover */
 .team-slider-wrapper:hover .team-track {
   animation-play-state: paused;
 }
 
-/* --- Individual Item Sizing (Responsive) --- */
+/* --- Responsive Item Width --- */
 .team-carousel-item {
-  /* Flex-shrink 0 agar ukuran tidak mengecil */
   flex: 0 0 auto;
-  padding: 0 15px; /* Spacing antar card (horizontal gutter) */
-  box-sizing: border-box;
+  padding: 0 16px; /* Gutter */
+  width: 100vw; /* Default Mobile */
 }
 
 /* Desktop: 4 items (100% / 4 = 25%) */
@@ -546,108 +589,131 @@ section {
   }
 }
 
-/* --- Card Styling (Reusing & Refining Previous Style) --- */
 .team-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 2rem 1.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem;
   text-align: center;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border: 1px solid rgba(0, 0, 0, 0.03); /* Border super halus */
-  height: 100%; /* Equal height */
+  box-shadow: var(--glass-shadow);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Spring effect halus */
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Image Styling */
+.img-wrapper {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 1.5rem;
+}
+
 .team-card img {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  margin-bottom: 1.25rem;
-  border: 4px solid #fff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* Shadow foto lebih soft */
+  border: 3px solid #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.4s ease;
 }
 
 /* Typography */
 .team-name {
-  font-family: var(--font-heading, sans-serif);
+  font-family: var(--font-heading);
+  color: var(--text-dark);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   margin-bottom: 0.25rem;
-  color: #1e293b;
 }
 
 .team-role {
+  font-family: var(--font-body);
+  color: var(--primary-color);
   font-size: 0.9rem;
-  color: #64748b;
-  margin-bottom: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.25rem;
+}
+
+/* Divider halus */
+.team-divider {
+  height: 1px;
+  width: 40px;
+  background: #cbd5e1;
+  margin: 0 auto 1.25rem;
 }
 
 /* Social Icons */
+.team-social {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
 .team-social a {
-  color: #94a3b8;
-  font-size: 1.1rem;
-  margin: 0 8px;
-  transition: color 0.3s ease, transform 0.3s ease;
-  display: inline-block;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .team-social a:hover {
-  color: var(--primary-color, #0066ff);
+  background: var(--primary-color);
+  color: #fff;
   transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 102, 255, 0.3);
 }
 
 /* --- Hover Effects --- */
 .team-card:hover {
-  transform: translateY(-10px); /* Lift up */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06); /* Soft distinct shadow */
-  border-color: transparent;
+  transform: translateY(-12px); /* Elevasi */
+  box-shadow: var(--card-hover-shadow);
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.85); /* Sedikit lebih solid saat hover */
 }
 
 .team-card:hover img {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
-/* --- Keyframes for Infinite Scroll --- */
-/* Kita menggerakkan track dari 0 sampai -50%.
-       Kenapa -50%? Karena di JS kita menduplikasi konten menjadi 2 set.
-       Saat mencapai -50% (akhir set pertama), animasi reset ke 0 (awal set pertama).
-       Karena set kedua identik dengan set pertama, reset ini tidak terlihat mata. */
+/* --- Gradient Fade Sides (Agar tidak putus tajam) --- */
+.slider-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+}
+.fade-left {
+  left: 0;
+  background: linear-gradient(to right, #f8fafc 0%, transparent 100%);
+}
+.fade-right {
+  right: 0;
+  background: linear-gradient(to left, #f8fafc 0%, transparent 100%);
+}
+
+/* Animasi Scroll */
 @keyframes scroll-left {
   0% {
     transform: translateX(0);
   }
   100% {
     transform: translateX(-50%);
-  }
-}
-
-/* --- Gradient Overlays (Fade Effect) --- */
-.slider-overlay-left,
-.slider-overlay-right {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100px;
-  z-index: 2;
-  pointer-events: none; /* Agar klik tembus ke card */
-}
-
-.slider-overlay-left {
-  left: 0;
-  background: linear-gradient(to right, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
-}
-
-.slider-overlay-right {
-  right: 0;
-  background: linear-gradient(to left, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
-}
-
-@media (max-width: 576px) {
-  .slider-overlay-left,
-  .slider-overlay-right {
-    width: 50px;
   }
 }
 
@@ -708,171 +774,189 @@ section {
 
 /* --- News Section Setup --- */
 #news {
-    background-color: #000;
+  background-color: #000;
 }
 
 /* Container Wrapper */
 .news-3d-container {
-    perspective: 1000px; /* Memberikan kedalaman 3D */
+  perspective: 1000px; /* Memberikan kedalaman 3D */
 }
 
 /* --- Card Base Styling --- */
 .news-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 650px; /* Lebar default desktop */
-    height: 220px;
-    background: rgba(255, 255, 255, 0.08); /* Glass base */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    display: flex; /* Horizontal Layout */
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth Transition */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    opacity: 0;
-    visibility: hidden;
-    z-index: 0;
-    /* Default state: Hidden & Centered */
-    transform: translate(-50%, -50%) scale(0.8);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 650px; /* Lebar default desktop */
+  height: 220px;
+  background: rgba(255, 255, 255, 0.08); /* Glass base */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  display: flex; /* Horizontal Layout */
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth Transition */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 0;
+  /* Default state: Hidden & Centered */
+  transform: translate(-50%, -50%) scale(0.8);
 }
 
 /* Image Section (Left) */
 .news-card-img {
-    width: 40%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
+  width: 40%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 .news-card-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
 /* Content Section (Right) */
 .news-card-body {
-    width: 60%;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: white;
+  width: 60%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
 }
 
 /* --- State Classes (JS will toggle these) --- */
 
 /* 1. Active Card (Center) */
 .news-card.active {
-    opacity: 1;
-    visibility: visible;
-    z-index: 20;
-    transform: translate(-50%, -50%) scale(1.1); /* Lebih besar */
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    border-color: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+  visibility: visible;
+  z-index: 20;
+  transform: translate(-50%, -50%) scale(1.1); /* Lebih besar */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* 2. Prev Card (Left Side) */
 .news-card.prev {
-    opacity: 0.6; /* Lebih redup */
-    visibility: visible;
-    z-index: 10; /* Di bawah active */
-    transform: translate(-90%, -50%) scale(0.9); /* Geser kiri, kecilkan */
-    pointer-events: none; /* Tidak bisa diklik */
+  opacity: 0.6; /* Lebih redup */
+  visibility: visible;
+  z-index: 10; /* Di bawah active */
+  transform: translate(-90%, -50%) scale(0.9); /* Geser kiri, kecilkan */
+  pointer-events: none; /* Tidak bisa diklik */
 }
 
 /* 3. Next Card (Right Side) */
 .news-card.next {
-    opacity: 0.6; /* Lebih redup */
-    visibility: visible;
-    z-index: 10; /* Di bawah active */
-    transform: translate(-10%, -50%) scale(0.9); /* Geser kanan, kecilkan */
-    pointer-events: none;
+  opacity: 0.6; /* Lebih redup */
+  visibility: visible;
+  z-index: 10; /* Di bawah active */
+  transform: translate(-10%, -50%) scale(0.9); /* Geser kanan, kecilkan */
+  pointer-events: none;
 }
 
 /* Typography */
 .news-date {
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #0d6efd;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #0d6efd;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 .news-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 0.75rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .news-desc {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.7);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 1rem;
 }
 
 /* Navigation Buttons */
 .news-nav-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    transition: 0.3s;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: 0.3s;
 }
 .news-nav-btn:hover {
-    background: #0d6efd;
-    transform: scale(1.1);
+  background: #0d6efd;
+  transform: scale(1.1);
 }
 
 /* Dots */
 .news-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    cursor: pointer;
-    transition: 0.3s;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: 0.3s;
 }
 .news-dot.active {
-    background: #0d6efd;
-    transform: scale(1.4);
+  background: #0d6efd;
+  transform: scale(1.4);
 }
 
 /* --- Responsive --- */
 @media (max-width: 992px) {
-    .news-card { width: 90%; height: auto; min-height: 200px; }
-    /* Di tablet/mobile, geser card samping lebih jauh keluar layar agar tidak menumpuk teks */
-    .news-card.prev { transform: translate(-120%, -50%) scale(0.85); opacity: 0; } 
-    .news-card.next { transform: translate(20%, -50%) scale(0.85); opacity: 0; }
+  .news-card {
+    width: 90%;
+    height: auto;
+    min-height: 200px;
+  }
+  /* Di tablet/mobile, geser card samping lebih jauh keluar layar agar tidak menumpuk teks */
+  .news-card.prev {
+    transform: translate(-120%, -50%) scale(0.85);
+    opacity: 0;
+  }
+  .news-card.next {
+    transform: translate(20%, -50%) scale(0.85);
+    opacity: 0;
+  }
 }
 
 @media (max-width: 576px) {
-    .news-card { 
-        flex-direction: column; /* Stack vertikal di HP */
-        height: auto; 
-        width: 85%;
-    }
-    .news-card-img { width: 100%; height: 180px; }
-    .news-card-body { width: 100%; padding: 1rem; }
-    
-    /* Center Active Card Mobile */
-    .news-card.active { transform: translate(-50%, -50%) scale(1); }
+  .news-card {
+    flex-direction: column; /* Stack vertikal di HP */
+    height: auto;
+    width: 85%;
+  }
+  .news-card-img {
+    width: 100%;
+    height: 180px;
+  }
+  .news-card-body {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  /* Center Active Card Mobile */
+  .news-card.active {
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 /* 6. Partners (Infinite Scroll) */
@@ -914,84 +998,243 @@ section {
 
 /* 1. Override Container Grid Bootstrap */
 #gallery-grid {
-    display: block !important; /* Matikan display flex bawaan Bootstrap row */
-    column-count: 3;           /* Jumlah kolom default (Desktop) */
-    column-gap: 1.5rem;        /* Jarak horizontal antar kolom */
-    width: 100%;
+  display: block !important; /* Matikan display flex bawaan Bootstrap row */
+  column-count: 3; /* Jumlah kolom default (Desktop) */
+  column-gap: 1.5rem; /* Jarak horizontal antar kolom */
+  width: 100%;
 }
 
 /* 2. Override Kolom Bootstrap (Child Items) */
 /* Selector ini menargetkan div <div class="col-6 col-md-4"> yang di-generate JS */
-#gallery-grid > div[class*='col-'] {
-    width: 100% !important;    /* Paksa lebar penuh mengikuti kolom CSS */
-    max-width: 100% !important;
-    display: inline-block;     /* Penting agar item tidak terpotong */
-    break-inside: avoid;       /* Mencegah item terbelah antar kolom */
-    margin-bottom: 1.5rem;     /* Jarak vertikal antar item */
-    padding: 0 !important;     /* Reset padding bawaan bootstrap jika perlu */
+#gallery-grid > div[class*="col-"] {
+  width: 100% !important; /* Paksa lebar penuh mengikuti kolom CSS */
+  max-width: 100% !important;
+  display: inline-block; /* Penting agar item tidak terpotong */
+  break-inside: avoid; /* Mencegah item terbelah antar kolom */
+  margin-bottom: 1.5rem; /* Jarak vertikal antar item */
+  padding: 0 !important; /* Reset padding bawaan bootstrap jika perlu */
 }
 
 /* 3. Styling Gallery Item (Card) */
 .gallery-item {
-    border-radius: 16px;       /* Sudut lebih membulat & modern */
-    overflow: hidden;
-    position: relative;
-    background-color: #f8f9fa; /* Warna dasar saat loading */
-    cursor: pointer;
-    z-index: 1;
-    /* Smooth Transition untuk hover effect */
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03); /* Shadow halus minimalis */
-    
-    /* Hack untuk memfix border-radius bug di safari saat transform */
-    transform: translateZ(0); 
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  border-radius: 16px; /* Sudut lebih membulat & modern */
+  overflow: hidden;
+  position: relative;
+  background-color: #f8f9fa; /* Warna dasar saat loading */
+  cursor: pointer;
+  z-index: 1;
+  /* Smooth Transition untuk hover effect */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03); /* Shadow halus minimalis */
+
+  /* Hack untuk memfix border-radius bug di safari saat transform */
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 /* 4. Image Styling */
 .gallery-item img {
-    width: 100%;
-    height: auto !important;
-    display: block;
-    transition: transform 0.6s ease;
-    object-fit: cover;
+  width: 100%;
+  height: auto !important;
+  display: block;
+  transition: transform 0.6s ease;
+  object-fit: cover;
 }
 
 /* 5. Hover Effects */
 .gallery-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 .gallery-item:hover img {
-    transform: scale(1.08);
+  transform: scale(1.08);
 }
 
 .gallery-item .position-absolute {
-    transition: transform 0.3s ease, background 0.3s;
+  transition: transform 0.3s ease, background 0.3s;
 }
 
 .gallery-item:hover .position-absolute {
-    transform: translate(-50%, -50%) scale(1.1);
-    background: rgba(0, 0, 0, 0.7) !important;
+  transform: translate(-50%, -50%) scale(1.1);
+  background: rgba(0, 0, 0, 0.7) !important;
 }
 
 /* --- Responsive Breakpoints --- */
 @media (max-width: 992px) {
-    #gallery-grid {
-        column-count: 2;
-        column-gap: 1rem;
-    }
-    #gallery-grid > div[class*='col-'] {
-        margin-bottom: 1rem;
-    }
+  #gallery-grid {
+    column-count: 2;
+    column-gap: 1rem;
+  }
+  #gallery-grid > div[class*="col-"] {
+    margin-bottom: 1rem;
+  }
 }
 
 /* Mobile (dibawah 576px) -> 1 Kolom */
 @media (max-width: 576px) {
-    #gallery-grid {
-        column-count: 1;
-    }
+  #gallery-grid {
+    column-count: 1;
+  }
+}
+
+.product-section {
+    background-color: var(--tech-black);
+    padding: 6rem 0;
+    min-height: 80vh;
+}
+
+/* Ambient Glow Effect */
+.ambient-glow {
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(13, 110, 253, 0.15) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --- The Grid --- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    perspective: 1000px; /* Essential for 3D Tilt */
+}
+
+/* --- Tech Tile (Card) --- */
+.tech-tile {
+    position: relative;
+    background-color: var(--tech-card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 450px; /* Taller look */
+    border: 1px solid var(--glass-border);
+    transform-style: preserve-3d;
+    will-change: transform;
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s;
+}
+
+/* Image Layer */
+.tile-img-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.tile-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+    opacity: 0.6; /* Dimmed by default */
+}
+
+/* Gradient Overlay for Text Readability */
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+    z-index: 1;
+}
+
+/* Shine Effect Layer */
+.tile-shine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at var(--shine-x, 50%) var(--shine-y, 50%), 
+        rgba(255, 255, 255, 0.15) 0%, 
+        transparent 60%
+    );
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    transition: opacity 0.3s;
+}
+
+/* Content Content */
+.tile-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 2.5rem;
+    z-index: 4;
+    transform: translateZ(40px); /* Text pops out in 3D */
+}
+
+/* Typography */
+.text-blue { color: var(--tech-blue); }
+.ls-2 { letter-spacing: 2px; }
+
+.product-date {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    background: rgba(13, 110, 253, 0.1);
+    color: var(--tech-blue);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    border-radius: 50px;
+    display: inline-block;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(4px);
+}
+
+.product-title {
+    font-family: 'Inter', sans-serif; /* Pastikan font ini ada/import */
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.75rem;
+}
+
+.product-desc {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+/* --- Hover States --- */
+.tech-tile:hover {
+    box-shadow: 0 20px 50px rgba(13, 110, 253, 0.15);
+    border-color: rgba(13, 110, 253, 0.4);
+}
+
+.tech-tile:hover .tile-img-wrapper img {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.tech-tile:hover .tile-shine {
+    opacity: 1;
+}
+
+.tech-tile:hover .product-desc {
+    opacity: 1;
+    color: white;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .product-grid { grid-template-columns: 1fr; }
+    .tech-tile { height: 400px; transform: none !important; }
+    .tile-shine { display: none; } /* Disable heavier effects on mobile */
 }
 
 /* Lightbox */

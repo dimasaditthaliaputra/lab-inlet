@@ -65,20 +65,32 @@
     </div>
 </section>
 
-<section id="team-carousel" class="py-section bg-white position-relative">
-    <div class="container-fluid px-0">
-        <div class="container mb-5 text-center">
-            <h2 class="fw-bold font-heading">Our Dedicated Team</h2>
-            <p class="text-muted">Experts leading the path of discovery.</p>
-        </div>
+<section id="team-carousel" class="py-5">
+    <div class="bg-decoration blob-1"></div>
+    <div class="bg-decoration blob-2"></div>
 
-        <div class="team-slider-wrapper">
-            <div class="slider-overlay-left"></div>
-            <div class="slider-overlay-right"></div>
-
-            <div id="team-track" class="team-track">
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 mb-3 fw-bold">
+                    MEET THE EXPERTS
+                </span>
+                <h2 class="display-6 fw-bold text-dark mb-3" style="font-family: var(--font-heading);">
+                    Our Dedicated Team
+                </h2>
+                <p class="text-muted lead">
+                    Innovators and researchers working together to shape the future of technology.
+                </p>
             </div>
         </div>
+    </div>
+
+    <div class="team-slider-wrapper">
+        <div class="slider-fade fade-left"></div>
+        <div class="slider-fade fade-right"></div>
+
+        <div id="team-track" class="team-track">
+            </div>
     </div>
 </section>
 
@@ -150,6 +162,27 @@
         <h2 class="fw-bold font-heading mb-5">Lab Snapshot</h2>
         <div id="gallery-grid" class="row g-3" data-masonry='{"percentPosition": true }'>
         </div>
+    </div>
+</section>
+
+<section id="products" class="product-section position-relative overflow-hidden">
+    <div class="ambient-glow"></div>
+
+    <div class="container position-relative z-2">
+        <div class="row mb-5 align-items-end">
+            <div class="col-lg-6">
+                <h6 class="text-blue fw-bold ls-2 text-uppercase mb-2">Our Innovations</h6>
+                <h2 class="display-4 fw-bold text-white lh-1">Digital <br>Craftsmanship.</h2>
+            </div>
+            <div class="col-lg-6 text-lg-end">
+                <p class="text-muted mb-0 max-w-400 ms-auto">
+                    Exploring the boundaries of technology with cutting-edge applications designed for the future.
+                </p>
+            </div>
+        </div>
+
+        <div id="product-grid" class="product-grid">
+            </div>
     </div>
 </section>
 

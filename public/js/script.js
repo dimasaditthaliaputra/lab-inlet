@@ -363,6 +363,88 @@ const initAbout = async () => {
 };
 
 // --- 3. Render Functions ---
+const additionalStyles = `
+  .research-card {
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d; /* Penting untuk efek 3D */
+    z-index: 1;
+  }
+
+  /* Setup elemen pantulan (Shine) */
+  .research-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px; /* Lebar pantulan cahaya terbatas, bukan memenuhi card */
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 1%,
+      rgba(255, 255, 255, 0.6) 50%, /* Inti cahaya lebih terang/tajam */
+      rgba(255, 255, 255, 0.1) 99%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    opacity: 0;
+    transform: skewX(-25deg) translateX(-200%); /* Miringkan agar terlihat realistis */
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 10; /* Pastikan di atas konten */
+  }
+
+  /* Trigger animasi saat hover */
+  .research-card:hover::after {
+    opacity: 1;
+    animation: mirror-sweep 1s ease-in-out forwards;
+  }
+
+  /* Animasi menyapu dari kiri ke kanan dengan cepat */
+  @keyframes mirror-sweep {
+    0% {
+      transform: skewX(-25deg) translateX(-200%);
+    }
+    100% {
+      transform: skewX(-25deg) translateX(500%); /* Geser jauh ke kanan */
+    }
+  }
+
+  /* Memastikan konten (teks/icon) tetap tajam di atas background */
+  .research-card > * {
+    position: relative;
+    z-index: 20;
+  }
+`;
+
+const styleSheet = document.createElement("style");
+styleSheet.textContent = additionalStyles;
+document.head.appendChild(styleSheet);
+
+const addTiltEffect = () => {
+  const cards = document.querySelectorAll('.research-card');
+  
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = (y - centerY) / centerY * -10;
+      const rotateY = (x - centerX) / centerX * 10;
+      
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+    });
+  });
+};
+
 const initResearch = async () => {
   const container = document.getElementById("research-container");
 
@@ -411,6 +493,8 @@ const initResearch = async () => {
         `;
         })
         .join("");
+
+        addTiltEffect();
     } else {
       throw new Error("Invalid Data Structure");
     }
@@ -421,95 +505,99 @@ const initResearch = async () => {
 };
 
 const initTeamCarousel = async () => {
-  const container = document.getElementById("team-track");
+    const container = document.getElementById("team-track");
+    if (!container) return;
 
-  // Safety Check
-  if (!container) return;
-
-  // --- 1. INJECT SKELETON LOADING ---
-  // Kita buat 4 skeleton item untuk memenuhi lebar layar desktop
-  const skeletonItem = `
-    <div class="team-carousel-item">
-        <div class="team-card p-4">
-            <div class="placeholder-glow d-flex justify-content-center mb-3">
-                <span class="placeholder rounded-circle bg-secondary opacity-25" style="width: 120px; height: 120px;"></span>
-            </div>
-            
-            <h4 class="team-name placeholder-glow text-center mb-2">
-                <span class="placeholder col-8"></span>
-            </h4>
-            
-            <div class="team-role placeholder-glow text-center mb-3">
-                <span class="placeholder col-5"></span>
-            </div>
-            
-            <div class="team-social placeholder-glow d-flex justify-content-center gap-2">
-                <span class="placeholder col-2 rounded-circle" style="width:24px; height:24px;"></span>
-                <span class="placeholder col-2 rounded-circle" style="width:24px; height:24px;"></span>
-            </div>
-        </div>
-    </div>
-  `;
-  
-  // Render 4 skeleton items
-  container.innerHTML = skeletonItem.repeat(4);
-
-  try {
-    // --- 2. FETCH REAL API ---
-    const response = await fetch("http://inlet-lab.test/api/team");
-
-    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
-    const result = await response.json();
-
-    if (result.success && Array.isArray(result.data) && result.data.length > 0) {
-      const data = result.data;
-
-      // Helper function untuk HTML Card
-      const createCardHTML = (member) => `
+    // --- 1. SKELETON LOADING (Modern Look) ---
+    // Placeholder skeleton yang match dengan desain Glass Card
+    const skeletonItem = `
         <div class="team-carousel-item">
             <div class="team-card">
-                <img src="${member.image_name}" alt="${member.full_name}" loading="lazy">
-                <h4 class="team-name">${member.full_name}</h4>
-                <div class="team-role">${member.lab_position}</div>
-                <div class="team-social">
-                    ${member.social
-                      .map(
-                        (s) => `
-                        <a href="${s.url}" target="_blank" rel="noopener" aria-label="${s.type}">
-                            <i class="bi bi-${s.type}"></i>
-                        </a>
-                    `
-                      )
-                      .join("")}
+                <div class="img-wrapper placeholder-glow">
+                    <span class="placeholder col-12 rounded-circle bg-secondary opacity-25 w-100 h-100 d-block"></span>
+                </div>
+                <h4 class="team-name placeholder-glow d-flex justify-content-center">
+                    <span class="placeholder col-8 rounded"></span>
+                </h4>
+                <div class="team-role placeholder-glow d-flex justify-content-center">
+                    <span class="placeholder col-5 rounded"></span>
+                </div>
+                <div class="team-divider opacity-25"></div>
+                <div class="team-social placeholder-glow justify-content-center">
+                    <span class="placeholder rounded-circle bg-secondary opacity-10" style="width:36px; height:36px;"></span>
+                    <span class="placeholder rounded-circle bg-secondary opacity-10" style="width:36px; height:36px;"></span>
+                    <span class="placeholder rounded-circle bg-secondary opacity-10" style="width:36px; height:36px;"></span>
                 </div>
             </div>
         </div>
-      `;
+    `;
 
-      // --- 3. LOGIC DUPLIKASI (Infinite Scroll) ---
-      // Kita duplikasi data 3x agar animasi CSS scroll tidak putus
-      const duplicateCount = 3;
-      let finalItems = [];
+    // Render 4 skeleton items untuk preview
+    container.innerHTML = skeletonItem.repeat(4);
 
-      for (let i = 0; i < duplicateCount; i++) {
-        finalItems = finalItems.concat(data);
-      }
+    try {
+        // --- 2. FETCH DATA ---
+        // Ganti URL ini sesuai endpoint production Anda
+        const response = await fetch("http://inlet-lab.test/api/team");
 
-      // Render Final HTML
-      container.innerHTML = finalItems.map((member) => createCardHTML(member)).join("");
-      
-    } else {
-      throw new Error(result.message || "Data Team tidak ditemukan");
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+        
+        const result = await response.json();
+        
+        // Sesuaikan validasi ini dengan struktur respon JSON API Anda
+        // Asumsi: { success: true, data: [...] }
+        const teamData = result.data || result; 
+
+        if (Array.isArray(teamData) && teamData.length > 0) {
+            
+            // Helper: Generate HTML untuk satu member
+            const createCard = (member) => `
+                <div class="team-carousel-item">
+                    <div class="team-card">
+                        <div class="img-wrapper">
+                            <img src="${member.image_name}" alt="${member.full_name}" loading="lazy">
+                        </div>
+                        <h3 class="team-name">${member.full_name}</h3>
+                        <p class="team-role">${member.lab_position}</p>
+                        
+                        <div class="team-divider"></div>
+                        
+                        <div class="team-social">
+                            ${(member.social || []).map(s => `
+                                <a href="${s.url}" target="_blank" aria-label="${s.type}">
+                                    <i class="bi bi-${s.type}"></i>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // --- 3. LOGIC INFINITE SCROLL ---
+            // Kita perlu menduplikasi array data agar scroll CSS tidak "putus"
+            // Minimal 2 set data, tapi 3-4 lebih aman untuk layar lebar
+            let finalHTML = "";
+            const loops = 4; // Duplikasi 4x
+
+            for (let i = 0; i < loops; i++) {
+                finalHTML += teamData.map(member => createCard(member)).join("");
+            }
+
+            container.innerHTML = finalHTML;
+
+        } else {
+            // Handle jika data kosong
+            container.innerHTML = `<div class="w-100 text-center text-muted p-5">No team members found.</div>`;
+            container.style.animation = "none";
+            container.parentElement.style.justifyContent = "center";
+            container.parentElement.style.display = "flex";
+        }
+
+    } catch (error) {
+        console.error("Error loading team:", error);
+        container.innerHTML = `<div class="w-100 text-center text-danger p-4">Failed to load team data.</div>`;
+        container.style.animation = "none";
     }
-
-  } catch (error) {
-    console.error("Team API Fetch Failed:", error);
-    container.innerHTML = `<div class="w-100 text-center text-muted p-5">Failed to load team members.</div>`;
-    // Stop animasi jika error agar tidak aneh
-    container.style.animation = "none";
-    container.style.display = "block";
-  }
 };
 
 const initFacilities = async () => {
@@ -1104,6 +1192,110 @@ const initGallery = async () => {
   }
 };
 
+
+// --- Mock Data (Sesuai Request) ---
+const PRODUCT_DATA = {
+    "product": [
+        {
+            "id": 3,
+            "product_name": "Viat Map Application",
+            "description": "VIAT-map (Visual Arguments Toulmin) Application to help Reading Comprehension by visualizing logical structures effectively.",
+            "image_name": "https://placehold.co/800x600/111/333?text=ViatMap+UI", // Placeholder untuk demo
+            // Ganti line di atas dengan: "image_name": "eb320b20777f08d5873246f3cc34ee4d.png", jika path sudah benar
+            "release_date": "2025-08-21T17:00:00.000Z"
+        },
+        {
+            "id": 4,
+            "product_name": "PseudoLearn Application",
+            "description": "Media pembelajaran interaktif untuk rekonstruksi algoritma pseudocode bagi mahasiswa teknik informatika.",
+            "image_name": "https://placehold.co/800x600/0d6efd/fff?text=PseudoLearn", // Placeholder
+             // Ganti line di atas dengan: "image_name": "4f0a004dc8c903ff6737755e7a7cb9bc.png",
+            "release_date": "2025-10-09T17:00:00.000Z"
+        }
+    ]
+};
+
+const initProducts = async () => {
+    const grid = document.getElementById("product-grid");
+    if (!grid) return;
+
+    // --- 1. Simulate Fetch (Gunakan PRODUCT_DATA) ---
+    // Di real case: const response = await fetch('/api/products'); const data = await response.json();
+    const data = PRODUCT_DATA.product;
+
+    // --- 2. Render Tiles ---
+    grid.innerHTML = data.map(item => {
+        // Format Date (e.g., Aug 2025)
+        const dateObj = new Date(item.release_date);
+        const dateStr = dateObj.toLocaleDateString("en-US", { month: 'short', year: 'numeric' });
+        
+        // Handle Image Path (Sesuaikan path 'uploads/products/' dengan struktur folder Anda)
+        // Jika data dari JSON asli tidak punya full path, tambahkan prefix di sini
+        const imgSrc = item.image_name.startsWith('http') ? item.image_name : `uploads/products/${item.image_name}`;
+
+        return `
+            <div class="tech-tile" data-tilt>
+                <div class="tile-img-wrapper">
+                    <img src="${imgSrc}" alt="${item.product_name}" loading="lazy">
+                </div>
+                
+                <div class="tile-shine"></div>
+                
+                <div class="tile-overlay"></div>
+
+                <div class="tile-content">
+                    <span class="product-date">${dateStr}</span>
+                    <h3 class="product-title">${item.product_name}</h3>
+                    <p class="product-desc">${item.description}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // --- 3. Initialize 3D Tilt Effect ---
+    // Hanya jalankan jika bukan device touch (untuk performa)
+    if (window.matchMedia("(hover: hover)").matches) {
+        const tiles = document.querySelectorAll('.tech-tile');
+
+        tiles.forEach(tile => {
+            const shine = tile.querySelector('.tile-shine');
+
+            tile.addEventListener('mousemove', (e) => {
+                const rect = tile.getBoundingClientRect();
+                const width = rect.width;
+                const height = rect.height;
+
+                // Hitung posisi mouse relatif terhadap tengah kartu
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const xPct = mouseX / width - 0.5; // -0.5 s/d 0.5
+                const yPct = mouseY / height - 0.5; // -0.5 s/d 0.5
+
+                // Kalkulasi Rotasi (Max 10 derajat)
+                const rotateX = yPct * -15; // Mouse turun -> Tilt ke atas (negatif)
+                const rotateY = xPct * 15;  // Mouse kanan -> Tilt ke kanan
+
+                // Update Transform secara langsung
+                tile.style.transition = 'none'; // Matikan transition saat bergerak agar responsif
+                tile.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+                // Update Shine Position
+                if (shine) {
+                    shine.style.setProperty('--shine-x', `${mouseX}px`);
+                    shine.style.setProperty('--shine-y', `${mouseY}px`);
+                }
+            });
+
+            tile.addEventListener('mouseleave', () => {
+                // Reset posisi smooth saat mouse keluar
+                tile.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+                tile.style.transform = 'rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+    }
+};
+
 const initMaps = async () => {
   const section = document.getElementById("maps-section");
   
@@ -1201,6 +1393,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initNews();
   initPartners();
   initGallery();
+  initProducts();
   initMaps();
 
   const navbar = document.querySelector(".navbar");

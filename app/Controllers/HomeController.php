@@ -39,8 +39,8 @@ class HomeController extends Controller
         $this->category = new KategoriProject();
         $this->news = new News();
         $this->partner = new Partner();
-        $this->gallery = new Gallery()
-        ;$this->siteSettings = new SiteSettings();
+        $this->gallery = new Gallery();
+        $this->siteSettings = new SiteSettings();
     }
     public function index()
     {
@@ -398,38 +398,51 @@ class HomeController extends Controller
     public function getSiteSettings()
     {
         try {
-            // Ambil data site setting (asumsi ID 1)
+            // Ambil data site setting
             $settings = $this->siteSettings->getConfig();
 
             if (!$settings) {
                 return response()->json(['success' => false, 'message' => 'Settings not found'], 404);
             }
 
-            // Parsing Social Media JSON
-            $socials = json_decode($settings->social_media_links, true) ?? [];
+            /* DEBUGGING (Opsional): 
+           Jika masih error, uncomment baris di bawah ini untuk melihat nama kolom asli dari database:
+           dd($settings); 
+        */
 
-            // Bersihkan iframe dari HTML entity (jika tersimpan escaped) atau ambil raw
-            // Kita perlu mengekstrak src dari iframe string jika frontend butuh src saja,
-            // atau kirim iframe string utuh jika frontend inject HTML.
-            // Sesuai JS snippet Anda, frontend tampaknya punya iframe hardcoded, 
-            // jadi kita perlu ekstrak SRC dari $settings->embed_map_html 
-            // ATAU kita kirim raw HTML map jika frontend mau replace innerHTML map-wrapper.
-            
-            // Opsi Terbaik: Ekstrak src map agar frontend bisa set attribute 'src' iframe yang sudah ada.
+            // 1. PERBAIKAN SOCIAL MEDIA
+            // Gunakan Null Coalescing Operator (??) untuk mencegah error jika kolom tidak ada/null
+            // Asumsi nama kolom di DB adalah 'social_media', bukan 'social_media_links'
+            $rawSocial = $settings->social_media ?? $settings->social_media_links ?? null;
+            $socials = [];
+
+            if (!empty($rawSocial)) {
+                // Tambahkan pengecekan tipe data sebelum decode
+                $socials = is_string($rawSocial) ? json_decode($rawSocial, true) : $rawSocial;
+                // Jika json_decode gagal (return null), set array kosong
+                if (is_null($socials)) $socials = [];
+            }
+
+            $mapHtml = $settings->map_embed_url ?? '';
             $mapSrc = '';
-            if (preg_match('/src="([^"]+)"/', $settings->embed_map_html, $match)) {
-                $mapSrc = $match[1];
+
+            if (!empty($mapHtml) && is_string($mapHtml)) {
+                if (preg_match('/<\s*iframe\s+[^>]*src="([^"]+)"/i', $mapHtml, $match)) {
+                    $mapSrc = $match[1];
+                } else {
+                    $mapSrc = "https://maps.google.com/maps?q=Polinema&t=&z=13&ie=UTF8&iwloc=&output=embed";
+                }
             } else {
-                // Fallback dummy jika regex gagal
                 $mapSrc = "https://maps.google.com/maps?q=Polinema&t=&z=13&ie=UTF8&iwloc=&output=embed";
             }
 
             $data = [
-                'site_name'    => $settings->site_name,
-                'email'        => $settings->email,
-                'phone'        => $settings->phone_number,
-                'address'      => $settings->address,
-                'map_src'      => $mapSrc, // URL untuk iframe
+                'site_name'    => $settings->site_name ?? 'InLET Lab',
+                'email'        => $settings->email ?? '',
+                'phone'        => $settings->phone ?? $settings->phone_number ?? '',
+
+                'address'      => $settings->address ?? '',
+                'map_src'      => $mapSrc,
                 'logo'         => !empty($settings->site_logo) ? asset('uploads/site/') . $settings->site_logo : null,
                 'social_media' => $socials
             ];
@@ -439,7 +452,6 @@ class HomeController extends Controller
                 'message' => 'Success',
                 'data'    => $data
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

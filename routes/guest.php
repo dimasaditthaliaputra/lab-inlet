@@ -16,4 +16,5 @@ return route_group([
     get('/api/news', [HomeController::class, 'getNews']),
     get('/api/partners', [HomeController::class, 'getPartners']),
     get('/api/gallery', [HomeController::class, 'getGallery']),
+    get('/api/site-settings', [HomeController::class, 'getSiteSettings']),
 ]);
