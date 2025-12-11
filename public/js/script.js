@@ -1420,6 +1420,94 @@ const initMaps = async () => {
   }
 };
 
+const initFooter = async () => {
+    const footer = document.getElementById("main-footer");
+    if (!footer) return;
+
+    // Elements to update
+    const logoContainer = footer.querySelector(".footer-logo");
+    const descEl = footer.querySelector(".footer-description");
+    const contactList = document.getElementById("footer-contact-list");
+    const socialList = document.getElementById("footer-socials");
+    const copyrightEl = document.getElementById("footer-copyright");
+
+    try {
+        // Fetch API (Gunakan endpoint site-settings yang sudah ada)
+        const response = await fetch("http://inlet-lab.test/api/site-settings");
+        if (!response.ok) throw new Error("Failed to fetch footer data");
+        const result = await response.json();
+
+        if (result.success && result.data) {
+            const data = result.data;
+            const year = new Date().getFullYear();
+
+            // 1. Update Logo & Description
+            const logoSrc = data.logo || "assets/logo/logo.png"; // Fallback ke aset lokal jika null
+            const siteName = data.site_name || "InLET Lab";
+            
+            logoContainer.innerHTML = `
+                <img src="${logoSrc}" alt="${siteName}" class="logo-footer">
+                <h5 class="text-white mt-3 mb-2 fw-bold">${siteName}</h5>
+            `;
+            
+            // Deskripsi statis atau bisa diambil dari API jika ada field description
+            descEl.innerHTML = `Platform terbaik untuk solusi riset dan teknologi pembelajaran dengan layanan terpercaya dan inovatif.`;
+
+            // 2. Update Contact List
+            contactList.innerHTML = `
+                <li>
+                    <i class="bi bi-envelope me-2 text-primary"></i>
+                    <a href="mailto:${data.email}">${data.email}</a>
+                </li>
+                <li>
+                    <i class="bi bi-telephone me-2 text-primary"></i>
+                    <a href="tel:${data.phone.replace(/[^0-9+]/g, '')}">${data.phone}</a>
+                </li>
+                <li>
+                    <i class="bi bi-geo-alt me-2 text-primary"></i>
+                    <span>${data.address}</span>
+                </li>
+            `;
+
+            // 3. Update Social Media
+            // Data social_media dari API berupa array object atau key-value map?
+            // Berdasarkan JSON contoh Anda: "social_media": [] (Kosong).
+            // Kita buat logic handle array kosong dan isi manual jika perlu.
+            
+            let socialHTML = '';
+            // Cek jika social_media punya data (sesuaikan dengan struktur data real Anda nanti)
+            if (Array.isArray(data.social_media) && data.social_media.length > 0) {
+                 // Loop data social media
+                 // Contoh implementasi dummy jika array masih kosong di DB
+            } else {
+                // Fallback / Placeholder Socials (sesuai request 'sesuai aplikasi')
+                // Anda bisa menghapus blok ini jika ingin benar-benar kosong saat data kosong
+                const defaultSocials = [
+                    { icon: 'youtube', url: '#' },
+                    { icon: 'instagram', url: '#' },
+                    { icon: 'linkedin', url: '#' }
+                ];
+                
+                socialHTML = defaultSocials.map(s => `
+                    <a href="${s.url}" class="text-white-50 hover-white text-decoration-none" target="_blank">
+                        <i class="bi bi-${s.icon} fs-5"></i>
+                    </a>
+                `).join('');
+            }
+            socialList.innerHTML = socialHTML;
+
+
+            // 4. Update Copyright
+            copyrightEl.innerHTML = `&copy; ${year} <strong>${siteName}</strong>. All rights reserved.`;
+
+        }
+    } catch (error) {
+        console.error("Footer Init Error:", error);
+        descEl.innerText = "InLET Lab - Innovating Learning Technology.";
+    }
+};
+
+
 // --- 4. Init All ---
 document.addEventListener("DOMContentLoaded", () => {
   initHeroSlider();
@@ -1433,6 +1521,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initGallery();
   initProducts();
   initMaps();
+  initFooter();
 
   const navbar = document.querySelector(".navbar");
   const navLinks = document.querySelectorAll(".nav-link");

@@ -1,7 +1,25 @@
+<?php
+
+use App\Models\SiteSettings;
+
+$siteSetting = new SiteSettings();
+
+$configLogo = $siteSetting->getConfig('logo_path');
+
+$path = __DIR__ . '/../../../../../public/uploads/settings/' . $configLogo->logo_path;
+
+$logo = '';
+if ($configLogo->logo_path && file_exists($path)) {
+    $logo = asset('uploads/settings/' . $configLogo->logo_path);
+} else {
+    $logo = asset('assets/logo/logo.png');
+}
+?>
+
 <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
     <div class="container container-nav">
         <a class="navbar-brand fw-bold d-flex align-items-center" href="#hero-slider">
-            <img src="<?= asset('assets/logo/logo.png') ?>" alt="Logo Lab" class="logo">
+            <img src="<?= $logo ?>" alt="Logo Lab" class="logo">
         </a>
 
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

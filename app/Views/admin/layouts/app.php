@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $_ENV['APP_NAME'] ?? 'Lab Inlet' ?></title>
+    <title><?= $_ENV['APP_NAME'] . ' - Admin' ?? 'Lab Inlet' ?></title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="<?= asset('assets/mazer/compiled/css/app.css') ?>">
