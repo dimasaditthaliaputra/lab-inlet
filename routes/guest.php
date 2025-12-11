@@ -17,4 +17,5 @@ return route_group([
     get('/api/partners', [HomeController::class, 'getPartners']),
     get('/api/gallery', [HomeController::class, 'getGallery']),
     get('/api/site-settings', [HomeController::class, 'getSiteSettings']),
+    get('/api/products', [HomeController::class, 'getProducts']),
 ]);
