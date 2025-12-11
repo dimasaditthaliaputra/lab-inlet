@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?? 'Lab Inlet' ?></title>
+    <title><?= $_ENV['APP_NAME'] . ' - Landing Page' ?? 'Lab Inlet' ?></title>
     <link href="<?= asset('assets/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/@fortawesome/fontawesome-free/css/all.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('assets/mazer/extensions/bootstrap-icons/font/bootstrap-icons.css') ?>">

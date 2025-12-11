@@ -362,7 +362,6 @@ const initAbout = async () => {
   }
 };
 
-// --- 3. Render Functions ---
 const additionalStyles = `
   .research-card {
     position: relative;
@@ -508,23 +507,25 @@ const initTeamCarousel = async () => {
     const container = document.getElementById("team-track");
     if (!container) return;
 
-    // --- 1. SKELETON LOADING (Modern Look) ---
-    // Placeholder skeleton yang match dengan desain Glass Card
     const skeletonItem = `
         <div class="team-carousel-item">
             <div class="team-card">
-                <div class="img-wrapper placeholder-glow">
-                    <span class="placeholder col-12 rounded-circle bg-secondary opacity-25 w-100 h-100 d-block"></span>
+                <div class="d-flex justify-content-center mb-4">
+                    <div class="placeholder-glow" style="width: 110px; height: 110px;">
+                        <span class="placeholder col-12 rounded-circle bg-secondary opacity-25 w-100 h-100 d-block"></span>
+                    </div>
                 </div>
-                <h4 class="team-name placeholder-glow d-flex justify-content-center">
-                    <span class="placeholder col-8 rounded"></span>
+                
+                <h4 class="team-name placeholder-glow d-flex justify-content-center mb-2">
+                    <span class="placeholder col-8 rounded" style="height: 20px;"></span>
                 </h4>
-                <div class="team-role placeholder-glow d-flex justify-content-center">
-                    <span class="placeholder col-5 rounded"></span>
+                <div class="team-role placeholder-glow d-flex justify-content-center mb-3">
+                    <span class="placeholder col-5 rounded" style="height: 15px;"></span>
                 </div>
-                <div class="team-divider opacity-25"></div>
-                <div class="team-social placeholder-glow justify-content-center">
-                    <span class="placeholder rounded-circle bg-secondary opacity-10" style="width:36px; height:36px;"></span>
+                
+                <div class="team-divider opacity-25 mx-auto"></div>
+                
+                <div class="team-social placeholder-glow justify-content-center gap-2 mt-3">
                     <span class="placeholder rounded-circle bg-secondary opacity-10" style="width:36px; height:36px;"></span>
                     <span class="placeholder rounded-circle bg-secondary opacity-10" style="width:36px; height:36px;"></span>
                 </div>
@@ -532,148 +533,182 @@ const initTeamCarousel = async () => {
         </div>
     `;
 
-    // Render 4 skeleton items untuk preview
     container.innerHTML = skeletonItem.repeat(4);
+
+    const createCard = (member) => {
+        const imgUrl = member.image_name || "https://placehold.co/150x150?text=Member";
+        
+        return `
+            <div class="team-carousel-item">
+                <div class="team-card">
+                    <div class="img-wrapper">
+                        <img src="${imgUrl}" alt="${member.full_name}" loading="lazy">
+                    </div>
+                    <h3 class="team-name">${member.full_name}</h3>
+                    <p class="team-role">${member.lab_position || "Team Member"}</p>
+                    
+                    <div class="team-divider"></div>
+                    
+                    <div class="team-social">
+                        ${(member.social || []).map(s => `
+                            <a href="${s.url}" target="_blank" aria-label="${s.type}">
+                                <i class="${s.icon_name}"></i>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    const renderInfiniteLoop = (data) => {
+        let finalHTML = "";
+        const loops = 4;
+        for (let i = 0; i < loops; i++) {
+            finalHTML += data.map(member => createCard(member)).join("");
+        }
+        container.innerHTML = finalHTML;
+        container.style.animation = ""; 
+    };
 
     try {
         // --- 2. FETCH DATA ---
-        // Ganti URL ini sesuai endpoint production Anda
         const response = await fetch("http://inlet-lab.test/api/team");
 
         if (!response.ok) throw new Error(`Status: ${response.status}`);
         
         const result = await response.json();
-        
-        // Sesuaikan validasi ini dengan struktur respon JSON API Anda
-        // Asumsi: { success: true, data: [...] }
         const teamData = result.data || result; 
 
         if (Array.isArray(teamData) && teamData.length > 0) {
-            
-            // Helper: Generate HTML untuk satu member
-            const createCard = (member) => `
-                <div class="team-carousel-item">
-                    <div class="team-card">
-                        <div class="img-wrapper">
-                            <img src="${member.image_name}" alt="${member.full_name}" loading="lazy">
-                        </div>
-                        <h3 class="team-name">${member.full_name}</h3>
-                        <p class="team-role">${member.lab_position}</p>
-                        
-                        <div class="team-divider"></div>
-                        
-                        <div class="team-social">
-                            ${(member.social || []).map(s => `
-                                <a href="${s.url}" target="_blank" aria-label="${s.type}">
-                                    <i class="bi bi-${s.type}"></i>
-                                </a>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // --- 3. LOGIC INFINITE SCROLL ---
-            // Kita perlu menduplikasi array data agar scroll CSS tidak "putus"
-            // Minimal 2 set data, tapi 3-4 lebih aman untuk layar lebar
-            let finalHTML = "";
-            const loops = 4; // Duplikasi 4x
-
-            for (let i = 0; i < loops; i++) {
-                finalHTML += teamData.map(member => createCard(member)).join("");
-            }
-
-            container.innerHTML = finalHTML;
-
+            renderInfiniteLoop(teamData);
         } else {
-            // Handle jika data kosong
-            container.innerHTML = `<div class="w-100 text-center text-muted p-5">No team members found.</div>`;
-            container.style.animation = "none";
-            container.parentElement.style.justifyContent = "center";
-            container.parentElement.style.display = "flex";
+            throw new Error("No data available"); 
         }
 
     } catch (error) {
-        console.error("Error loading team:", error);
-        container.innerHTML = `<div class="w-100 text-center text-danger p-4">Failed to load team data.</div>`;
-        container.style.animation = "none";
+        console.warn("Using fallback team data due to error:", error);
+
+        const fallbackData = [
+            {
+                full_name: "Dr. Sarah Lin",
+                lab_position: "Lab Director",
+                image_name: "https://placehold.co/150x150/png?text=SL",
+                social: [{ type: "linkedin", url: "#" }]
+            },
+            {
+                full_name: "James Doe",
+                lab_position: "Lead Researcher",
+                image_name: "https://placehold.co/150x150/png?text=JD",
+                social: [{ type: "twitter", url: "#" }]
+            },
+            {
+                full_name: "Anita Roy",
+                lab_position: "Data Scientist",
+                image_name: "https://placehold.co/150x150/png?text=AR",
+                social: [{ type: "github", url: "#" }]
+            },
+            {
+                full_name: "Michael Chen",
+                lab_position: "Engineer",
+                image_name: "https://placehold.co/150x150/png?text=MC",
+                social: [{ type: "linkedin", url: "#" }]
+            }
+        ];
+
+        renderInfiniteLoop(fallbackData);
     }
 };
 
 const initFacilities = async () => {
   const container = document.getElementById("facilities-container");
 
-  // Safety Check
   if (!container) return;
 
-  // --- 1. INJECT SKELETON LOADING ---
-  // Membuat 2 item skeleton (kiri dan kanan)
+  // --- 1. SKELETON LOADING (Updated Layout) ---
   const skeletonItem = `
-    <div class="col-12 col-lg-6">
-        <div class="facility-item d-flex align-items-center gap-3 p-2">
-            <span class="placeholder bg-secondary opacity-25 rounded" style="width: 80px; height: 80px; flex-shrink: 0;"></span>
-            
-            <div class="flex-grow-1 placeholder-glow">
-                <div class="d-flex justify-content-between align-items-start mb-1">
-                    <span class="placeholder col-6 mb-1 fw-bold"></span>
-                    <span class="placeholder col-3 rounded-pill" style="height: 20px;"></span>
-                </div>
-                <span class="placeholder col-12 mb-1"></span>
-                <span class="placeholder col-8"></span>
+    <div class="col-lg-6">
+        <div class="facility-card placeholder-glow">
+            <div class="facility-img-wrapper">
+                <span class="placeholder w-100 h-100 bg-secondary opacity-25 d-block"></span>
+            </div>
+            <div class="flex-grow-1 w-100">
+                <span class="placeholder col-6 mb-2 fw-bold"></span>
+                <span class="placeholder col-12 mb-1 bg-secondary opacity-50"></span>
+                <span class="placeholder col-8 bg-secondary opacity-50"></span>
             </div>
         </div>
     </div>
   `;
-  container.innerHTML = skeletonItem.repeat(2);
+  container.innerHTML = skeletonItem.repeat(4);
 
   try {
-    // --- 2. FETCH REAL API ---
-    // Pastikan route di routes.php sudah ada: Router::get('/api/facilities', [HomeController::class, 'getFacilities']);
     const response = await fetch("http://inlet-lab.test/api/facilities");
-
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
     const result = await response.json();
 
     if (result.success && Array.isArray(result.data)) {
       
-      // --- 3. RENDER DATA ---
-      container.innerHTML = result.data
-        .map((item) => {
-          // Logic Badge Color: Cek jika kondisi 'Operational', 'good', atau 'Good' -> Hijau, selain itu Kuning
+      // --- 2. RENDER DATA ---
+      container.innerHTML = result.data.map((item) => {
           const isOperational = ["Operational", "good", "Good"].includes(item.condition);
-          const statusClass = isOperational 
-            ? "bg-success-subtle text-success" 
-            : "bg-warning-subtle text-warning";
-
-          // Gunakan default placeholder jika image null (meskipun controller sudah handle, ini double safety)
-          const imgUrl = item.image_name || "https://placehold.co/120x120?text=No+Img";
+          const badgeClass = isOperational ? "badge-soft-success" : "badge-soft-warning";
+          const imgUrl = item.image_name || "https://placehold.co/400x300?text=No+Img";
+          
+          // Encode data ke attribute agar mudah diambil saat klik modal
+          // Hati-hati dengan tanda kutip di deskripsi/nama
+          const safeDesc = item.description.replace(/"/g, '&quot;');
+          const safeName = item.name.replace(/"/g, '&quot;');
 
           return `
-            <div class="col-12 col-lg-6">
-                <div class="facility-item d-flex align-items-center gap-3">
-                    <img src="${imgUrl}" alt="${item.name}" class="facility-img bg-light object-fit-cover" style="width: 80px; height: 80px; border-radius: 8px;" loading="lazy">
+            <div class="col-lg-6">
+                <div class="facility-card" 
+                     onclick="openFacilityModal('${imgUrl}', '${safeName}', '${safeDesc}', '${item.condition}', '${badgeClass}')">
+                    
+                    <div class="facility-img-wrapper">
+                        <img src="${imgUrl}" alt="${item.name}" class="facility-img" loading="lazy">
+                    </div>
+                    
                     <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-start mb-1">
-                            <h4 class="h6 fw-bold mb-0 font-heading">${item.name}</h4>
-                            <span class="badge ${statusClass} rounded-pill fw-normal" style="font-size:0.7rem">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h4 class="facility-title">${item.name}</h4>
+                            <span class="badge ${badgeClass} rounded-pill border border-0">
                                 ${item.condition}
                             </span>
                         </div>
-                        <p class="small text-muted mb-0 line-clamp-2">${item.description}</p>
+                        <p class="facility-desc mb-0 line-clamp-2">${item.description}</p>
                     </div>
                 </div>
             </div>
             `;
-        })
-        .join("");
+        }).join("");
+
     } else {
       container.innerHTML = `<div class="col-12 text-center text-muted">No facilities found.</div>`;
     }
   } catch (error) {
-    console.error("Facilities API Fetch Failed:", error);
+    console.error("Facilities API Error:", error);
     container.innerHTML = `<div class="col-12 text-center text-muted">Failed to load facilities.</div>`;
   }
+};
+
+window.openFacilityModal = (img, title, desc, condition, badgeClass) => {
+    const modalImg = document.getElementById('modalFacilityImg');
+    const modalTitle = document.getElementById('modalFacilityTitle');
+    const modalDesc = document.getElementById('modalFacilityDesc');
+    const modalBadge = document.getElementById('modalFacilityBadge');
+
+    modalImg.src = img;
+    modalTitle.textContent = title;
+    modalDesc.textContent = desc;
+    
+    // Set Badge Style & Text
+    modalBadge.className = `badge ${badgeClass} rounded-pill fs-6`;
+    modalBadge.textContent = condition;
+
+    // Show Modal via Bootstrap API
+    const myModal = new bootstrap.Modal(document.getElementById('facilityModal'));
+    myModal.show();
 };
 
 const initProjects = async () => {
@@ -946,12 +981,8 @@ const initNews = async () => {
 const initPartners = async () => {
   const track = document.getElementById("partners-track");
 
-  // Safety Check
   if (!track) return;
 
-  // --- 1. INJECT SKELETON LOADING ---
-  // Kita buat 5 placeholder logo untuk mengisi track saat loading
-  // Class 'placeholder' dari Bootstrap akan membuatnya berkedip (glow)
   const skeletonItem = `
     <div class="placeholder-glow">
         <span class="placeholder bg-secondary opacity-25 rounded" style="width: 150px; height: 50px; display: block;"></span>
@@ -1192,69 +1223,72 @@ const initGallery = async () => {
   }
 };
 
-
-// --- Mock Data (Sesuai Request) ---
-const PRODUCT_DATA = {
-    "product": [
-        {
-            "id": 3,
-            "product_name": "Viat Map Application",
-            "description": "VIAT-map (Visual Arguments Toulmin) Application to help Reading Comprehension by visualizing logical structures effectively.",
-            "image_name": "https://placehold.co/800x600/111/333?text=ViatMap+UI", // Placeholder untuk demo
-            // Ganti line di atas dengan: "image_name": "eb320b20777f08d5873246f3cc34ee4d.png", jika path sudah benar
-            "release_date": "2025-08-21T17:00:00.000Z"
-        },
-        {
-            "id": 4,
-            "product_name": "PseudoLearn Application",
-            "description": "Media pembelajaran interaktif untuk rekonstruksi algoritma pseudocode bagi mahasiswa teknik informatika.",
-            "image_name": "https://placehold.co/800x600/0d6efd/fff?text=PseudoLearn", // Placeholder
-             // Ganti line di atas dengan: "image_name": "4f0a004dc8c903ff6737755e7a7cb9bc.png",
-            "release_date": "2025-10-09T17:00:00.000Z"
-        }
-    ]
-};
-
 const initProducts = async () => {
-    const grid = document.getElementById("product-grid");
-    if (!grid) return;
+  const grid = document.getElementById("product-grid");
+  if (!grid) return;
 
-    // --- 1. Simulate Fetch (Gunakan PRODUCT_DATA) ---
-    // Di real case: const response = await fetch('/api/products'); const data = await response.json();
-    const data = PRODUCT_DATA.product;
+  const skeletonItem = `
+    <div class="tech-tile placeholder-glow" style="cursor: default; transform: none; background: #111;">
+        <div class="tile-img-wrapper">
+            <span class="placeholder w-100 h-100 bg-secondary opacity-10"></span>
+        </div>
+        <div class="tile-content" style="transform: none;">
+            <span class="placeholder col-3 mb-3 bg-secondary opacity-25 rounded-pill"></span>
+            <span class="placeholder col-8 mb-2 bg-secondary opacity-25 d-block"></span>
+            <span class="placeholder col-12 bg-secondary opacity-10"></span>
+            <span class="placeholder col-10 bg-secondary opacity-10"></span>
+        </div>
+    </div>
+  `;
+  grid.innerHTML = skeletonItem.repeat(2);
 
-    // --- 2. Render Tiles ---
-    grid.innerHTML = data.map(item => {
-        // Format Date (e.g., Aug 2025)
-        const dateObj = new Date(item.release_date);
-        const dateStr = dateObj.toLocaleDateString("en-US", { month: 'short', year: 'numeric' });
+  try {
+    const response = await fetch("http://inlet-lab.test/api/products");
+
+    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+    const result = await response.json();
+
+    let products = [];
+    if (result.success) {
+        if (result.data && Array.isArray(result.data.items)) {
+            products = result.data.items;
+        } else if (Array.isArray(result.data)) {
+            products = result.data;
+        }
+    }
+
+    if (products.length > 0) {
+      grid.innerHTML = products.map(item => {
+        let dateStr = "Coming Soon";
+        if(item.release_date || item.created_at) {
+             const d = new Date(item.release_date || item.created_at);
+             dateStr = d.toLocaleDateString("en-US", { month: 'short', year: 'numeric' });
+        }
         
-        // Handle Image Path (Sesuaikan path 'uploads/products/' dengan struktur folder Anda)
-        // Jika data dari JSON asli tidak punya full path, tambahkan prefix di sini
-        const imgSrc = item.image_name.startsWith('http') ? item.image_name : `uploads/products/${item.image_name}`;
+        const imgName = item.image_url || item.image_name || "";
+        const imgSrc = imgName.startsWith('http') ? imgName : `uploads/products/${imgName}`;
+        const finalImg = (imgName === "") ? "https://placehold.co/600x400/111/333?text=Product" : imgSrc;
 
         return `
             <div class="tech-tile" data-tilt>
                 <div class="tile-img-wrapper">
-                    <img src="${imgSrc}" alt="${item.product_name}" loading="lazy">
+                    <img src="${finalImg}" alt="${item.product_name || item.name}" loading="lazy">
                 </div>
                 
                 <div class="tile-shine"></div>
-                
                 <div class="tile-overlay"></div>
 
                 <div class="tile-content">
                     <span class="product-date">${dateStr}</span>
-                    <h3 class="product-title">${item.product_name}</h3>
+                    <h3 class="product-title">${item.product_name || item.name}</h3>
                     <p class="product-desc">${item.description}</p>
                 </div>
             </div>
         `;
-    }).join('');
+      }).join('');
 
-    // --- 3. Initialize 3D Tilt Effect ---
-    // Hanya jalankan jika bukan device touch (untuk performa)
-    if (window.matchMedia("(hover: hover)").matches) {
+      if (window.matchMedia("(hover: hover)").matches) {
         const tiles = document.querySelectorAll('.tech-tile');
 
         tiles.forEach(tile => {
@@ -1265,22 +1299,18 @@ const initProducts = async () => {
                 const width = rect.width;
                 const height = rect.height;
 
-                // Hitung posisi mouse relatif terhadap tengah kartu
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
                 
-                const xPct = mouseX / width - 0.5; // -0.5 s/d 0.5
-                const yPct = mouseY / height - 0.5; // -0.5 s/d 0.5
+                const xPct = mouseX / width - 0.5;
+                const yPct = mouseY / height - 0.5; 
 
-                // Kalkulasi Rotasi (Max 10 derajat)
-                const rotateX = yPct * -15; // Mouse turun -> Tilt ke atas (negatif)
-                const rotateY = xPct * 15;  // Mouse kanan -> Tilt ke kanan
+                const rotateX = yPct * -15; 
+                const rotateY = xPct * 15; 
 
-                // Update Transform secara langsung
-                tile.style.transition = 'none'; // Matikan transition saat bergerak agar responsif
+                tile.style.transition = 'none'; 
                 tile.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
 
-                // Update Shine Position
                 if (shine) {
                     shine.style.setProperty('--shine-x', `${mouseX}px`);
                     shine.style.setProperty('--shine-y', `${mouseY}px`);
@@ -1288,12 +1318,20 @@ const initProducts = async () => {
             });
 
             tile.addEventListener('mouseleave', () => {
-                // Reset posisi smooth saat mouse keluar
                 tile.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
                 tile.style.transform = 'rotateX(0) rotateY(0) scale3d(1, 1, 1)';
             });
         });
+      }
+
+    } else {
+      grid.innerHTML = `<div class="col-12 text-center text-white-50 py-5">No products found.</div>`;
     }
+
+  } catch (error) {
+    console.error("Products API Fetch Failed:", error);
+    grid.innerHTML = `<div class="col-12 text-center text-danger py-5">Failed to load products.</div>`;
+  }
 };
 
 const initMaps = async () => {

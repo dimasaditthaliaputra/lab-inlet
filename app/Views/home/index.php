@@ -65,47 +65,81 @@
     </div>
 </section>
 
-<section id="team-carousel" class="py-5">
-    <div class="bg-decoration blob-1"></div>
-    <div class="bg-decoration blob-2"></div>
+<div class="seamless-wrapper position-relative overflow-hidden">
 
-    <div class="container position-relative" style="z-index: 2;">
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-8 text-center">
-                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 mb-3 fw-bold">
-                    MEET THE EXPERTS
-                </span>
-                <h2 class="display-6 fw-bold text-dark mb-3" style="font-family: var(--font-heading);">
-                    Our Dedicated Team
-                </h2>
-                <p class="text-muted lead">
-                    Innovators and researchers working together to shape the future of technology.
-                </p>
+    <div class="bg-decoration blob-top-left"></div>
+
+    <div class="bg-decoration blob-center-right"></div>
+
+    <div class="bg-decoration blob-bottom-left"></div>
+
+
+    <section id="team-carousel" class="py-5 bg-transparent position-relative z-2">
+        <div class="container position-relative" style="z-index: 2;">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2 mb-3 fw-bold">
+                        MEET THE EXPERTS
+                    </span>
+                    <h2 class="display-6 fw-bold text-dark mb-3" style="font-family: var(--font-heading);">
+                        Our Dedicated Team
+                    </h2>
+                    <p class="text-muted lead">
+                        Innovators and researchers working together to shape the future of technology.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-slider-wrapper">
+            <div class="slider-fade fade-left"></div>
+            <div class="slider-fade fade-right"></div>
+
+            <div id="team-track" class="team-track">
+            </div>
+        </div>
+    </section>
+
+
+    <section id="facilities" class="py-section bg-transparent position-relative z-2 pt-0">
+        <div class="container position-relative z-2">
+            <div class="row mb-5 align-items-end">
+                <div class="col-lg-6">
+                    <span class="text-primary fw-bold text-uppercase ls-1 small">Infrastructure</span>
+                    <h2 class="display-5 fw-bold font-heading text-dark mt-2">Lab Facilities & Equipment</h2>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <p class="text-muted mb-0 lead">State-of-the-art tools powering our research.</p>
+                </div>
+            </div>
+
+            <div id="facilities-container" class="row g-4">
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<div class="modal fade" id="facilityModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content glass-modal border-0 rounded-4 overflow-hidden">
+            <div class="position-relative">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3 bg-dark rounded-circle p-2 opacity-75 hover-opacity-100" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-img-wrapper bg-black d-flex align-items-center justify-content-center" style="min-height: 400px;">
+                    <img src="" id="modalFacilityImg" class="img-fluid" alt="Facility Preview" style="max-height: 80vh;">
+                </div>
+                <div class="modal-caption p-4 text-white position-absolute bottom-0 start-0 w-100" 
+     style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);">
+
+                    <h3 class="h4 fw-bold mb-1" id="modalFacilityTitle"></h3>
+                    <p class="mb-0 opacity-75 small" id="modalFacilityDesc"></p>
+                    <span class="badge mt-2" id="modalFacilityBadge"></span>
+
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="team-slider-wrapper">
-        <div class="slider-fade fade-left"></div>
-        <div class="slider-fade fade-right"></div>
-
-        <div id="team-track" class="team-track">
-            </div>
-    </div>
-</section>
-
-<section id="facilities" class="py-section">
-    <div class="container">
-        <div class="mb-5 d-flex justify-content-between align-items-end">
-            <div>
-                <h2 class="fw-bold font-heading">Lab Facilities & Equipment</h2>
-                <p class="text-muted mb-0">State-of-the-art infrastructure.</p>
-            </div>
-        </div>
-        <div id="facilities-container" class="row g-4">
-        </div>
-    </div>
-</section>
+</div>
 
 <section id="projects" class="py-section bg-white">
     <div class="container">
@@ -130,14 +164,14 @@
 
         <div class="news-3d-container position-relative w-100" style="height: 350px;">
             <div id="news-track" class="news-track h-100 w-100 position-relative">
-                </div>
+            </div>
         </div>
 
         <div class="d-flex justify-content-center align-items-center gap-4 mt-5">
             <button class="news-nav-btn prev" id="news-prev" aria-label="Previous">
                 <i class="bi bi-arrow-left"></i>
             </button>
-            
+
             <div id="news-indicators" class="d-flex gap-2"></div>
 
             <button class="news-nav-btn next" id="news-next" aria-label="Next">
@@ -175,14 +209,14 @@
                 <h2 class="display-4 fw-bold text-white lh-1">Digital <br>Craftsmanship.</h2>
             </div>
             <div class="col-lg-6 text-lg-end">
-                <p class="text-muted mb-0 max-w-400 ms-auto">
+                <p class="text-white mb-0 max-w-400 ms-auto">
                     Exploring the boundaries of technology with cutting-edge applications designed for the future.
                 </p>
             </div>
         </div>
 
         <div id="product-grid" class="product-grid">
-            </div>
+        </div>
     </div>
 </section>
 

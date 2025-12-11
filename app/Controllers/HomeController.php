@@ -9,6 +9,7 @@ use App\Models\HeroSlider;
 use App\Models\KategoriProject;
 use App\Models\News;
 use App\Models\Partner;
+use App\Models\Product;
 use App\Models\ProjectLab;
 use App\Models\ResearchFocus;
 use App\Models\SiteSettings;
@@ -28,6 +29,7 @@ class HomeController extends Controller
     private $partner;
     private $gallery;
     private $siteSettings;
+    private $products;
     public function __construct()
     {
         $this->hero = new HeroSlider();
@@ -41,6 +43,7 @@ class HomeController extends Controller
         $this->partner = new Partner();
         $this->gallery = new Gallery();
         $this->siteSettings = new SiteSettings();
+        $this->products = new Product();
     }
     public function index()
     {
@@ -122,29 +125,23 @@ class HomeController extends Controller
     public function getTeam()
     {
         try {
-            // Mengambil data dari Model Team (yang menggunakan STRING_AGG)
             $query = $this->team->getAll();
 
             $data = array_map(function ($item) {
-
-                // Parsing Data Social Media
-                // Format dari DB: "Instagram|http://link..., LinkedIn|http://link..."
                 $socials = [];
                 if (!empty($item->social_medias)) {
                     $pairs = explode(', ', $item->social_medias);
                     foreach ($pairs as $pair) {
                         $parts = explode('|', $pair);
-                        // Pastikan formatnya benar (Name|Link)
-                        if (count($parts) === 2) {
+                        if (count($parts) === 3) {
                             $socials[] = [
-                                // strtolower agar cocok dengan class icon (misal: 'LinkedIn' -> 'linkedin')
-                                'type' => strtolower($parts[0]),
-                                'url'  => $parts[1]
+                                'type' => $parts[0],
+                                'icon_name' => $parts[1],
+                                'url'  => $parts[2]
                             ];
                         }
                     }
                 }
-
                 return [
                     "id"                => $item->id,
                     "full_name"         => $item->full_name,
@@ -283,29 +280,18 @@ class HomeController extends Controller
     public function getNews()
     {
         try {
-            // Ambil semua berita, urutkan dari yang terbaru
-            // Model News::getAll() defaultnya urut ID, kita bisa modif query di model atau sort array disini.
-            // Namun lebih efisien modif query di model untuk LIMIT.
-            // Karena saya tidak boleh ubah model, saya akan slice array di sini.
-
             $allNews = $this->news->getAll();
 
-            // Urutkan by publish_date DESC (Terbaru diatas)
             usort($allNews, function ($a, $b) {
                 return strtotime($b->publish_date) - strtotime($a->publish_date);
             });
 
-            // Ambil 4 berita terbaru
             $latestNews = array_slice($allNews, 0, 4);
 
             $data = array_map(function ($item) {
-                // Generate excerpt (cuplikan konten) dari HTML content
-                // Strip tags agar bersih dari tag HTML, lalu potong 100 karakter
                 $cleanContent = strip_tags($item->content);
                 $excerpt = (strlen($cleanContent) > 120) ? substr($cleanContent, 0, 120) . '...' : $cleanContent;
 
-                // Generate slug sederhana (Title -> slug)
-                // Sebaiknya DB punya kolom slug, tapi ini workaround
                 $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item->title)));
 
                 return [
@@ -405,14 +391,6 @@ class HomeController extends Controller
                 return response()->json(['success' => false, 'message' => 'Settings not found'], 404);
             }
 
-            /* DEBUGGING (Opsional): 
-           Jika masih error, uncomment baris di bawah ini untuk melihat nama kolom asli dari database:
-           dd($settings); 
-        */
-
-            // 1. PERBAIKAN SOCIAL MEDIA
-            // Gunakan Null Coalescing Operator (??) untuk mencegah error jika kolom tidak ada/null
-            // Asumsi nama kolom di DB adalah 'social_media', bukan 'social_media_links'
             $rawSocial = $settings->social_media ?? $settings->social_media_links ?? null;
             $socials = [];
 
@@ -446,6 +424,34 @@ class HomeController extends Controller
                 'logo'         => !empty($settings->site_logo) ? asset('uploads/site/') . $settings->site_logo : null,
                 'social_media' => $socials
             ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Success',
+                'data'    => $data
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getProducts()
+    {
+        try {
+            $query = $this->products->getAll();
+
+            $data = array_map(function ($item) {
+                return [
+                    'id'          => $item->id,
+                    'product_name'        => $item->product_name,
+                    'description' => $item->description,
+                    'image_name'  => !empty($item->image_name) ? asset('uploads/product/') . $item->image_name : null,
+                    'release_date'       => $item->release_date,
+                ];
+            }, $query);
 
             return response()->json([
                 'success' => true,

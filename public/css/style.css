@@ -470,66 +470,84 @@ section {
 }
 
 /* 2. Team Cards */
-#team-carousel {
-  background: #f8fafc; /* Fallback */
-  background: radial-gradient(circle at 10% 20%, rgb(239, 246, 255) 0%, rgb(250, 250, 255) 90%);
-  position: relative;
-  overflow: hidden;
+.seamless-wrapper {
+    background: radial-gradient(circle at 10% 20%, rgb(239, 246, 255) 0%, rgb(250, 250, 255) 90%);
+    width: 100%;
+    position: relative;
+    overflow: hidden; 
 }
 
-/* Dekorasi Background (Blurry Blobs) */
+/* Reset background individu agar transparan */
+#team-carousel, 
+#facilities {
+    background: transparent !important; 
+    overflow: visible !important; 
+}
+
+/* --- 3. Blob Decoration (Global) --- */
 .bg-decoration {
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background: linear-gradient(180deg, rgba(0, 102, 255, 0.15) 0%, rgba(0, 102, 255, 0.05) 100%);
-  filter: blur(80px);
-  border-radius: 50%;
-  z-index: 0;
-  animation: float-blob 10s infinite alternate ease-in-out;
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    filter: blur(90px);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+    animation: float-blob 12s infinite alternate ease-in-out;
 }
-.blob-1 {
-  top: -100px;
-  left: -100px;
+
+/* Posisi Blob (Strategis agar terlihat menyambung) */
+.blob-top-left {
+    top: -150px;
+    left: -150px;
+    background: linear-gradient(180deg, rgba(0, 102, 255, 0.15) 0%, rgba(0, 102, 255, 0.05) 100%);
 }
-.blob-2 {
-  bottom: -100px;
-  right: -100px;
-  background: rgba(255, 0, 150, 0.05);
+
+.blob-center-right {
+    top: 35%; /* Di tengah pertemuan dua section */
+    right: -150px;
+    width: 600px;
+    height: 600px;
+    background: rgba(255, 0, 150, 0.06); /* Pink lembut */
+    opacity: 0.8;
+}
+
+.blob-bottom-left {
+    bottom: -200px;
+    left: -150px;
+    background: rgba(0, 102, 255, 0.08); /* Biru lembut */
+    width: 600px;
+    height: 600px;
 }
 
 @keyframes float-blob {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(30px, 50px);
-  }
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(20px, 40px) scale(1.05); }
 }
 
-/* --- Slider Layout --- */
+/* --- 4. Team Carousel Styling --- */
 .team-slider-wrapper {
-  position: relative;
-  width: 100%;
-  padding: 3rem 0;
-  z-index: 1; /* Di atas decoration */
+    position: relative;
+    width: 100%;
+    padding: 3rem 0;
+    z-index: 1; 
 }
 
 .team-track {
-  display: flex;
-  width: max-content;
-  animation: scroll-left 40s linear infinite; /* Sedikit diperlambat agar elegan */
+    display: flex;
+    width: max-content;
+    animation: scroll-left 40s linear infinite;
+    gap: 0; /* Gap dihandle padding item */
 }
 
 .team-slider-wrapper:hover .team-track {
-  animation-play-state: paused;
+    animation-play-state: paused;
 }
 
-/* --- Responsive Item Width --- */
 .team-carousel-item {
-  flex: 0 0 auto;
-  padding: 0 16px; /* Gutter */
-  width: 100vw; /* Default Mobile */
+    flex: 0 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
 }
 
 /* Desktop: 4 items (100% / 4 = 25%) */
@@ -590,146 +608,200 @@ section {
 }
 
 .team-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: var(--glass-border);
-  border-radius: 20px;
-  padding: 2.5rem 1.5rem;
-  text-align: center;
-  box-shadow: var(--glass-shadow);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Spring effect halus */
-  height: 100%;
-  position: relative;
-  overflow: hidden;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Image Styling */
-.img-wrapper {
-  position: relative;
-  width: 110px;
-  height: 110px;
-  margin: 0 auto 1.5rem;
+.team-card:hover {
+    transform: translateY(-12px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .team-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid #fff;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.4s ease;
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    transition: transform 0.4s ease;
 }
 
-/* Typography */
+.team-card:hover img { transform: scale(1.08); }
+
 .team-name {
-  font-family: var(--font-heading);
-  color: var(--text-dark);
-  font-weight: 700;
-  font-size: 1.25rem;
-  margin-bottom: 0.25rem;
+    font-family: var(--font-heading);
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
 }
 
 .team-role {
-  font-family: var(--font-body);
-  color: var(--primary-color);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 1.25rem;
+    font-family: var(--font-body);
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.25rem;
 }
 
-/* Divider halus */
-.team-divider {
-  height: 1px;
-  width: 40px;
-  background: #cbd5e1;
-  margin: 0 auto 1.25rem;
-}
-
-/* Social Icons */
+/* Social Icons Team */
 .team-social {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
 }
 
 .team-social a {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  color: var(--text-muted);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
 }
 
 .team-social a:hover {
-  background: var(--primary-color);
-  color: #fff;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0, 102, 255, 0.3);
+    background: var(--primary-color);
+    color: #fff;
+    transform: translateY(-3px);
 }
 
-/* --- Hover Effects --- */
-.team-card:hover {
-  transform: translateY(-12px); /* Elevasi */
-  box-shadow: var(--card-hover-shadow);
-  border-color: #fff;
-  background: rgba(255, 255, 255, 0.85); /* Sedikit lebih solid saat hover */
+/* Slider Fade Sides */
+.slider-overlay-left {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 120px; z-index: 2; pointer-events: none;
+    background: linear-gradient(to right, rgb(239, 246, 255) 0%, transparent 100%);
+}
+.slider-overlay-right {
+    position: absolute; top: 0; bottom: 0; right: 0; width: 120px; z-index: 2; pointer-events: none;
+    background: linear-gradient(to left, rgb(248, 250, 255) 0%, transparent 100%);
 }
 
-.team-card:hover img {
-  transform: scale(1.08);
-}
-
-/* --- Gradient Fade Sides (Agar tidak putus tajam) --- */
-.slider-fade {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 120px;
-  z-index: 2;
-  pointer-events: none;
-}
-.fade-left {
-  left: 0;
-  background: linear-gradient(to right, #f8fafc 0%, transparent 100%);
-}
-.fade-right {
-  right: 0;
-  background: linear-gradient(to left, #f8fafc 0%, transparent 100%);
-}
-
-/* Animasi Scroll */
 @keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
-/* 3. Facilities */
-.facility-item {
-  border-bottom: 1px solid #e2e8f0;
-  padding: 1.5rem 0;
+/* --- 5. Facilities Section Styling --- */
+#facilities {
+    padding-top: 4rem; /* Jarak visual antar section */
 }
-.facility-item:last-child {
-  border-bottom: none;
+
+/* Facility Card */
+.facility-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    padding: 1.25rem;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
+
+.facility-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 102, 255, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 10;
+    border-color: rgba(0, 102, 255, 0.2);
+}
+
+/* Image Wrapper Facility */
+.facility-img-wrapper {
+    width: 140px;
+    height: 110px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    position: relative;
+}
+
 .facility-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.5s ease;
+}
+
+/* Hover Effect Image Facility */
+.facility-img-wrapper::before {
+    content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.2); opacity: 0; transition: 0.3s; z-index: 1;
+}
+.facility-img-wrapper::after {
+    content: '\f00e'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+    color: white; font-size: 1.5rem; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 2;
+}
+
+.facility-card:hover .facility-img-wrapper::before { opacity: 1; }
+.facility-card:hover .facility-img-wrapper::after { transform: translate(-50%, -50%) scale(1); }
+.facility-card:hover .facility-img { transform: scale(1.1); }
+
+/* Typography Facility */
+.facility-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.facility-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Badges */
+.badge-soft-success { background: rgba(16, 185, 129, 0.1); color: #10B981; font-weight: 600; padding: 0.35em 0.8em; }
+.badge-soft-warning { background: rgba(245, 158, 11, 0.1); color: #F59E0B; font-weight: 600; padding: 0.35em 0.8em; }
+
+/* Modal Styling */
+.glass-modal {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 576px) {
+    .facility-card { flex-direction: column; text-align: center; padding: 1.5rem; }
+    .facility-img-wrapper { width: 100%; height: 180px; margin-bottom: 1rem; }
+    .slider-fade { display: none; } /* Hide fade on mobile usually better */
+    
+    /* Ensure blob doesn't cause overflow */
+    .bg-decoration { width: 300px; height: 300px; }
 }
 
 /* 4. Projects & Filters */

@@ -29,7 +29,7 @@ class Team extends Model
             tm.created_at,
             tm.updated_at,
             COALESCE(
-                STRING_AGG(sl.name || '|' || st.link_sosmed, ', '),
+                STRING_AGG(sl.name || '|' || sl.icon_name || '|' || st.link_sosmed, ', '),
             '') AS social_medias
         FROM {$this->table} tm
         LEFT JOIN social_team st ON tm.id = st.id_team
