@@ -128,8 +128,8 @@
                 <div class="modal-img-wrapper bg-black d-flex align-items-center justify-content-center" style="min-height: 400px;">
                     <img src="" id="modalFacilityImg" class="img-fluid" alt="Facility Preview" style="max-height: 80vh;">
                 </div>
-                <div class="modal-caption p-4 text-white position-absolute bottom-0 start-0 w-100" 
-     style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);">
+                <div class="modal-caption p-4 text-white position-absolute bottom-0 start-0 w-100"
+                    style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);">
 
                     <h3 class="h4 fw-bold mb-1" id="modalFacilityTitle"></h3>
                     <p class="mb-0 opacity-75 small" id="modalFacilityDesc"></p>
@@ -290,3 +290,7 @@
         </div>
     </div>
 </section>
+
+<?php ob_start(); ?>
+    <script src="<?= asset('js/utils.js') ?>"></script>
+<?php $pageScripts = ob_get_clean(); ?>

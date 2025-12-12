@@ -128,6 +128,8 @@ class HomeController extends Controller
             $query = $this->team->getAll();
 
             $data = array_map(function ($item) {
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item->full_name)));
+
                 $socials = [];
                 if (!empty($item->social_medias)) {
                     $pairs = explode(', ', $item->social_medias);
@@ -142,8 +144,10 @@ class HomeController extends Controller
                         }
                     }
                 }
+                
                 return [
                     "id"                => $item->id,
+                    "slug"              => $slug, // <--- Field Baru
                     "full_name"         => $item->full_name,
                     "lab_position"      => $item->lab_position,
                     "academic_position" => $item->academic_position,
@@ -159,10 +163,7 @@ class HomeController extends Controller
                 'data'    => $data
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan pada server: ' . $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -257,8 +258,6 @@ class HomeController extends Controller
                 ];
             }
 
-            // 3. Susun Response sesuai format MOCK_API.projects
-            // { categories: [...], items: [...] }
             $responseData = [
                 "categories" => $categoriesData,
                 "items" => $itemsData
@@ -458,6 +457,71 @@ class HomeController extends Controller
                 'message' => 'Success',
                 'data'    => $data
             ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function detailTeam() {
+        return view_with_layout_homepage('home/detailTeam');
+    }
+
+    public function getTeamDetailAPI($slug)
+    {
+        try {
+            $allMembers = $this->team->getAll();
+            
+            $foundId = null;
+            
+            foreach ($allMembers as $member) {
+                $memberSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $member->full_name)));
+                
+                if ($memberSlug === $slug) {
+                    $foundId = $member->id;
+                    break;
+                }
+            }
+
+            if (!$foundId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Team member not found'
+                ], 404);
+            }
+
+            $data = $this->team->getTeamDetail($foundId);
+
+            $data['image_name'] = !empty($data['image_name']) 
+                                  ? asset('uploads/team/') . $data['image_name'] 
+                                  : 'https://placehold.co/400x400/2563eb/ffffff?text=' . urlencode($data['full_name']);
+
+            $formattedSocials = array_map(function($social) {
+                return [
+                    'type' => strtolower($social->name),
+                    'icon_name' => $social->icon_name,
+                    'url' => $social->link_sosmed
+                ];
+            }, $data['social_medias']);
+
+            $data['social_medias'] = $formattedSocials;
+
+            // Decode JSON fields
+            $jsonFields = ['expertise', 'education', 'certifications', 'courses_taught'];
+            foreach ($jsonFields as $field) {
+                if (isset($data[$field]) && is_string($data[$field])) {
+                    $data[$field] = json_decode($data[$field], true);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Success',
+                'data'    => $data
+            ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

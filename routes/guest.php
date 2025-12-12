@@ -5,7 +5,10 @@ use App\Controllers\HomeController;
 
 return route_group([
     get('/', [HomeController::class, 'index']),
+    get('/team', [HomeController::class, 'detailTeam']),
     get('/api/schoolar', [APIController::class, 'index']),
+
+    get('/api/team/{slug}', [HomeController::class, 'getTeamDetailAPI']),
 
     get('/api/hero-slider', [HomeController::class, 'getHeroSlider']),
     get('/api/about-us', [HomeController::class, 'getAbout']),

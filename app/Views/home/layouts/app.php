@@ -12,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('css/style.css') ?>">
+    <?php if (isset($pageStyle)): ?>
+        <?= $pageStyle ?>
+    <?php endif; ?>
 </head>
 
 <body>
@@ -24,5 +27,9 @@
     <?php include_once __DIR__ . '/component/footer.php'; ?>
 
     <script src="<?= asset('assets/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-    <script src="<?= asset('js/script.js') ?>"></script>
+    <script src="<?= asset('js/main.js') ?>"></script>
+
+    <?php if (isset($pageScripts)): ?>
+        <?= $pageScripts ?>
+    <?php endif; ?>
 </body>

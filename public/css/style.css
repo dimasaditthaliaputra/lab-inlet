@@ -11,12 +11,15 @@
   --tech-blue: #0d6efd;
   --tech-black: #050505;
   --tech-card-bg: #111;
-  --glass-border: rgba(255, 255, 255, 0.1);
 
   --glass-bg: rgba(255, 255, 255, 0.65);
   --glass-border: 1px solid rgba(255, 255, 255, 0.8);
   --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
   --card-hover-shadow: 0 20px 40px rgba(0, 50, 150, 0.1);
+
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --glass-bg: rgba(255, 255, 255, 0.7);
 }
 
 ::-webkit-scrollbar {
@@ -218,8 +221,8 @@ section {
   z-index: 10;
   height: 100%;
   display: flex;
-  align-items: center; /* Vertically Center */
-  padding-left: 5%; /* Left align offset */
+  align-items: center;
+  padding-left: 5%;
 }
 
 .glass-card {
@@ -234,7 +237,7 @@ section {
   color: #fff;
   transform: translateY(20px);
   opacity: 0;
-  transition: all 0.8s ease-out 0.3s; /* Delay text animation */
+  transition: all 0.8s ease-out 0.3s;
 }
 
 /* Animate text up when slide is active */
@@ -471,83 +474,87 @@ section {
 
 /* 2. Team Cards */
 .seamless-wrapper {
-    background: radial-gradient(circle at 10% 20%, rgb(239, 246, 255) 0%, rgb(250, 250, 255) 90%);
-    width: 100%;
-    position: relative;
-    overflow: hidden; 
+  background: radial-gradient(circle at 10% 20%, rgb(239, 246, 255) 0%, rgb(250, 250, 255) 90%);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Reset background individu agar transparan */
-#team-carousel, 
+#team-carousel,
 #facilities {
-    background: transparent !important; 
-    overflow: visible !important; 
+  background: transparent !important;
+  overflow: visible !important;
 }
 
 /* --- 3. Blob Decoration (Global) --- */
 .bg-decoration {
-    position: absolute;
-    width: 500px;
-    height: 500px;
-    filter: blur(90px);
-    border-radius: 50%;
-    z-index: 0;
-    pointer-events: none;
-    animation: float-blob 12s infinite alternate ease-in-out;
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  filter: blur(90px);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  animation: float-blob 12s infinite alternate ease-in-out;
 }
 
 /* Posisi Blob (Strategis agar terlihat menyambung) */
 .blob-top-left {
-    top: -150px;
-    left: -150px;
-    background: linear-gradient(180deg, rgba(0, 102, 255, 0.15) 0%, rgba(0, 102, 255, 0.05) 100%);
+  top: -150px;
+  left: -150px;
+  background: linear-gradient(180deg, rgba(0, 102, 255, 0.15) 0%, rgba(0, 102, 255, 0.05) 100%);
 }
 
 .blob-center-right {
-    top: 35%; /* Di tengah pertemuan dua section */
-    right: -150px;
-    width: 600px;
-    height: 600px;
-    background: rgba(255, 0, 150, 0.06); /* Pink lembut */
-    opacity: 0.8;
+  top: 35%; /* Di tengah pertemuan dua section */
+  right: -150px;
+  width: 600px;
+  height: 600px;
+  background: rgba(255, 0, 150, 0.06); /* Pink lembut */
+  opacity: 0.8;
 }
 
 .blob-bottom-left {
-    bottom: -200px;
-    left: -150px;
-    background: rgba(0, 102, 255, 0.08); /* Biru lembut */
-    width: 600px;
-    height: 600px;
+  bottom: -200px;
+  left: -150px;
+  background: rgba(0, 102, 255, 0.08); /* Biru lembut */
+  width: 600px;
+  height: 600px;
 }
 
 @keyframes float-blob {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(20px, 40px) scale(1.05); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(20px, 40px) scale(1.05);
+  }
 }
 
 /* --- 4. Team Carousel Styling --- */
 .team-slider-wrapper {
-    position: relative;
-    width: 100%;
-    padding: 3rem 0;
-    z-index: 1; 
+  position: relative;
+  width: 100%;
+  padding: 3rem 0;
+  z-index: 1;
 }
 
 .team-track {
-    display: flex;
-    width: max-content;
-    animation: scroll-left 40s linear infinite;
-    gap: 0; /* Gap dihandle padding item */
+  display: flex;
+  width: max-content;
+  animation: scroll-left 40s linear infinite;
+  gap: 0; /* Gap dihandle padding item */
 }
 
 .team-slider-wrapper:hover .team-track {
-    animation-play-state: paused;
+  animation-play-state: paused;
 }
 
 .team-carousel-item {
-    flex: 0 0 auto;
-    padding: 0 16px;
-    box-sizing: border-box;
+  flex: 0 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
 
 /* Desktop: 4 items (100% / 4 = 25%) */
@@ -608,200 +615,262 @@ section {
 }
 
 .team-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: var(--glass-border);
-    border-radius: 20px;
-    padding: 2.5rem 1.5rem;
-    text-align: center;
-    box-shadow: var(--glass-shadow);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    height: 100%;
-    position: relative;
-    overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--glass-border);
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 .team-card:hover {
-    transform: translateY(-12px);
-    box-shadow: var(--card-hover-shadow);
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-12px);
+  box-shadow: var(--card-hover-shadow);
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .team-card img {
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1.5rem;
-    transition: transform 0.4s ease;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  transition: transform 0.4s ease;
 }
 
-.team-card:hover img { transform: scale(1.08); }
+.team-card:hover img {
+  transform: scale(1.08);
+}
 
 .team-name {
-    font-family: var(--font-heading);
-    color: var(--text-dark);
-    font-weight: 700;
-    font-size: 1.25rem;
-    margin-bottom: 0.25rem;
+  font-family: var(--font-heading);
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .team-role {
-    font-family: var(--font-body);
-    color: var(--primary-color);
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 1.25rem;
+  font-family: var(--font-body);
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.25rem;
 }
 
 /* Social Icons Team */
 .team-social {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
 }
 
 .team-social a {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-    color: var(--text-muted);
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .team-social a:hover {
-    background: var(--primary-color);
-    color: #fff;
-    transform: translateY(-3px);
+  background: var(--primary-color);
+  color: #fff;
+  transform: translateY(-3px);
 }
 
 /* Slider Fade Sides */
 .slider-overlay-left {
-    position: absolute; top: 0; bottom: 0; left: 0; width: 120px; z-index: 2; pointer-events: none;
-    background: linear-gradient(to right, rgb(239, 246, 255) 0%, transparent 100%);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to right, rgb(239, 246, 255) 0%, transparent 100%);
 }
 .slider-overlay-right {
-    position: absolute; top: 0; bottom: 0; right: 0; width: 120px; z-index: 2; pointer-events: none;
-    background: linear-gradient(to left, rgb(248, 250, 255) 0%, transparent 100%);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 120px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to left, rgb(248, 250, 255) 0%, transparent 100%);
 }
 
 @keyframes scroll-left {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 /* --- 5. Facilities Section Styling --- */
 #facilities {
-    padding-top: 4rem; /* Jarak visual antar section */
+  padding-top: 4rem; /* Jarak visual antar section */
 }
 
 /* Facility Card */
 .facility-card {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 20px;
-    padding: 1.25rem;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    height: 100%;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
 .facility-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 102, 255, 0.1);
-    background: rgba(255, 255, 255, 0.9);
-    z-index: 10;
-    border-color: rgba(0, 102, 255, 0.2);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 102, 255, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+  border-color: rgba(0, 102, 255, 0.2);
 }
 
 /* Image Wrapper Facility */
 .facility-img-wrapper {
-    width: 140px;
-    height: 110px;
-    flex-shrink: 0;
-    border-radius: 12px;
-    overflow: hidden;
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    position: relative;
+  width: 140px;
+  height: 110px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 .facility-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.5s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
 }
 
 /* Hover Effect Image Facility */
 .facility-img-wrapper::before {
-    content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.2); opacity: 0; transition: 0.3s; z-index: 1;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: 0.3s;
+  z-index: 1;
 }
 .facility-img-wrapper::after {
-    content: '\f00e'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-    color: white; font-size: 1.5rem; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 2;
+  content: "\f00e";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: white;
+  font-size: 1.5rem;
+  transition: 0.3s;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 2;
 }
 
-.facility-card:hover .facility-img-wrapper::before { opacity: 1; }
-.facility-card:hover .facility-img-wrapper::after { transform: translate(-50%, -50%) scale(1); }
-.facility-card:hover .facility-img { transform: scale(1.1); }
+.facility-card:hover .facility-img-wrapper::before {
+  opacity: 1;
+}
+.facility-card:hover .facility-img-wrapper::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+.facility-card:hover .facility-img {
+  transform: scale(1.1);
+}
 
 /* Typography Facility */
 .facility-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
 }
 
 .facility-desc {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    line-height: 1.5;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
 /* Badges */
-.badge-soft-success { background: rgba(16, 185, 129, 0.1); color: #10B981; font-weight: 600; padding: 0.35em 0.8em; }
-.badge-soft-warning { background: rgba(245, 158, 11, 0.1); color: #F59E0B; font-weight: 600; padding: 0.35em 0.8em; }
+.badge-soft-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  font-weight: 600;
+  padding: 0.35em 0.8em;
+}
+.badge-soft-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  font-weight: 600;
+  padding: 0.35em 0.8em;
+}
 
 /* Modal Styling */
 .glass-modal {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Mobile Adjustments */
 @media (max-width: 576px) {
-    .facility-card { flex-direction: column; text-align: center; padding: 1.5rem; }
-    .facility-img-wrapper { width: 100%; height: 180px; margin-bottom: 1rem; }
-    .slider-fade { display: none; } /* Hide fade on mobile usually better */
-    
-    /* Ensure blob doesn't cause overflow */
-    .bg-decoration { width: 300px; height: 300px; }
+  .facility-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  .facility-img-wrapper {
+    width: 100%;
+    height: 180px;
+    margin-bottom: 1rem;
+  }
+  .slider-fade {
+    display: none;
+  } /* Hide fade on mobile usually better */
+
+  /* Ensure blob doesn't cause overflow */
+  .bg-decoration {
+    width: 300px;
+    height: 300px;
+  }
 }
 
 /* 4. Projects & Filters */
@@ -1151,162 +1220,173 @@ section {
 }
 
 .product-section {
-    background-color: var(--tech-black);
-    padding: 6rem 0;
-    min-height: 80vh;
+  background-color: var(--tech-black);
+  padding: 6rem 0;
+  min-height: 80vh;
 }
 
 /* Ambient Glow Effect */
 .ambient-glow {
-    position: absolute;
-    top: -20%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(13, 110, 253, 0.15) 0%, rgba(0,0,0,0) 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(13, 110, 253, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* --- The Grid --- */
 .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-    perspective: 1000px; /* Essential for 3D Tilt */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  perspective: 1000px; /* Essential for 3D Tilt */
 }
 
 /* --- Tech Tile (Card) --- */
 .tech-tile {
-    position: relative;
-    background-color: var(--tech-card-bg);
-    border-radius: 20px;
-    overflow: hidden;
-    height: 450px; /* Taller look */
-    border: 1px solid var(--glass-border);
-    transform-style: preserve-3d;
-    will-change: transform;
-    cursor: pointer;
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s;
+  position: relative;
+  background-color: var(--tech-card-bg);
+  border-radius: 20px;
+  overflow: hidden;
+  height: 450px; /* Taller look */
+  border: 1px solid var(--glass-border);
+  transform-style: preserve-3d;
+  will-change: transform;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s;
 }
 
 /* Image Layer */
 .tile-img-wrapper {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 .tile-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.8s ease;
-    opacity: 0.6; /* Dimmed by default */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+  opacity: 0.6; /* Dimmed by default */
 }
 
 /* Gradient Overlay for Text Readability */
 .tile-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
-    z-index: 1;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+  z-index: 1;
 }
 
 /* Shine Effect Layer */
 .tile-shine {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-        circle at var(--shine-x, 50%) var(--shine-y, 50%), 
-        rgba(255, 255, 255, 0.15) 0%, 
-        transparent 60%
-    );
-    z-index: 3;
-    opacity: 0;
-    pointer-events: none;
-    mix-blend-mode: overlay;
-    transition: opacity 0.3s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at var(--shine-x, 50%) var(--shine-y, 50%),
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 60%
+  );
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  transition: opacity 0.3s;
 }
 
 /* Content Content */
 .tile-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 2.5rem;
-    z-index: 4;
-    transform: translateZ(40px); /* Text pops out in 3D */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2.5rem;
+  z-index: 4;
+  transform: translateZ(40px); /* Text pops out in 3D */
 }
 
 /* Typography */
-.text-blue { color: var(--tech-blue); }
-.ls-2 { letter-spacing: 2px; }
+.text-blue {
+  color: var(--tech-blue);
+}
+.ls-2 {
+  letter-spacing: 2px;
+}
 
 .product-date {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    padding: 6px 12px;
-    background: rgba(13, 110, 253, 0.1);
-    color: var(--tech-blue);
-    border: 1px solid rgba(13, 110, 253, 0.3);
-    border-radius: 50px;
-    display: inline-block;
-    margin-bottom: 1rem;
-    backdrop-filter: blur(4px);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  background: rgba(13, 110, 253, 0.1);
+  color: var(--tech-blue);
+  border: 1px solid rgba(13, 110, 253, 0.3);
+  border-radius: 50px;
+  display: inline-block;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(4px);
 }
 
 .product-title {
-    font-family: 'Inter', sans-serif; /* Pastikan font ini ada/import */
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 0.75rem;
+  font-family: "Inter", sans-serif; /* Pastikan font ini ada/import */
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.75rem;
 }
 
 .product-desc {
-    color: #a0a0a0;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    opacity: 0.8;
-    transition: opacity 0.3s;
+  color: #a0a0a0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  opacity: 0.8;
+  transition: opacity 0.3s;
 }
 
 /* --- Hover States --- */
 .tech-tile:hover {
-    box-shadow: 0 20px 50px rgba(13, 110, 253, 0.15);
-    border-color: rgba(13, 110, 253, 0.4);
+  box-shadow: 0 20px 50px rgba(13, 110, 253, 0.15);
+  border-color: rgba(13, 110, 253, 0.4);
 }
 
 .tech-tile:hover .tile-img-wrapper img {
-    transform: scale(1.1);
-    opacity: 0.8;
+  transform: scale(1.1);
+  opacity: 0.8;
 }
 
 .tech-tile:hover .tile-shine {
-    opacity: 1;
+  opacity: 1;
 }
 
 .tech-tile:hover .product-desc {
-    opacity: 1;
-    color: white;
+  opacity: 1;
+  color: white;
 }
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
-    .product-grid { grid-template-columns: 1fr; }
-    .tech-tile { height: 400px; transform: none !important; }
-    .tile-shine { display: none; } /* Disable heavier effects on mobile */
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+  .tech-tile {
+    height: 400px;
+    transform: none !important;
+  }
+  .tile-shine {
+    display: none;
+  } /* Disable heavier effects on mobile */
 }
 
 /* Lightbox */
