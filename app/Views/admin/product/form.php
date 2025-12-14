@@ -119,13 +119,26 @@ if ($isEdit && $product->specification) {
                                 </div>
                             </div>
 
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="product_link" class="form-label required">Product Link</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="product_link"
+                                        id="product_link"
+                                        placeholder="Product Link"
+                                        value="<?= $isEdit ? e($product->product_link) : '' ?>">
+                                </div>
+                            </div>
+
                             <!-- Features -->
                             <div class="col-12 mt-2">
                                 <div class="card border">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <span class="fw-bold">Features</span>
                                         <button type="button" class="btn btn-sm btn-outline-primary" id="addFeatureBtn">
-                                            + Tambah Feature
+                                            + Add Feature
                                         </button>
                                     </div>
                                     <div class="card-body" id="featuresContainer">
@@ -140,7 +153,7 @@ if ($isEdit && $product->specification) {
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <span class="fw-bold">Specifications</span>
                                         <button type="button" class="btn btn-sm btn-outline-primary" id="addSpecBtn">
-                                            + Tambah Spec
+                                            + Add Spec
                                         </button>
                                     </div>
                                     <div class="card-body" id="specsContainer">

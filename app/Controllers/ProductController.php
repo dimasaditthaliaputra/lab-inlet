@@ -51,6 +51,7 @@ class ProductController extends Controller
                     'product_name'  => $item->product_name,
                     'image'         => $item->image_name ? asset('uploads/product/') . $item->image_name : null,
                     'description'   => $item->description,
+                    'product_link'  => $item->product_link,
                     'release_date'  => $item->release_date ? date('d M Y', strtotime($item->release_date)) : null,
                 ];
             }, $products);
@@ -196,6 +197,7 @@ class ProductController extends Controller
                 'product_name'  => $validation['data']['product_name'],
                 'description'   => $_POST['description'] ?? null,
                 'image_name'    => $imageName,
+                'product_link'  => $_POST['product_link'] ?? null,
                 'release_date'  => $validation['data']['release_date'],
                 'feature'       => $featureJson,
                 'specification' => $specJson,
@@ -304,6 +306,7 @@ class ProductController extends Controller
                 'product_name'  => $validation['data']['product_name'],
                 'description'   => $_POST['description'] ?? null,
                 'image_name'    => $imageName,
+                'product_link'  => $_POST['product_link'] ?? null,
                 'release_date'  => $validation['data']['release_date'],
                 'feature'       => $featureJson,
                 'specification' => $specJson,
