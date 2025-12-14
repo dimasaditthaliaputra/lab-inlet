@@ -14,6 +14,18 @@ if ($configLogo->logo_path && file_exists($path)) {
 } else {
     $logo = asset('assets/logo/logo.png');
 }
+
+$current_url = current_url();
+$base_url = base_url();
+$relative_url = '';
+if (strpos($current_url, $base_url) === 0) {
+    $relative_url = substr($current_url, strlen($base_url));
+}
+
+$relative_url = trim($relative_url, '/');
+$segments = explode('/', $relative_url);
+$main_segment = $segments[0] ?? '';
+
 ?>
 
 <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
@@ -29,16 +41,16 @@ if ($configLogo->logo_path && file_exists($path)) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="<?= base_url() ?>">Home</a>
+                    <a class="nav-link <?= ($main_segment === '') ? 'active' : '' ?>" href="<?= base_url() ?>">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#about-us">About</a>
+                    <a class="nav-link <?= ($main_segment === 'gallery') ? 'active' : '' ?>" href="<?= base_url('gallery') ?>">Gallery</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#projects">Projects</a>
+                    <a class="nav-link <?= ($main_segment === 'news') ? 'active' : '' ?>" href="<?= base_url('news') ?>">News</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#maps-section">Contact</a>
+                    <a class="nav-link <?= ($main_segment === 'products') ? 'active' : '' ?>" href="<?= base_url('products') ?>">Products</a>
                 </li>
             </ul>
             
