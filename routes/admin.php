@@ -21,6 +21,7 @@ use App\Controllers\HeroSliderController;
 use App\Controllers\ResearchFocusController;
 use App\Controllers\PermissionsController;
 use App\Controllers\SocialLinksController;
+use App\Controllers\AttendancePermissionsController;
 
 return prefix('admin', route_group([
     // Dashboard
@@ -181,4 +182,14 @@ return prefix('admin', route_group([
     get('/mahasiswa/{id}/edit', [MahasiswaController::class, 'edit']),
     put('/mahasiswa/{id}', [MahasiswaController::class, 'update']),
     delete('/mahasiswa/{id}', [MahasiswaController::class, 'destroy']),
+
+
+
+    // Attendance Permissions
+
+    get('/attendance-permissions', [AttendancePermissionsController::class, 'index']),
+    get('/attendance-permissions/data', [AttendancePermissionsController::class, 'data']),
+    get('/attendance-permissions/{id}/view', [AttendancePermissionsController::class, 'show']),
+    put('/attendance-permissions/{id}/approve', [AttendancePermissionsController::class, 'approve']),
+    put('/attendance-permissions/{id}/reject', [AttendancePermissionsController::class, 'reject']),
 ]));
