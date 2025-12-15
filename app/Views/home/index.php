@@ -141,14 +141,27 @@
     </div>
 </div>
 
-<section id="projects" class="py-section bg-white">
+<section id="projects" class="py-section bg-white position-relative">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="fw-bold font-heading">Featured Lab Projects</h2>
-            <div id="project-filters" class="d-flex flex-wrap justify-content-center gap-2 mt-4" role="tablist">
-            </div>
+            <span class="text-primary fw-bold text-uppercase ls-2 small mb-2 d-block">Our Portfolio</span>
+            <h2 class="display-5 fw-bold font-heading mb-4">Featured Lab Projects</h2>
+            
+            <div id="project-filters" class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+                </div>
         </div>
-        <div id="projects-grid" class="row g-4">
+
+        <div id="projects-grid" class="row g-4 mb-5">
+            </div>
+
+        <div id="project-pagination" class="d-flex justify-content-center align-items-center gap-3 d-none">
+            <button id="proj-prev" class="btn btn-outline-secondary rounded-pill px-4" disabled>
+                <i class="bi bi-arrow-left"></i> Prev
+            </button>
+            <span id="proj-page-info" class="text-muted small fw-bold">Page 1</span>
+            <button id="proj-next" class="btn btn-outline-secondary rounded-pill px-4">
+                Next <i class="bi bi-arrow-right"></i>
+            </button>
         </div>
     </div>
 </section>
