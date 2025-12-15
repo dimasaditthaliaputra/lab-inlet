@@ -714,4 +714,27 @@ if (!function_exists('env')) {
         return $logModel->getRecent();
     }
 }
+
+if (!function_exists('format_phone_for_display')) {
+    function format_phone_for_display($phone)
+    {
+        if (empty($phone)) {
+            return '';
+        }
+
+        $numericPhone = preg_replace('/[^0-9]/', '', $phone);
+
+        if (substr($numericPhone, 0, 2) === '62') {
+            $basePhone = substr($numericPhone, 2);
+        } elseif (substr($numericPhone, 0, 1) === '0') {
+            $basePhone = substr($numericPhone, 1);
+        } else {
+            $basePhone = $numericPhone;
+        }
+
+        $formattedPhone = implode('-', str_split($basePhone, 4));
+
+        return "(+62) " . $formattedPhone;
+    }
+}
 }

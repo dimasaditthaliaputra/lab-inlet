@@ -42,6 +42,13 @@ body {
   background-color: var(--bg-light);
   color: #1e293b;
   -webkit-font-smoothing: antialiased;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar, 
+html::-webkit-scrollbar {
+    display: none;
 }
 
 .navbar {
@@ -162,6 +169,7 @@ section {
 .ls-2 {
   letter-spacing: 2px;
 }
+
 .py-section {
   padding-top: 5rem;
   padding-bottom: 5rem;
@@ -875,42 +883,89 @@ section {
 
 /* 4. Projects & Filters */
 .filter-btn {
-  border: 1px solid #e2e8f0;
-  background: white;
-  color: #64748b;
-  border-radius: 50px;
-  padding: 0.5rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+    background: white;
+    color: #6c757d;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
-.filter-btn.active,
+
 .filter-btn:hover {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    color: #212529;
 }
+
+.filter-btn.active {
+    background: var(--primary-color, #0d6efd); /* Fallback to bootstrap primary */
+    color: white;
+    border-color: var(--primary-color, #0d6efd);
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+}
+
+/* Project Card */
 .project-card {
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  border: none;
-  box-shadow: var(--card-shadow);
-  background: #fff;
+    transition: transform 0.3s ease;
 }
-.project-img-wrapper {
-  overflow: hidden;
-  height: 200px;
+
+.project-card:hover .project-title {
+    color: var(--primary-color, #0d6efd) !important;
 }
-.project-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+
+.project-img-box {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
-.project-card:hover .project-img-wrapper img {
-  transform: scale(1.05);
+
+.project-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-img-box img {
+    transform: scale(1.05);
+}
+
+/* Hover Overlay */
+.project-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+/* Typography */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Animation */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- News Section Setup --- */

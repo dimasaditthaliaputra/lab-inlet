@@ -14,7 +14,7 @@ class ResearchFocusController extends Controller
     public function __construct()
     {
         if (!attempt_auto_login()) {
-            redirect(base_url('admin/login'));
+            redirect(base_url('login'));
             exit;
         }
 
@@ -157,7 +157,7 @@ class ResearchFocusController extends Controller
             $iconName = trim($validation['data']['icon_name'] ?? '');
 
             $hasFile = isset($_FILES['image_cover']) &&
-                       $_FILES['image_cover']['error'] !== UPLOAD_ERR_NO_FILE;
+                $_FILES['image_cover']['error'] !== UPLOAD_ERR_NO_FILE;
 
             // Wajib pilih salah satu dan tidak boleh dua-duanya
             if ($iconName === '' && !$hasFile) {
@@ -307,7 +307,7 @@ class ResearchFocusController extends Controller
 
             $newIcon = trim($validation['data']['icon_name'] ?? '');
             $hasNewFile = isset($_FILES['image_cover']) &&
-                          $_FILES['image_cover']['error'] !== UPLOAD_ERR_NO_FILE;
+                $_FILES['image_cover']['error'] !== UPLOAD_ERR_NO_FILE;
 
             $imageFileName = $oldData->image_cover;
 
@@ -337,7 +337,7 @@ class ResearchFocusController extends Controller
 
             // Kalau user isi icon, kita buang image lama (switch dari image → icon)
             if ($newIcon !== '' && $oldData->image_cover && !$hasNewFile) {
-                $oldPath =__DIR__ . '/../../public/uploads/research_focus/' . $oldData->image_cover;
+                $oldPath = __DIR__ . '/../../public/uploads/research_focus/' . $oldData->image_cover;
                 if (file_exists($oldPath)) {
                     @unlink($oldPath);
                 }

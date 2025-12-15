@@ -108,7 +108,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '<?= base_url('admin/logout') ?>',
+                            url: '<?= base_url('logout') ?>',
                             type: 'POST',
                             dataType: 'json',
                             success: function(res) {
@@ -120,7 +120,7 @@
                                         timer: 1500,
                                         showConfirmButton: false
                                     }).then(() => {
-                                        window.location.href = '<?= base_url('admin/login') ?>';
+                                        window.location.href = '<?= base_url('login') ?>';
                                     });
 
                                 } else {

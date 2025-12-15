@@ -102,7 +102,7 @@ const initHeroSlider = async () => {
   const AUTO_PLAY_DELAY = 6000;
 
   try {
-    const response = await fetch("http://inlet-lab.test/api/hero-slider");
+    const response = await fetch(`/api/hero-slider`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
@@ -299,7 +299,7 @@ const initAbout = async () => {
 
   try {
     // 2. Fetch Real API
-    const response = await fetch("http://inlet-lab.test/api/about-us");
+    const response = await fetch(`/api/about-us`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
@@ -468,7 +468,7 @@ const initResearch = async () => {
   container.innerHTML = skeletonCard.repeat(3);
 
   try {
-    const response = await fetch("http://inlet-lab.test/api/research");
+    const response = await fetch(`/api/research`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
@@ -583,7 +583,7 @@ const initTeamCarousel = async () => {
 
     try {
         // --- 2. FETCH DATA ---
-        const response = await fetch("http://inlet-lab.test/api/team");
+        const response = await fetch(`/api/team`);
 
         if (!response.ok) throw new Error(`Status: ${response.status}`);
         
@@ -659,7 +659,7 @@ const initFacilities = async () => {
   container.innerHTML = skeletonItem.repeat(4);
 
   try {
-    const response = await fetch("http://inlet-lab.test/api/facilities");
+    const response = await fetch(`/api/facilities`);
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
     const result = await response.json();
 
@@ -728,134 +728,172 @@ window.openFacilityModal = (img, title, desc, condition, badgeClass) => {
 };
 
 const initProjects = async () => {
-  const filterContainer = document.getElementById("project-filters");
-  const grid = document.getElementById("projects-grid");
+    const filterContainer = document.getElementById("project-filters");
+    const grid = document.getElementById("projects-grid");
+    const paginationContainer = document.getElementById("project-pagination");
+    const prevBtn = document.getElementById("proj-prev");
+    const nextBtn = document.getElementById("proj-next");
+    const pageInfo = document.getElementById("proj-page-info");
 
-  // Safety Check
-  if (!filterContainer || !grid) return;
+    // Config
+    const ITEMS_PER_PAGE = 6;
+    let currentPage = 1;
+    let currentFilterId = 'all';
+    let allProjects = []; // Store all fetched projects here
+    let categories = [];
 
-  // --- 1. INJECT SKELETON LOADING ---
-  // Tampilkan 3 skeleton card di grid
-  const skeletonCard = `
-    <div class="col-md-6 col-lg-4">
-        <div class="project-card h-100 d-flex flex-column border-0 shadow-sm">
-            <div class="project-img-wrapper placeholder-glow">
-                <span class="placeholder w-100 h-100 bg-secondary opacity-25"></span>
-            </div>
-            <div class="p-4 flex-grow-1 placeholder-glow">
-                <div class="mb-2">
-                    <span class="placeholder col-3 rounded-pill"></span>
-                    <span class="placeholder col-3 rounded-pill"></span>
-                </div>
-                <h4 class="h5 fw-bold font-heading mb-2">
-                    <span class="placeholder col-8"></span>
-                </h4>
-                <p class="text-muted small mb-0">
-                    <span class="placeholder col-12"></span>
-                    <span class="placeholder col-10"></span>
-                </p>
-            </div>
-        </div>
-    </div>
-  `;
-  grid.innerHTML = skeletonCard.repeat(3);
+    if (!grid || !filterContainer) return;
 
-  try {
-    // --- 2. FETCH REAL API ---
-    const response = await fetch("http://inlet-lab.test/api/projects");
-
-    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
-    const result = await response.json();
-
-    if (result.success && result.data) {
-      // API Controller mengembalikan { categories: [], items: [] }
-      const { categories, items } = result.data;
-
-      // --- 3. RENDER FILTERS ---
-      filterContainer.innerHTML = `
-            <button class="filter-btn active" data-filter="all">All</button>
-            ${categories
-              .map((c) => `<button class="filter-btn" data-filter="${c.id}">${c.name}</button>`)
-              .join("")}
-        `;
-
-      // --- 4. RENDER ITEMS FUNCTION ---
-      const renderItems = (projectList) => {
-        if (projectList.length === 0) {
-          grid.innerHTML = `<div class="col-12 text-center py-5 text-muted">No projects found.</div>`;
-          return;
-        }
-
-        grid.innerHTML = projectList
-          .map((p) => {
-            // Map category IDs to Badges
-            const categoryBadges = p.category_ids
-              .map((cid) => {
-                const cat = categories.find((c) => c.id === cid);
-                return cat
-                  ? `<span class="badge bg-light text-dark border me-1">${cat.name}</span>`
-                  : "";
-              })
-              .join("");
-
-            // Use Placeholder if image is missing/broken URL
-            const imgUrl = p.image_url && p.image_url !== "" 
-                ? p.image_url 
-                : "https://placehold.co/600x400/png?text=Project";
-
-            return `
-                <div class="col-md-6 col-lg-4 project-item">
-                    <div class="project-card h-100 d-flex flex-column">
-                        <div class="project-img-wrapper">
-                            <img src="${imgUrl}" alt="${p.name}" loading="lazy">
-                        </div>
-                        <div class="p-4 flex-grow-1">
-                            <div class="mb-2">
-                                 ${categoryBadges}
-                            </div>
-                            <h4 class="h5 fw-bold font-heading">${p.name}</h4>
-                            <p class="text-muted small mb-0 line-clamp-2">${p.description}</p>
-                        </div>
+    // --- SKELETON RENDERER ---
+    const renderSkeleton = () => {
+        const skeletonHTML = `
+            <div class="col-md-6 col-lg-4">
+                <div class="project-card skeleton-card h-100 border-0 rounded-4 overflow-hidden">
+                    <div class="ratio ratio-4x3 bg-light placeholder-glow"></div>
+                    <div class="p-4">
+                        <span class="placeholder col-4 mb-2"></span>
+                        <h5 class="placeholder col-8 mb-2"></h5>
+                        <p class="placeholder col-12"></p>
                     </div>
                 </div>
+            </div>
+        `.repeat(3);
+        grid.innerHTML = skeletonHTML;
+    };
+
+    renderSkeleton();
+
+    try {
+        // --- FETCH DATA ---
+        const response = await fetch(`/api/projects`);
+        if (!response.ok) throw new Error("API Error");
+        const result = await response.json();
+
+        if (result.success && result.data) {
+            allProjects = result.data.items;
+            categories = result.data.categories;
+
+            // --- RENDER FILTERS ---
+            filterContainer.innerHTML = `
+                <button class="filter-btn active" data-id="all">All Projects</button>
+                ${categories.map(c => `
+                    <button class="filter-btn" data-id="${c.id}">${c.name}</button>
+                `).join('')}
             `;
-          })
-          .join("");
-      };
 
-      // Initial Render
-      renderItems(items);
+            // --- FILTER LOGIC ---
+            filterContainer.addEventListener('click', (e) => {
+                if(e.target.classList.contains('filter-btn')) {
+                    // Update UI
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    // Update State
+                    currentFilterId = e.target.dataset.id;
+                    currentPage = 1; // Reset to page 1
+                    updateDisplay();
+                }
+            });
 
-      // --- 5. FILTER LOGIC ---
-      filterContainer.addEventListener("click", (e) => {
-        if (!e.target.classList.contains("filter-btn")) return;
+            // --- PAGINATION LISTENERS ---
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateDisplay();
+                }
+            });
 
-        // UI Update (Active State)
-        filterContainer.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-        e.target.classList.add("active");
+            nextBtn.addEventListener('click', () => {
+                const filtered = getFilteredProjects();
+                const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateDisplay();
+                }
+            });
 
-        const filterVal = e.target.dataset.filter;
-        
-        let filtered = items;
-        if (filterVal !== "all") {
-            filtered = items.filter((item) => item.category_ids.includes(parseInt(filterVal)));
+            // Initial Render
+            updateDisplay();
+            paginationContainer.classList.remove('d-none');
+
+        }
+    } catch (error) {
+        console.error(error);
+        grid.innerHTML = `<div class="col-12 text-center text-muted">Failed to load projects.</div>`;
+    }
+
+    // --- HELPER: GET FILTERED DATA ---
+    function getFilteredProjects() {
+        if (currentFilterId === 'all') return allProjects;
+        // Filter logic: Check if category_ids array contains the selected ID
+        // Note: Make sure types match (string vs int). API usually returns int in array.
+        const targetId = parseInt(currentFilterId);
+        return allProjects.filter(p => p.category_ids.includes(targetId));
+    }
+
+    // --- HELPER: UPDATE VIEW (GRID + PAGINATION) ---
+    function updateDisplay() {
+        const filtered = getFilteredProjects();
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+        // 1. Pagination Controls State
+        if (totalItems === 0) {
+            paginationContainer.classList.add('d-none');
+            grid.innerHTML = `<div class="col-12 text-center text-muted py-5">No projects found in this category.</div>`;
+            return;
+        } else {
+            paginationContainer.classList.remove('d-none');
         }
 
-        grid.style.opacity = "0";
-        setTimeout(() => {
-          renderItems(filtered);
-          grid.style.opacity = "1";
-        }, 200);
-      });
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
 
-    } else {
-      throw new Error("Invalid API Data");
+        // 2. Slice Data for Current Page
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        const pageItems = filtered.slice(start, end);
+
+        // 3. Render Grid
+        // Use slug-based URL: /projects/{nama_projects}
+        // Assuming API returns 'name' which is the slug, or we generate it. 
+        // Best practice: API should return a 'slug' field. 
+        // Fallback: simple slugify logic if API doesn't provide slug field explicitly.
+        
+        grid.innerHTML = pageItems.map(item => {
+            const slug = item.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+            const imgUrl = item.image_url && item.image_url !== "" 
+                         ? item.image_url 
+                         : "https://placehold.co/600x400/f8f9fa/adb5bd?text=Project";
+
+            // Get Category Names
+            const itemCats = item.category_ids.map(id => {
+                const cat = categories.find(c => c.id === id);
+                return cat ? `<span class="badge bg-white text-dark border shadow-sm">${cat.name}</span>` : '';
+            }).join(' ');
+
+            return `
+                <div class="col-md-6 col-lg-4 fade-in">
+                    <a href="/projects/${slug}" class="project-card d-block text-decoration-none h-100">
+                        <div class="project-img-box">
+                            <img src="${imgUrl}" alt="${item.name}" loading="lazy">
+                            <div class="project-overlay">
+                                <span class="btn btn-light rounded-circle"><i class="bi bi-arrow-up-right"></i></span>
+                            </div>
+                        </div>
+                        <div class="project-body mt-3">
+                            <div class="mb-2 d-flex gap-1 flex-wrap">
+                                ${itemCats}
+                            </div>
+                            <h4 class="project-title text-dark fw-bold mb-2">${item.name}</h4>
+                            <p class="text-muted small line-clamp-2">${item.description}</p>
+                        </div>
+                    </a>
+                </div>
+            `;
+        }).join('');
     }
-  } catch (error) {
-    console.error("Projects API Fetch Failed:", error);
-    grid.innerHTML = `<div class="col-12 text-center text-muted py-5">Failed to load projects.</div>`;
-  }
 };
 
 const initNews = async () => {
@@ -884,7 +922,7 @@ const initNews = async () => {
 
     try {
         // --- 2. FETCH API ---
-        const response = await fetch("http://inlet-lab.test/api/news");
+        const response = await fetch(`/api/news`);
         if (!response.ok) throw new Error("Network Error");
         const result = await response.json();
 
@@ -1009,7 +1047,7 @@ const initPartners = async () => {
 
   try {
     // --- 2. FETCH REAL API ---
-    const response = await fetch("http://inlet-lab.test/api/partners");
+    const response = await fetch(`/api/partners`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
@@ -1074,7 +1112,7 @@ const initGallery = async () => {
   try {
     // --- 2. FETCH REAL API ---
     // Pastikan route ini benar dan server berjalan
-    const response = await fetch("http://inlet-lab.test/api/gallery");
+    const response = await fetch(`/api/gallery`);
 
     if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
@@ -1259,7 +1297,7 @@ const initProducts = async () => {
   grid.innerHTML = skeletonItem.repeat(2);
 
   try {
-    const response = await fetch("http://inlet-lab.test/api/products");
+    const response = await fetch(`/api/products`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
@@ -1383,7 +1421,7 @@ const initMaps = async () => {
   try {
     // --- 2. FETCH REAL API ---
     // Pastikan route: Router::get('/api/site-settings', [HomeController::class, 'getSiteSettings']);
-    const response = await fetch("http://inlet-lab.test/api/site-settings");
+    const response = await fetch(`/api/site-settings`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 

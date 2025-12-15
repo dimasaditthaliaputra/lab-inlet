@@ -587,7 +587,7 @@ $chartStudents = $stats['charts']['students'] ?? [];
             name: 'Mahasiswa Masuk',
             // Mapping ke format {x, y}
             data: rawStudents.map(item => ({
-                x: item.entry_year,
+                x: item.creation_year,
                 y: parseInt(item.total_student)
             }))
         }],

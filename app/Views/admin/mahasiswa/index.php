@@ -8,14 +8,13 @@
             <div class="card border">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title">Attendance List</h4>
-                        <div id="about-content" class="card border-0 shadow-sm" style="display: none;"></div>
-                        <?php if (in_array('create', $access) && empty($data)) : ?>
+                        <h4 class="card-title">Daftar Mahasiswa</h4>
+                        <?php if (in_array('create', $access)): ?>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalForm" data-url="">
-                                <i class="bi bi-plus me-1"></i>
-                                Add New Attendance
+                                <i class="bi bi-plus me-1" role="img" aria-label="Add new mahasiswa"></i>
+                                Tambah Mahasiswa
                             </button>
-                        <?php endif ?>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -24,10 +23,12 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Mask Schedule</th>
-                                    <th>check-in time limit</th>
-                                    <th>Homecoming Schedule</th>
-                                    <th width="20%">Action</th>
+                                    <th>NIM</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>Program Studi</th>
+                                    <th>Semester</th>
+                                    <th class="text-center">Status</th>
+                                    <th width="20%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,7 +55,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitleId">
-                        Form Attendance
+                        Form Data Mahasiswa
                     </h5>
                     <button
                         type="button"
@@ -62,27 +63,74 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <form id="formData" action="<?php echo base_url('admin/attendance_settings') ?>" method="post">
+                <form id="formData">
                     <div class="modal-body">
                         <input type="hidden" name="primary_id" id="primary_id">
 
                         <div class="row mb-3 align-items-center">
-                            <label for="clock_in_start_time" class="col-md-3 col-form-label">Mask Schedule</label>
+                            <label for="nim" class="col-md-3 col-form-label">NIM</label>
                             <div class="col-md-9">
-                                <input type="time" class="form-control" name="clock_in_start_time" id="clock_in_start_time" placeholder="Input Mask Schedule">
+                                <input type="text" class="form-control" name="nim" id="nim" placeholder="Input NIM Mahasiswa">
                             </div>
                         </div>
 
                         <div class="row mb-3 align-items-center">
-                            <label for="clock_in_end_time" class="col-md-3 col-form-label">check-in time limit</label>
+                            <label for="full_name" class="col-md-3 col-form-label">Nama Lengkap</label>
                             <div class="col-md-9">
-                                <input type="time" class="form-control" name="clock_in_end_time" id="clock_in_end_time" placeholder="Input Limit">
+                                <input type="text" class="form-control" name="full_name" id="full_name" placeholder="Input Nama Lengkap">
                             </div>
                         </div>
+
                         <div class="row mb-3 align-items-center">
-                            <label for="clock_out_start_time" class="col-md-3 col-form-label">Homecoming Schedule</label>
+                            <label for="university" class="col-md-3 col-form-label">Universitas</label>
                             <div class="col-md-9">
-                                <input type="time" class="form-control" name="clock_out_start_time" id="clock_out_start_time" placeholder="Input Homecoming Schedule">
+                                <input type="text" class="form-control" name="university" id="university" placeholder="Input Universitas">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="study_program" class="col-md-3 col-form-label">Program Studi</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" name="study_program" id="study_program" placeholder="Input Program Studi">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="entry_year" class="col-md-3 col-form-label">Tahun Masuk</label>
+                            <div class="col-md-9">
+                                <input type="number" class="form-control" name="entry_year" id="entry_year" placeholder="Contoh: 2023">
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3 align-items-center">
+                            <label for="current_semester" class="col-md-3 col-form-label">Semester</label>
+                            <div class="col-md-9">
+                                <input type="number" class="form-control" name="current_semester" id="current_semester" placeholder="Contoh: 5">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="phone_number" class="col-md-3 col-form-label">Nomor HP</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" name="phone_number" id="phone_number" placeholder="Input Nomor HP">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="address" class="col-md-3 col-form-label">Alamat</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" name="address" id="address" placeholder="Input Alamat"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <label for="status" class="col-md-3 col-form-label">Status</label>
+                            <div class="col-md-9">
+                                <select name="status" id="status" class="form-control">
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Non-Aktif">Non-Aktif</option>
+                                    <option value="Lulus">Lulus</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -91,11 +139,11 @@
                             type="button"
                             class="btn btn-secondary"
                             data-bs-dismiss="modal">
-                            Close
+                            Tutup
                         </button>
                         <button type="submit" class="btn btn-primary" id="btnSubmit">
                             <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-                            Save
+                            Simpan
                         </button>
                     </div>
                 </form>
@@ -112,15 +160,16 @@ ob_start();
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
 
     const CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
+    const CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
 
-    var showAction = (CAN_UPDATE);
+    var showAction = (CAN_UPDATE || CAN_DELETE);
 
     $(document).ready(function() {
         $('#data-tables').DataTable({
             processing: true,
             responsive: true,
             autoWidth: false,
-            ajax: '<?php echo base_url('admin/attendance-settings/data'); ?>',
+            ajax: '<?php echo base_url('admin/mahasiswa/data'); ?>',
             columns: [{
                     data: null,
                     name: 'ordering',
@@ -131,16 +180,36 @@ ob_start();
                     }
                 },
                 {
-                    data: 'clock_in_start_time',
-                    name: 'clock_in_start_time'
+                    data: 'nim',
+                    name: 'nim'
                 },
                 {
-                    data: 'clock_in_end_time',
-                    name: 'clock_in_end_time'
+                    data: 'full_name',
+                    name: 'full_name',
+                    orderable: true,
+                    searchable: true,
                 },
                 {
-                    data: 'clock_out_start_time',
-                    name: 'clock_out_start_time'
+                    data: 'study_program',
+                    name: 'study_program',
+                },
+                {
+                    data: 'current_semester',
+                    name: 'current_semester',
+                    className: 'text-center',
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    className: 'text-center',
+                    render: function(data) {
+                        let badgeClass = 'bg-secondary';
+                        if (data === 'Aktif') badgeClass = 'bg-success';
+                        else if (data === 'Non-Aktif') badgeClass = 'bg-danger';
+                        else if (data === 'Lulus') badgeClass = 'bg-info';
+
+                        return `<span class="badge ${badgeClass}">${data}</span>`;
+                    }
                 },
                 {
                     data: null,
@@ -150,13 +219,17 @@ ob_start();
                     className: 'text-center',
                     visible: showAction,
                     render: function(data, type, row) {
-                        let editUrl = '<?php echo base_url('admin/attendance-settings'); ?>/' + row.id + '/edit';
-                        let deleteUrl = '<?php echo base_url('admin/attendance-settings'); ?>/' + row.id;
+                        let editUrl = '<?php echo base_url('admin/mahasiswa'); ?>/' + row.id + '/edit';
+                        let deleteUrl = '<?php echo base_url('admin/mahasiswa'); ?>/' + row.id;
 
                         let buttons = '';
 
                         if (CAN_UPDATE) {
                             buttons += `<button type="button" data-url="${editUrl}" class="btn btn-warning btn-sm" id="btnEdit"><i class="fas fa-edit"></i> Edit</button>`;
+                        }
+
+                        if (CAN_DELETE) {
+                            buttons += `<button type="button" data-url="${deleteUrl}" class="btn btn-danger btn-sm ms-2" id="btnDelete"><i class="fas fa-trash"></i> Hapus</button>`;
                         }
 
                         return buttons;
@@ -165,9 +238,9 @@ ob_start();
             ]
         });
 
+        // Event handler untuk EDIT
         $(document).on('click', '#btnEdit', function(e) {
             e.preventDefault();
-
             let url = $(this).data('url');
 
             $.ajax({
@@ -176,28 +249,34 @@ ob_start();
                 dataType: 'JSON',
                 success: function(res) {
                     if (res.success) {
-                        $('#modalTitleId').html('Form Edit Attendance');
+                        $('#modalTitleId').html('Form Edit Data Mahasiswa');
                         $('#primary_id').val(res.data.id);
-                        $('#clock_in_start_time').val(res.data.clock_in_start_time);
-                        $('#clock_in_end_time').val(res.data.clock_in_end_time);
-                        $('#clock_out_start_time').val(res.data.clock_out_start_time);
+                        $('#nim').val(res.data.nim);
+                        $('#full_name').val(res.data.full_name);
+                        $('#university').val(res.data.university);
+                        $('#study_program').val(res.data.study_program);
+                        $('#entry_year').val(res.data.entry_year);
+                        $('#current_semester').val(res.data.current_semester);
+                        $('#phone_number').val(res.data.phone_number);
+                        $('#address').val(res.data.address);
+                        $('#status').val(res.data.status); // Set nilai dropdown status
+
                         $('#modalForm').modal('show');
                     }
                 }
             });
         });
 
+        // Reset form saat modal ditutup
         $('#modalForm').on('hidden.bs.modal', function(event) {
             $('#formData')[0].reset();
-
-            $('#modalTitleId').html('Form Attendance');
             $('.text-danger').remove();
+            $('#modalTitleId').html('Form Data Mahasiswa');
             $('#primary_id').val('');
-            $('#clock_in_start_time').val('');
-            $('#clock_in_end_time').val('');
-            $('#clock_out_start_time').val('');
+            $('#status').val('Aktif'); // Reset status default
         });
 
+        // Event handler untuk SUBMIT (Create/Update)
         $('#formData').submit(function(e) {
             e.preventDefault();
 
@@ -209,7 +288,7 @@ ob_start();
 
             let id = $('#primary_id').val();
             let formData = $(this).serialize();
-            let baseUrl = '<?php echo base_url('admin/attendance-settings'); ?>';
+            let baseUrl = '<?php echo base_url('admin/mahasiswa'); ?>';
             let url = id ? baseUrl + '/' + id : baseUrl;
             let method = id ? 'PUT' : 'POST';
 
@@ -224,7 +303,6 @@ ob_start();
                         $('#data-tables').DataTable().ajax.reload();
 
                         audio.play();
-
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
@@ -243,7 +321,6 @@ ob_start();
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {
                         let errors = xhr.responseJSON.errors;
-
                         $('.text-danger').remove();
 
                         $.each(errors, function(key, value) {
@@ -257,7 +334,11 @@ ob_start();
                             }
                         });
                     } else {
-                        console.error('Terjadi kesalahan server:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan. Silakan coba lagi!'
+                        })
                     }
                 },
                 complete: function() {
@@ -267,25 +348,19 @@ ob_start();
             });
         });
 
+        // Event handler untuk DELETE
         $(document).on('click', '#btnDelete', function(e) {
             e.preventDefault();
-
             let url = $(this).data('url');
 
             Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
+                title: "Anda yakin?",
+                text: "Data mahasiswa akan dihapus secara permanen!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: "No, cancel!",
-                didOpen: () => {
-                    const confirmButton = Swal.getConfirmButton();
-                    if (confirmButton) {
-                        confirmButton.style.setProperty('background-color', '#d33', 'important');
-                    }
-                }
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: "Batal",
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -295,7 +370,6 @@ ob_start();
                         success: function(res) {
                             if (res.success) {
                                 $('#data-tables').DataTable().ajax.reload();
-
                                 audio.play();
                                 Swal.fire({
                                     icon: 'success',
@@ -307,23 +381,11 @@ ob_start();
                             }
                         },
                         error: function(xhr, status, error) {
-                            let errorMessage;
-
-                            switch (xhr.status) {
-                                case 404:
-                                    errorMessage = 'Error: Halaman proses login tidak ditemukan (404).';
-                                    break;
-                                case 0:
-                                    errorMessage = 'Server terlalu lama merespon (timeout).';
-                                    break;
-                                default:
-                                    errorMessage = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Terjadi kesalahan. Silakan coba lagi.';
-                            }
-
+                            // ... (Error handling)
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: errorMessage
+                                text: 'Gagal menghapus data. Cek apakah Mahasiswa ini masih terikat ke User!'
                             })
                         }
                     });

@@ -16,7 +16,7 @@ class TeamController extends Controller
     public function __construct()
     {
         if (!attempt_auto_login()) {
-            redirect(base_url('admin/login'));
+            redirect(base_url('login'));
             exit;
         }
 
@@ -154,7 +154,7 @@ class TeamController extends Controller
             $educations     = $decode($team['education'] ?? null);
             $certifications = $decode($team['certifications'] ?? null);
             $courses        = $decode($team['courses_taught'] ?? null);
-            
+
             $defaultEdu = ['university' => '', 'major' => ''];
             $team['education'] = [
                 'S1' => $educations['S1'] ?? $defaultEdu,

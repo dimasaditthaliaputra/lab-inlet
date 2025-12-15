@@ -1,9 +1,15 @@
 <?php
 
 use App\Controllers\APIController;
+use App\Controllers\AuthController;
 use App\Controllers\HomeController;
 
 return route_group([
+    // Login
+    get('/login', [AuthController::class, 'showLoginForm']),
+    post('/login/process', [AuthController::class, 'login']),
+    post('/logout', [AuthController::class, 'logout']),
+
     get('/', [HomeController::class, 'index']),
     get('/team', [HomeController::class, 'detailTeam']),
     get('/gallery', [HomeController::class, 'viewGallery']),

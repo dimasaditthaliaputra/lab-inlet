@@ -11,9 +11,9 @@ class DashboardController extends Controller
 
     public function __construct()
     {
-        
+
         if (!attempt_auto_login()) {
-            redirect(base_url('admin/login'));
+            redirect(base_url('login'));
             exit;
         }
 
@@ -23,7 +23,7 @@ class DashboardController extends Controller
     public function index()
     {
         $this->dashboardModel->refreshAnalyticsData();
-        
+
         $dashboardData = $this->dashboardModel->getAllDashboardData();
 
         $data = [
@@ -41,9 +41,9 @@ class DashboardController extends Controller
         try {
             $data = $this->dashboardModel->getActivityTrend($filter);
 
-            $formattedData = array_map(function($item) {
+            $formattedData = array_map(function ($item) {
                 return [
-                    'x' => $item->label,          
+                    'x' => $item->label,
                     'y' => (int)$item->total_activity
                 ];
             }, $data);

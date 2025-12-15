@@ -14,7 +14,7 @@ class SiteSettingsController extends Controller
     public function __construct()
     {
         if (!attempt_auto_login()) {
-            redirect(base_url('admin/login'));
+            redirect(base_url('login'));
             exit;
         }
 
@@ -111,7 +111,7 @@ class SiteSettingsController extends Controller
                     "Update",
                     "Site settings updated",
                     "settings",
-                    $oldData->id, 
+                    $oldData->id,
                     (array)$oldData,
                     $data
                 );
@@ -144,7 +144,7 @@ class SiteSettingsController extends Controller
 
     private function updateEnvFile($key, $value)
     {
-        $path = __DIR__ . '/../../.env'; 
+        $path = __DIR__ . '/../../.env';
 
         if (!file_exists($path)) {
             return;

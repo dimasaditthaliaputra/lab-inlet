@@ -7,8 +7,20 @@ use Core\Model;
 class User extends Model
 {
     protected $table = 'users';
-    public function getDataAll() {
-        return $this->db->query("SELECT u.*, r.role_name as roles FROM {$this->table} u JOIN roles r ON u.id_roles = r.id WHERE u.id != 9 order by \"username\"")->fetchAll();
+    public function getDataAll()
+    {
+        return $this->db->query("
+        SELECT 
+            u.*, 
+            r.role_name as roles,
+            m.nim, -- Ambil NIM dari tabel mahasiswa yang terhubung melalui mahasiswa_id
+            m.study_program
+        FROM {$this->table} u 
+        JOIN roles r ON u.id_roles = r.id 
+        LEFT JOIN mahasiswa m ON u.mahasiswa_id = m.id -- **JOIN MENGGUNAKAN u.mahasiswa_id**
+        WHERE u.id != 9 
+        order by \"username\"
+    ")->fetchAll();
     }
 
     public function findByEmail($email)
@@ -23,33 +35,51 @@ class User extends Model
 
     public function getUserWithRoles($id)
     {
+        // Ambil detail user, role, dan detail Mahasiswa yang terhubung
         $data = $this->db->query("
-        SELECT 
-            u.id AS user_id,
-            u.username,
-            u.email,
-            u.full_name,
-            u.id_roles AS user_role_id,
-            r.id AS role_id,
-            r.role_name
-        FROM users u
-        JOIN roles r ON u.id_roles = r.id
-        WHERE u.id = :id
-    ")
+    SELECT 
+        u.id AS user_id,
+        u.username,
+        u.email,
+        u.full_name,
+        u.id_roles AS user_role_id,
+        u.mahasiswa_id, -- **Ambil ID Mahasiswa dari tabel users**
+        r.id AS role_id,
+        r.role_name,
+        m.nim,
+        m.full_name AS mahasiswa_name -- Nama lengkap mahasiswa dari tabel mahasiswa
+    FROM users u
+    JOIN roles r ON u.id_roles = r.id
+    LEFT JOIN mahasiswa m ON u.mahasiswa_id = m.id -- **LEFT JOIN ke mahasiswa menggunakan u.mahasiswa_id**
+    WHERE u.id = :id
+")
             ->bind(':id', $id)
             ->fetch();
 
-        return [
+        if (!$data) return null;
+
+        $result = [
             "user_id"   => $data->user_id,
             "username"  => $data->username,
             "email"     => $data->email,
             "full_name" => $data->full_name,
-
+            "mahasiswa_id" => $data->mahasiswa_id, // Tambahkan mahasiswa_id
             "roles" => [
                 "id"        => $data->role_id,
                 "role_name" => $data->role_name
             ]
         ];
+
+        // Tambahkan data mahasiswa jika ada relasi
+        if ($data->mahasiswa_id !== null) {
+            $result['mahasiswa'] = [
+                'id' => $data->mahasiswa_id,
+                'nim' => $data->nim,
+                'mahasiswa_name' => $data->mahasiswa_name
+            ];
+        }
+
+        return $result;
     }
 
     public function getRoles($id)

@@ -14,7 +14,7 @@ class KategoriProjectController extends Controller
     public function __construct()
     {
         if (!attempt_auto_login()) {
-            redirect(base_url('admin/login'));
+            redirect(base_url('login'));
             exit;
         }
 

@@ -12,7 +12,7 @@ class SocialLinksController extends Controller
     public function __construct()
     {
         if (!attempt_auto_login()) {
-            redirect(base_url('admin/login'));
+            redirect(base_url('login'));
             exit;
         }
         $this->socialModel = new SocialLinks();
@@ -108,7 +108,6 @@ class SocialLinksController extends Controller
             $this->socialModel->create($data);
 
             return response()->json(['success' => true, 'message' => 'Berhasil menambah data']);
-
         } catch (\Exception $e) {
             return $this->serverError($e);
         }
@@ -161,7 +160,6 @@ class SocialLinksController extends Controller
             $this->socialModel->update($id, $data);
 
             return response()->json(['success' => true, 'message' => 'Berhasil mengupdate data']);
-
         } catch (\Exception $e) {
             return $this->serverError($e);
         }
@@ -183,7 +181,6 @@ class SocialLinksController extends Controller
             $this->socialModel->delete($id);
 
             return response()->json(['success' => true, 'message' => 'Berhasil menghapus']);
-
         } catch (\Exception $e) {
             return $this->serverError($e);
         }

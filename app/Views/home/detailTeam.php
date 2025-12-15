@@ -424,14 +424,15 @@
             }
 
             // 3. Education
-            const eduList = data.education || [];
+            const eduList = data.education || {};
             const eduEl = document.getElementById('list-education');
-            if (eduList.length > 0) {
-                eduList.forEach(e => {
+            const entries = Object.entries(eduList);
+            if (entries.length > 0) {
+                entries.forEach(([degree, details]) => {
                     eduEl.innerHTML += `
                         <li class="mb-3">
-                            <div class="fw-bold text-dark fs-6">${e.degree || ''} ${e.major || ''}</div>
-                            <div class="text-muted small">${e.univ || ''} ${e.year ? `&bull; ${e.year}` : ''}</div>
+                            <div class="fw-bold text-dark fs-6">${degree || ''} ${details.major || ''}</div>
+                            <div class="text-muted small">${details.university || ''} ${details.year ? `&bull; ${details.year}` : ''}</div>
                         </li>`;
                 });
             } else {

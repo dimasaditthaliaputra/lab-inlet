@@ -9,11 +9,21 @@ class AuthController
     public function showLoginForm()
     {
         if (attempt_auto_login()) {
+            $user = session('user');
+            if ($user && isset($user->id_roles) && $user->id_roles == 3) {
+                redirect('mahasiswa/dashboard');
+                exit;
+            }
             redirect('admin/dashboard');
             exit;
         }
 
         if (is_logged_in()) {
+            $user = session('user');
+            if ($user && isset($user->id_roles) && $user->id_roles == 3) {
+                redirect('mahasiswa/dashboard');
+                exit;
+            }
             redirect('admin/dashboard');
             exit;
         }
@@ -22,7 +32,7 @@ class AuthController
             "title" => 'Sign In',
         ];
 
-        return view('admin/auth/login', $data);
+        return view('auth/login', $data);
     }
     public function login()
     {
@@ -58,12 +68,18 @@ class AuthController
 
                 logActivity(
                     "Login",
-                    "User {$user->username} berhasil login ke sistem"
+                    "User {$user->username} successfully logged in"
                 );
+
+                $dashboard_url = 'admin/dashboard';
+                if (isset($user->id_roles) && $user->id_roles == 3) {
+                    $dashboard_url = 'mahasiswa/dashboard';
+                }
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Login berhasil'
+                    'message' => 'Login berhasil',
+                    'redirect_url' => $dashboard_url
                 ], 200);
             } else {
                 return response()->json([

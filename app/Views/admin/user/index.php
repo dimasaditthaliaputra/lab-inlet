@@ -107,6 +107,20 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="row mb-3 align-items-center" id="mahasiswa-field-container" style="display: none;">
+                            <label for="mahasiswa_id" class="col-md-3 col-form-label">Data Mahasiswa</label>
+                            <div class="col-md-9">
+                                <select name="mahasiswa_id" id="mahasiswa_id">
+                                    <option value=""></option>
+                                    <?php
+                                    foreach ($mahasiswaList as $item) {
+                                        echo '<option value="' . $item->id . '">(' . $item->nim . ') ' . $item->full_name . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button
@@ -138,6 +152,17 @@ ob_start();
 
     var showAction = (CAN_UPDATE || CAN_DELETE);
 
+    const ROLE_MAHASISWA_ID = 3;
+
+    function toggleMahasiswaField(roleId) {
+        if (roleId == ROLE_MAHASISWA_ID) {
+            $('#mahasiswa-field-container').slideDown();
+        } else {
+            $('#mahasiswa-field-container').slideUp();
+            $('#mahasiswa_id').val('').trigger('change');
+        }
+    }
+
     $(document).ready(function() {
         $('#id_roles').select2({
             theme: 'bootstrap-5',
@@ -146,6 +171,18 @@ ob_start();
             allowClear: true,
             placeholder: 'Pilih role',
             minimumResultsForSearch: Infinity
+        });
+
+        $('#mahasiswa_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            dropdownParent: $('#modalForm'),
+            allowClear: true,
+            placeholder: 'Pilih Mahasiswa',
+        });
+
+        $('#id_roles').on('change', function() {
+            toggleMahasiswaField($(this).val());
         });
 
         $('#data-tables').DataTable({
@@ -242,6 +279,22 @@ ob_start();
                         var option = new Option(res.data.roles.role_name, res.data.roles.id, true, true);
                         $('#id_roles').append(option).trigger('change');
 
+                        toggleMahasiswaField(res.data.roles.id);
+
+                        if (res.data.mahasiswa_id) {
+                            var existingOption = $('#mahasiswa_id option[value="' + res.data.mahasiswa_id + '"]');
+
+                            if (existingOption.length === 0) {
+                                let name = `(${res.data.mahasiswa.nim}) ${res.data.mahasiswa.mahasiswa_name}`;
+                                var newOption = new Option(name, res.data.mahasiswa_id, true, true);
+                                $('#mahasiswa_id').append(newOption);
+                            }
+
+                            $('#mahasiswa_id').val(res.data.mahasiswa_id).trigger('change');
+                        } else {
+                            $('#mahasiswa_id').val('').trigger('change');
+                        }
+
                         $('#password').next('small').remove();
                         $('#password').after(`
                             <small class="text-muted d-block mt-1">
@@ -259,6 +312,14 @@ ob_start();
             $('#formData')[0].reset();
 
             $('#id_roles').val('').trigger('change');
+
+            toggleMahasiswaField(0);
+
+            $('#mahasiswa_id option').each(function() {
+                if ($(this).attr('data-temp')) {
+                    $(this).remove();
+                }
+            });
 
             $('.text-danger').remove();
             $('#password').next('small').remove();

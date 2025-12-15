@@ -94,7 +94,7 @@
     <script>
         $('#formData').submit(function(e) {
             console.log('DOM siap. jQuery berhasil dimuat.');
-            
+
             e.preventDefault();
 
             let formData = $(this).serialize();
@@ -108,13 +108,17 @@
             errorCatch.html('');
 
             $.ajax({
-                url: '<?= base_url('/admin/login/process') ?>',
+                url: '<?= base_url('/login/process') ?>',
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
                 success: function(res) {
                     if (res.success) {
-                        window.location.href = '<?= base_url('/admin/dashboard') ?>';
+                        if (res.redirect_url) {
+                            window.location.href = '/' + res.redirect_url;
+                        } else {
+                            window.location.href = '/mahasiswa/dashboard';
+                        }
                     } else {
                         errorCatch.html(res.message);
                     }

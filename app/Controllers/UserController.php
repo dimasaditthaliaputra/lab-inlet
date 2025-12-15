@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Mahasiswa;
 use App\Models\Roles;
 use App\Models\User;
 use App\Models\Permissions;
@@ -11,22 +12,27 @@ class UserController extends Controller
 {
     protected $userModel;
     protected $permissionsModel;
+    protected $mahasiswaModel;
     public function __construct()
     {
         if (!attempt_auto_login()) {
-            redirect(base_url('admin/login'));
+            redirect(base_url('login'));
             exit;
         }
 
         $this->userModel = new User();
         $this->permissionsModel = new Permissions();
+        $this->mahasiswaModel = new Mahasiswa();
     }
 
     public function index()
     {
         $role = new Roles();
+        $mahasiswaModel = new Mahasiswa(); // Gunakan model mahasiswa
 
         $roles = $role->orderBy('role_name', 'ASC');
+
+        $mahasiswaList = $mahasiswaModel->getUnassignedMahasiswa(); // Ambil daftar mahasiswa
 
         $user = session('user');
         $roleId = $user->id_roles ?? 0;
@@ -36,7 +42,8 @@ class UserController extends Controller
         $data = [
             'title' => 'User',
             'roles' => $roles,
-            'access' => $access
+            'access' => $access,
+            'mahasiswaList' => $mahasiswaList
         ];
 
         view_with_layout('admin/user/index', $data);
@@ -93,6 +100,9 @@ class UserController extends Controller
                     'messages' => [
                         'required' => 'Roles is required'
                     ]
+                ],
+                'mahasiswa_id' => [
+                    'required' => false,
                 ]
             ]);
 
@@ -109,7 +119,8 @@ class UserController extends Controller
                 'email' => $validation['data']['email'],
                 'password' => password_hash($validation['data']['password'], PASSWORD_DEFAULT),
                 'full_name' => $validation['data']['full_name'],
-                'id_roles' => $validation['data']['id_roles']
+                'id_roles' => $validation['data']['id_roles'],
+                'mahasiswa_id' => $validation['data']['mahasiswa_id'] ?: null
             ];
 
             $insertId = $this->userModel->create($data);
@@ -201,6 +212,9 @@ class UserController extends Controller
                     'messages' => [
                         'required' => 'Roles is required'
                     ]
+                ],
+                'mahasiswa_id' => [ // Validasi untuk Mahasiswa ID (opsional)
+                    'required' => false,
                 ]
             ]);
 
@@ -216,7 +230,8 @@ class UserController extends Controller
                 'username' => $validation['data']['username'],
                 'email' => $validation['data']['email'],
                 'full_name' => $validation['data']['full_name'],
-                'id_roles' => $validation['data']['id_roles']
+                'id_roles' => $validation['data']['id_roles'],
+                'mahasiswa_id' => $validation['data']['mahasiswa_id'] ?: null
             ];
 
             if (!empty($validation['data']['password'])) {

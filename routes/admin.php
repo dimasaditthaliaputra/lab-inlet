@@ -6,6 +6,7 @@ use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\FacilitiesController;
 use App\Controllers\LogActivityController;
+use App\Controllers\MahasiswaController;
 use App\Controllers\NewsController;
 use App\Controllers\RolesController;
 use App\Controllers\TeamController;
@@ -22,12 +23,6 @@ use App\Controllers\PermissionsController;
 use App\Controllers\SocialLinksController;
 
 return prefix('admin', route_group([
-
-    // Login
-    get('/login', [AuthController::class, 'showLoginForm']),
-    post('/login/process', [AuthController::class, 'login']),
-    post('/logout', [AuthController::class, 'logout']),
-
     // Dashboard
     get('/dashboard', [DashboardController::class, 'index']),
     get('/dashboard/activity-data', [DashboardController::class, 'activity_data']),
@@ -179,4 +174,11 @@ return prefix('admin', route_group([
     put('/social-links/{id}',   [SocialLinksController::class, 'update']),
     delete('/social-links/{id}', [SocialLinksController::class, 'destroy']),
     get('/permissions/generate', [PermissionsController::class, 'generatePermissions']),
+
+    get('/mahasiswa', [MahasiswaController::class, 'index']),
+    get('/mahasiswa/data', [MahasiswaController::class, 'data']),
+    post('/mahasiswa', [MahasiswaController::class, 'store']),
+    get('/mahasiswa/{id}/edit', [MahasiswaController::class, 'edit']),
+    put('/mahasiswa/{id}', [MahasiswaController::class, 'update']),
+    delete('/mahasiswa/{id}', [MahasiswaController::class, 'destroy']),
 ]));
