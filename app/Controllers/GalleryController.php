@@ -22,7 +22,7 @@ class GalleryController extends Controller
         $this->galleryModel = new Gallery();
         $this->permissionsModel = new Permissions();
 
-        $this->uploadDir = __DIR__ . '/../../public/assets/images/gallery/';
+        $this->uploadDir = __DIR__ . '/../../public/uploads/gallery/images/';
         if (!is_dir($this->uploadDir)) {
             mkdir($this->uploadDir, 0777, true);
         }
