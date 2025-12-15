@@ -18,7 +18,7 @@ class ProjectLab extends Model
             LEFT JOIN project_category_pivot pcp ON p.id = pcp.project_id
             LEFT JOIN category_project k ON pcp.category_id = k.id 
             GROUP BY p.id
-            ORDER BY p.name
+            ORDER BY p.created_at DESC, p.name
         ")->fetchAll();
     }
 
@@ -31,8 +31,9 @@ class ProjectLab extends Model
         FROM {$this->table} p
         LEFT JOIN project_category_pivot pcp ON p.id = pcp.project_id
         LEFT JOIN category_project k ON pcp.category_id = k.id
+        WHERE p.status != 'archived'
         GROUP BY p.id
-        ORDER BY p.name
+        ORDER BY p.created_at DESC, p.name ASC
         LIMIT {$limit} OFFSET {$offset}
     ")->fetchAll();
     }
