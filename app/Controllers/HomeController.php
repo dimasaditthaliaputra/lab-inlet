@@ -360,7 +360,7 @@ class HomeController extends Controller
                     "description" => $item->description,
                     // Pastikan path sesuai folder upload
                     "image_name"  => !empty($item->image_name)
-                        ? asset('assets/images/gallery/') . $item->image_name
+                        ? asset('uploads/gallery/images/') . $item->image_name
                         : 'https://placehold.co/600x400/png?text=No+Image',
                     "type"        => $item->type,
                     "upload_date" => $item->upload_date
@@ -557,7 +557,7 @@ class HomeController extends Controller
                     "title"       => $item->title,
                     "description" => $item->description,
                     "src"         => !empty($item->image_name)
-                        ? asset('assets/images/gallery/') . $item->image_name
+                        ? asset('uploads/gallery/images/') . $item->image_name
                         : 'https://placehold.co/600x800/png?text=No+Image',
                     "date"        => date('M Y', strtotime($item->upload_date))
                 ];
@@ -586,7 +586,7 @@ class HomeController extends Controller
                     "title"       => $item->title,
                     "description" => $item->description,
                     "thumbnail"   => !empty($item->image_name)
-                        ? asset('assets/images/gallery/') . $item->image_name
+                        ? asset('uploads/gallery/images/') . $item->image_name
                         : 'https://placehold.co/800x450/000/fff?text=Video+Preview',
                     "video_url"   => $item->url ?? ''
                 ];
