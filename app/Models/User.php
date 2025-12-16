@@ -154,4 +154,67 @@ class User extends Model
 
         return false;
     }
+
+    public function getUserWithMahasiswaData($id)
+    {
+        $data = $this->db->query("
+            SELECT 
+                u.id AS user_id,
+                u.username,
+                u.email,
+                u.full_name,
+                u.id_roles AS user_role_id,
+                u.mahasiswa_id,
+                r.id AS role_id,
+                r.role_name,
+                
+                -- Data Mahasiswa
+                m.id AS mahasiswa_id_m,
+                m.nim,
+                m.full_name AS mahasiswa_name,
+                m.university,
+                m.study_program,
+                m.entry_year,
+                m.current_semester,
+                m.phone_number,
+                m.address
+            FROM users u
+            JOIN roles r ON u.id_roles = r.id
+            LEFT JOIN mahasiswa m ON u.mahasiswa_id = m.id
+            WHERE u.id = :id
+        ")
+            ->bind(':id', $id)
+            ->fetch();
+
+        if (!$data) return null;
+
+        $result = [
+            "user_id"   => $data->user_id,
+            "username"  => $data->username,
+            "email"     => $data->email,
+            "full_name" => $data->full_name,
+            "mahasiswa_id" => $data->mahasiswa_id,
+            "roles" => [
+                "id"        => $data->role_id,
+                "role_name" => $data->role_name
+            ]
+        ];
+
+        // Tambahkan detail mahasiswa jika ada relasi
+        if ($data->mahasiswa_id !== null) {
+            $result['mahasiswa'] = [
+                'id'                => $data->mahasiswa_id_m,
+                'nim'               => $data->nim,
+                'mahasiswa_name'    => $data->mahasiswa_name,
+                'university'        => $data->university,
+                'study_program'     => $data->study_program,
+                'entry_year'        => $data->entry_year,
+                'current_semester'  => $data->current_semester,
+                'phone_number'      => $data->phone_number,
+                'address'           => $data->address
+            ];
+        }
+
+        return $result;
+    }
 }

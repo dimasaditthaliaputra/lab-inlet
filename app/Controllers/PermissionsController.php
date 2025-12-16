@@ -46,7 +46,6 @@ class PermissionsController extends Controller
         }
 
         try {
-            // Method ini sekarang sudah otomatis melakukan sync data
             $permissions = $this->permissionsModel->getMenuWithPermissions($roleId);
 
             return response()->json([

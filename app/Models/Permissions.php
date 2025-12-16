@@ -8,30 +8,31 @@ class Permissions extends Model
 {
     protected $table = 'role_menus';
 
-    /**
-     * Mengambil menu beserta permission-nya.
-     * Sebelum mengambil, lakukan sinkronisasi data terlebih dahulu.
-     */
     public function getMenuWithPermissions($roleId)
     {
         $roleId = (int) $roleId;
 
-        // 1. SYNC: Pastikan semua menu dari app_menus ada di role_menus untuk role ini
         $this->syncMissingMenus($roleId);
 
-        // 2. FETCH: Ambil datanya
-        $sql = "SELECT 
-                    m.id, 
-                    m.menu_name, 
-                    m.route, 
-                    m.icon, 
-                    m.parent_id, 
-                    m.sort_order,
-                    m.permissions as available_permissions, -- Permission bawaan menu (Manifest)
-                    rm.permissions as current_permissions   -- Permission yang aktif untuk role ini
-                FROM app_menus m
-                LEFT JOIN role_menus rm ON m.id = rm.menu_id AND rm.role_id = :role_id
-                ORDER BY m.sort_order ASC";
+        $isMahasiswaRole = ($roleId === 3);
+
+        $filterCondition = $isMahasiswaRole
+            ? " AND m.is_for_mahasiswa = TRUE"
+            : " AND m.is_for_mahasiswa = FALSE";
+
+        $sql = "SELECT
+                m.id, 
+                m.menu_name, 
+                m.route, 
+                m.icon, 
+                m.parent_id, 
+                m.sort_order,
+                m.permissions AS available_permissions,
+                rm.permissions AS current_permissions
+            FROM app_menus m
+            LEFT JOIN role_menus rm ON m.id = rm.menu_id AND rm.role_id = :role_id
+            WHERE m.is_active = TRUE" . $filterCondition . "
+            ORDER BY m.sort_order ASC";
 
         $this->db->query($sql);
         $this->db->bind(':role_id', $roleId);
@@ -40,14 +41,8 @@ class Permissions extends Model
         return $this->sortParentChild($data);
     }
 
-    /**
-     * Fungsi untuk insert otomatis data ke role_menus 
-     * jika ada menu di app_menus yang belum dimiliki oleh role tersebut.
-     */
     public function syncMissingMenus($roleId)
     {
-        // Query ini akan insert ke role_menus HANYA jika datanya belum ada (WHERE NOT EXISTS)
-        // Default permissions kita set NULL atau '[]' (array kosong JSON)
         $sql = "INSERT INTO role_menus (role_id, menu_id, permissions)
                 SELECT :role_id, id, '[]'
                 FROM app_menus m
@@ -63,6 +58,18 @@ class Permissions extends Model
 
     public function generatePermissions($roleId)
     {
+        $roleId = (int) $roleId;
+
+        $isMahasiswaRole = ($roleId === 3);
+
+        $whereCondition = '';
+
+        if ($isMahasiswaRole) {
+            $whereCondition = ' AND m.is_for_mahasiswa = TRUE';
+        } else {
+            $whereCondition = ' AND m.is_for_mahasiswa = FALSE';
+        }
+
         try {
             $sql = "INSERT INTO role_menus (role_id, menu_id, permissions)
                 SELECT :role_id, id, COALESCE(m.permissions, '[]')
@@ -70,7 +77,7 @@ class Permissions extends Model
                 WHERE NOT EXISTS (
                     SELECT 1 FROM role_menus rm 
                     WHERE rm.menu_id = m.id AND rm.role_id = :role_id
-                )";
+                )" . $whereCondition;
 
             $this->db->query($sql);
             $this->db->bind(':role_id', $roleId);
@@ -82,9 +89,6 @@ class Permissions extends Model
         }
     }
 
-    /**
-     * Update permissions berdasarkan input dari Frontend.
-     */
     public function updatePermissions($roleId, $permissionsData)
     {
         try {

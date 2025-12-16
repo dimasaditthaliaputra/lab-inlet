@@ -41,17 +41,10 @@ class DashboardController extends Controller
         try {
             $data = $this->dashboardModel->getActivityTrend($filter);
 
-            $formattedData = array_map(function ($item) {
-                return [
-                    'x' => $item->label,
-                    'y' => (int)$item->total_activity
-                ];
-            }, $data);
-
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
-                'data' => $formattedData
+                'data' => $data
             ]);
             exit;
         } catch (\Exception $e) {
@@ -60,5 +53,19 @@ class DashboardController extends Controller
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
             exit;
         }
+    }
+
+    public function indexMahasiswa()
+    {
+        $this->dashboardModel->refreshAnalyticsData();
+
+        $dashboardData = $this->dashboardModel->getAllDashboardData();
+
+        $data = [
+            'title' => 'Dashboard Overview',
+            'stats' => $dashboardData
+        ];
+
+        view_with_layout_mahasiswa('mahasiswa/dashboard/index', $data);
     }
 }

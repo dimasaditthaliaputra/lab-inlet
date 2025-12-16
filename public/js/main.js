@@ -9,7 +9,7 @@ const initFooter = async () => {
     const copyrightEl = document.getElementById("footer-copyright");
 
     try {
-        const response = await fetch("http://inlet-lab.test/api/site-settings");
+        const response = await fetch("/api/site-settings");
         if (!response.ok) throw new Error("Failed to fetch footer data");
         const result = await response.json();
 

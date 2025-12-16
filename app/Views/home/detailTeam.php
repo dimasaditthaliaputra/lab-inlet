@@ -379,7 +379,7 @@
         }
 
         try {
-            const response = await fetch(`http://inlet-lab.test/api/team/${memberSlug}`);
+            const response = await fetch(`/api/team/${memberSlug}`);
 
             if (!response.ok) throw new Error("API Error");
 

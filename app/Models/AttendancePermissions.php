@@ -59,4 +59,30 @@ class AttendancePermissions extends Model
             'updated_at' => date('Y-m-d H:i:s')
         ]);
     }
+
+    public function isPermittedToday($mahasiswaId)
+    {
+        $currentDate = date('Y-m-d');
+        
+        $sql = "SELECT * FROM {$this->table}
+                WHERE mahasiswa_id = :mahasiswa_id
+                AND status = 'approved'
+                AND start_date <= :current_date
+                AND end_date >= :current_date
+                LIMIT 1";
+
+        return $this->db->query($sql)
+            ->bind(':mahasiswa_id', $mahasiswaId)
+            ->bind(':current_date', $currentDate)
+            ->fetch();
+    }
+
+    public function getByMahasiswaId($mahasiswaId)
+    {
+        return $this->db->query("
+            SELECT * FROM {$this->table} 
+            WHERE mahasiswa_id = :id 
+            ORDER BY created_at DESC
+        ")->bind(':id', $mahasiswaId)->fetchAll();
+    }
 }

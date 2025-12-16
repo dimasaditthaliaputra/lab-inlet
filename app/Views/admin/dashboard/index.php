@@ -2,10 +2,10 @@
     <div class="d-flex justify-content-between align-items-center">
         <div>
             <h2 class="mb-1"><?php echo e($title ?? 'Dashboard'); ?></h2>
-            <p class="text-muted mb-0">Selamat datang! Berikut ringkasan aktivitas hari ini</p>
+            <p class="text-muted mb-0">Welcome! Here is today's activity summary</p>
         </div>
         <div class="text-end">
-            <small class="text-muted d-block">Terakhir diperbarui</small>
+            <small class="text-muted d-block">Last updated</small>
             <strong><?php echo date('d M Y, H:i'); ?></strong>
         </div>
     </div>
@@ -13,7 +13,6 @@
 
 <div class="page-content">
 
-    <!-- ROW 1: SUMMARY CARDS (Sumber: v_dashboard_summary_cards & v_dashboard_attendance_today) -->
     <section class="row g-3 mb-4">
         <div class="col-12 col-lg-9">
             <div class="row g-3">
@@ -28,7 +27,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Total User</small>
+                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Total Users</small>
                                     <!-- Sesuai column: total_users -->
                                     <h3 class="mb-0 fw-bold"><?php echo $stats['summary']->total_users ?? 0; ?></h3>
                                 </div>
@@ -53,7 +52,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Mahasiswa</small>
+                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Students</small>
                                     <!-- Sesuai column: active_students -->
                                     <h3 class="mb-0 fw-bold"><?php echo $stats['summary']->active_students ?? 0; ?></h3>
                                 </div>
@@ -78,7 +77,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Proyek Lab</small>
+                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Lab Projects</small>
                                     <!-- Sesuai column: total_projects (plural di view summary) -->
                                     <h3 class="mb-0 fw-bold"><?php echo $stats['summary']->total_projects ?? 0; ?></h3>
                                 </div>
@@ -103,14 +102,14 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">Hadir Hari Ini</small>
+                                    <small class="text-muted text-uppercase d-block mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Present Today</small>
                                     <!-- Sesuai column: total_present -->
                                     <h3 class="mb-0 fw-bold"><?php echo $stats['attendance']->total_present ?? 0; ?></h3>
                                 </div>
                             </div>
                             <div class="mt-3">
                                 <span class="badge bg-light-danger text-danger">
-                                    <i class="bi bi-calendar-check"></i> Hari Ini
+                                    <i class="bi bi-calendar-check"></i> Today
                                 </span>
                             </div>
                         </div>
@@ -125,12 +124,12 @@
                         <div class="card-header bg-transparent border-0 pt-4 pb-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h4 class="mb-1 fw-bold">Tren Aktivitas Minggu Ini</h4>
-                                    <small class="text-muted">Monitoring aktivitas harian pengguna</small>
+                                    <h4 class="mb-1 fw-bold">Activity Trend</h4>
+                                    <small class="text-muted">Monitoring daily user activity</small>
                                 </div>
                                 <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-outline-primary active filter-btn" data-filter="week">Minggu</button>
-                                    <button type="button" class="btn btn-sm btn-outline-primary filter-btn" data-filter="month">Bulan</button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary active filter-btn" data-filter="week">Week</button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary filter-btn" data-filter="month">Month</button>
                                 </div>
                             </div>
                         </div>
@@ -146,8 +145,8 @@
                 <div class="col-12 col-xl-6">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-transparent border-0 pt-4 pb-3">
-                            <h4 class="mb-1 fw-bold">Proyek per Kategori</h4>
-                            <small class="text-muted">Distribusi proyek berdasarkan kategori</small>
+                            <h4 class="mb-1 fw-bold">Projects by Category</h4>
+                            <small class="text-muted">Project distribution by category</small>
                         </div>
                         <div class="card-body pt-2">
                             <div id="chart-project-category"></div>
@@ -157,8 +156,8 @@
                 <div class="col-12 col-xl-6">
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-header bg-transparent border-0 pt-4 pb-3">
-                            <h4 class="mb-1 fw-bold">Pertumbuhan Mahasiswa</h4>
-                            <small class="text-muted">Jumlah mahasiswa per tahun masuk</small>
+                            <h4 class="mb-1 fw-bold">Student Growth</h4>
+                            <small class="text-muted">Number of students by entry year</small>
                         </div>
                         <div class="card-body pt-2">
                             <div id="chart-student-growth"></div>
@@ -173,8 +172,8 @@
             <!-- Role Distribution Chart -->
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-header bg-transparent border-0 pt-4 pb-3">
-                    <h4 class="mb-1 fw-bold">Distribusi User</h4>
-                    <small class="text-muted">Berdasarkan role</small>
+                    <h4 class="mb-1 fw-bold">User Distribution</h4>
+                    <small class="text-muted">Based on role</small>
                 </div>
                 <div class="card-body pt-2">
                     <div id="chart-role-distribution"></div>
@@ -184,7 +183,7 @@
             <!-- Latest Activity Log -->
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-transparent border-0 pt-4 pb-3">
-                    <h4 class="mb-1 fw-bold">Aktivitas Terbaru</h4>
+                    <h4 class="mb-1 fw-bold">Latest Activity</h4>
                     <small class="text-muted">Real-time updates</small>
                 </div>
                 <div class="card-content">
@@ -214,13 +213,13 @@
                         <?php else: ?>
                             <div class="px-4 py-5 text-center">
                                 <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
-                                <p class="text-muted mt-2 mb-0">Belum ada aktivitas</p>
+                                <p class="text-muted mt-2 mb-0">No activity yet</p>
                             </div>
                         <?php endif; ?>
                     </div>
                     <div class="px-4 pb-4">
                         <a href="<?php echo base_url('admin/log-activity'); ?>" class="btn btn-block btn-light-primary fw-semibold mt-2">
-                            <i class="bi bi-arrow-right-circle me-2"></i>Lihat Semua Log
+                            <i class="bi bi-arrow-right-circle me-2"></i>View All Logs
                         </a>
                     </div>
                 </div>
@@ -375,9 +374,9 @@ $chartStudents = $stats['charts']['students'] ?? [];
     // --------------------------------------------------------
     var optionsActivity = {
         series: [{
-            name: 'Total Aktivitas',
+            name: 'Total Activity',
             data: rawActivity.map(item => ({
-                x: item.label,
+                x: item.log_date,
                 y: parseInt(item.total_activity)
             }))
         }],
@@ -401,13 +400,14 @@ $chartStudents = $stats['charts']['students'] ?? [];
         },
         stroke: {
             curve: 'smooth',
-            width: 3
+            width: 3,
+            colors: ['#667eea']
         },
         dataLabels: {
             enabled: false
         },
         xaxis: {
-            type: 'category',
+            type: 'datetime',
             labels: {
                 style: {
                     colors: '#9ca3af',
@@ -453,9 +453,14 @@ $chartStudents = $stats['charts']['students'] ?? [];
             dataType: 'JSON',
             success: function(response) {
                 if (response.success) {
+                    const newData = response.data.map(item => ({
+                        x: item.log_date,
+                        y: parseInt(item.total_activity)
+                    }));
+
                     chartActivity.updateSeries([{
-                        name: 'Total Aktivitas',
-                        data: response.data
+                        name: 'Total Activity',
+                        data: newData
                     }]);
                 }
             },
@@ -519,7 +524,7 @@ $chartStudents = $stats['charts']['students'] ?? [];
     // --------------------------------------------------------
     var optionsProject = {
         series: [{
-            name: 'Jumlah Proyek',
+            name: 'Total Projects',
             data: rawProjects.map(item => ({
                 x: item.category_name,
                 y: parseInt(item.total_projects)
@@ -584,7 +589,7 @@ $chartStudents = $stats['charts']['students'] ?? [];
     // --------------------------------------------------------
     var optionsStudent = {
         series: [{
-            name: 'Mahasiswa Masuk',
+            name: 'New Students',
             // Mapping ke format {x, y}
             data: rawStudents.map(item => ({
                 x: item.creation_year,

@@ -444,6 +444,16 @@ if (!function_exists('view_with_layout_homepage')) {
     }
 }
 
+if (!function_exists('view_with_layout_mahasiswa')) {
+    /**
+     * Render view with layout
+     */
+    function view_with_layout_mahasiswa($view, $data = [], $layout = 'mahasiswa/layouts/app')
+    {
+        return \Core\View::renderWithLayout($view, $data, $layout);
+    }
+}
+
 if (!function_exists('prefix')) {
     function prefix(string $prefix, array $routes): array
     {

@@ -18,22 +18,35 @@ class Dashboard extends Model
 
     public function getActivityTrend($range = 'week')
     {
-        $interval = ($range == 'month') ? "30 days" : "7 days";
+        $days = ($range == 'month') ? 30 : 7;
 
-        $sql = "SELECT 
-                    log_date, 
-                    total_activity,
-                    CASE 
-                        WHEN :range = 'month' THEN date_label 
-                        ELSE day_name 
-                    END as label
-                FROM mv_dashboard_activity_trend 
-                WHERE log_date >= CURRENT_DATE - INTERVAL '$interval'
-                ORDER BY log_date ASC";
+        $endDate = date('Y-m-d');
 
-        return $this->db->query($sql)
-            ->bind(':range', $range)
-            ->fetchAll();
+        $startDate = date('Y-m-d', strtotime("-{$days} days"));
+
+        $label_select = ($range == 'month')
+            ? "TO_CHAR(ds.date_col, 'DD Mon') AS label"
+            : "TO_CHAR(ds.date_col, 'Dy') AS label";
+
+        $sql = "
+        WITH DateSeries AS (
+            -- Tambahkan + 1 day pada start date agar rentangnya akurat (misal: 7 hari = 7 tanggal)
+            SELECT (GENERATE_SERIES(
+                DATE '{$startDate}', 
+                DATE '{$endDate}', 
+                '1 day'::interval
+            ))::date AS date_col
+        )
+        SELECT 
+            ds.date_col AS log_date,
+            COALESCE(mvat.total_activity, 0) AS total_activity, 
+            {$label_select} 
+        FROM DateSeries ds
+        LEFT JOIN mv_dashboard_activity_trend mvat ON mvat.log_date = ds.date_col
+        ORDER BY ds.date_col ASC
+    ";
+
+        return $this->db->query($sql)->fetchAll();
     }
 
     public function getLatestLogs()

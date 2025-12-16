@@ -10,6 +10,18 @@ class Menu extends Model
 
     public function getMenusByRole($roleId)
     {
+        $roleId = (int) $roleId;
+
+        $isMahasiswaRole = ($roleId === 3);
+
+        $whereCondition = '';
+
+        if ($isMahasiswaRole) {
+            $whereCondition = ' WHERE m.is_for_mahasiswa = TRUE';
+        } else {
+            $whereCondition = ' WHERE m.is_for_mahasiswa = FALSE';
+        }
+
         $query = "SELECT 
                     m.id, 
                     m.parent_id, 
@@ -18,9 +30,11 @@ class Menu extends Model
                     m.icon, 
                     m.is_active,
                     m.sort_order,
-                    rm.permissions
+                    rm.permissions,
+                    m.is_for_mahasiswa
                   FROM {$this->table} m
                   LEFT JOIN role_menus rm ON m.id = rm.menu_id AND rm.role_id = :role_id
+                  " . $whereCondition . "
                   ORDER BY m.sort_order ASC";
 
         $this->db->query($query);
@@ -44,7 +58,7 @@ class Menu extends Model
             if (!is_array($perms)) $perms = [];
 
             $hasRead  = in_array('read', $perms);
-            $isHeader = ($menu['is_active'] == false); // Header disimpan dulu
+            $isHeader = ($menu['is_active'] == false);
 
             $hasVisibleChildren = false;
             if (!empty($menu['children'])) {
@@ -61,7 +75,6 @@ class Menu extends Model
 
         return $filtered;
     }
-
     private function cleanOrphanHeaders(array $menus)
     {
         $cleaned = [];
