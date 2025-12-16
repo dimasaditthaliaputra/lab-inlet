@@ -130,7 +130,7 @@ ob_start();
 ?>
 <script>
     var audio = new Audio("<?php echo base_url('assets/audio/success.wav'); ?>");
-    const baseImageUrl = "<?php echo base_url('assets/images/gallery'); ?>";
+    const baseImageUrl = "<?php echo base_url('uploads/gallery/images'); ?>";
 
     var CAN_UPDATE = <?php echo in_array('update', $access) ? 'true' : 'false'; ?>;
     var CAN_DELETE = <?php echo in_array('delete', $access) ? 'true' : 'false'; ?>;
