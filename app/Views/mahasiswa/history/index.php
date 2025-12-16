@@ -174,7 +174,7 @@
                                 </div>
                                 <p class="small text-muted mb-2" id="modalStatusIn">-</p>
                                 <div class="ratio ratio-4x3 bg-secondary rounded overflow-hidden">
-                                    <img id="modalImgIn" src="" class="object-fit-cover" alt="Check In Photo" onerror="this.src='https://via.placeholder.com/300x200?text=No+Photo'">
+                                    <img id="modalImgIn" src="" class="object-fit-cover" alt="Check In Photo">
                                 </div>
                             </div>
                         </div>
@@ -187,7 +187,7 @@
                                 </div>
                                 <p class="small text-muted mb-2" id="modalStatusOut">-</p>
                                 <div class="ratio ratio-4x3 bg-secondary rounded overflow-hidden">
-                                    <img id="modalImgOut" src="" class="object-fit-cover" alt="Check Out Photo" onerror="this.src='https://via.placeholder.com/300x200?text=No+Photo'">
+                                    <img id="modalImgOut" src="" class="object-fit-cover" alt="Check Out Photo">
                                 </div>
                             </div>
                         </div>
@@ -221,6 +221,8 @@
 <script>
     const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const BASE_URL = "<?= base_url() ?>";
+
+    const placeholderImg = "data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A18pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2290%22%20y%3D%22110%22%3ENo%20Photo%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E";
 
     let currentMonthEvents = {};
 
@@ -269,6 +271,8 @@
                 if (response.success) {
                     currentMonthEvents = response.data;
                     renderCalendar(year, month);
+                } else {
+                    grid.html('<div class="col-12 text-center text-muted py-5">No data available.</div>');
                 }
             },
             error: function() {
@@ -297,12 +301,11 @@
             const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
 
             let eventData = currentMonthEvents[dateStr] || null;
-
             let contentHtml = '';
             let cardClass = '';
             let clickAction = '';
 
-            const dateDisplay = dateObj.toLocaleDateString('en-US', {
+            const dateDisplay = dateObj.toLocaleDateString('id-ID', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',
@@ -311,7 +314,7 @@
 
             if (isWeekend) {
                 cardClass = 'disabled';
-                contentHtml = '<div class="text-center mt-2"><small class="badge bg-secondary text-white rounded-pill">Weekend</small></div>';
+                contentHtml = '<div class="text-center mt-2"><small class="badge bg-secondary text-white rounded-pill">Libur</small></div>';
             } else {
                 if (eventData) {
                     clickAction = `onclick="openDetailModal('${dateStr}', '${dateDisplay}')"`;
@@ -346,7 +349,7 @@
                     clickAction = `onclick="openDetailModal('${dateStr}', '${dateDisplay}')"`;
                     contentHtml = `
                     <div class="event-content d-flex align-items-center justify-content-center text-muted h-100">
-                        <small style="font-size:0.7rem;">- No Activity -</small>
+                        <small style="font-size:0.7rem;">- Alpha -</small>
                     </div>
                 `;
                 }
@@ -370,15 +373,17 @@
 
     function openDetailModal(dateKey, dateDisplay) {
         const eventData = currentMonthEvents[dateKey];
-        
+
         $('#modalDateDisplay').text(dateDisplay);
 
         $('#contentPresent').addClass('d-none');
-        $('#contentPermission').addClass('d-one');
+        $('#contentPermission').addClass('d-none');
         $('#contentEmpty').addClass('d-none');
 
         const modal = new bootstrap.Modal(document.getElementById('detailModal'));
-        const placeholderImg = "data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A18pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2290%22%20y%3D%22110%22%3ENo%20Photo%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E";
+
+        $('#modalImgIn').attr('src', placeholderImg);
+        $('#modalImgOut').attr('src', placeholderImg);
 
         if (!eventData) {
             $('#contentEmpty').removeClass('d-none');
@@ -391,17 +396,23 @@
             $('#modalStatusIn').text(eventData.status_in || 'Not yet attended');
 
             const imgInPath = eventData.photo_in ? (BASE_URL + eventData.photo_in) : placeholderImg;
-            $('#modalImgIn').off('error').attr('src', imgInPath).one('error', function() {
-                $(this).attr('src', placeholderImg);
-            }).show();
+            $('#modalImgIn')
+                .off('error')
+                .one('error', function() {
+                    $(this).attr('src', placeholderImg);
+                })
+                .attr('src', imgInPath);
 
             $('#modalTimeOut').text(eventData.check_out || '--:--');
             $('#modalStatusOut').text(eventData.status_out || 'Not yet attended');
 
             const imgOutPath = eventData.photo_out ? (BASE_URL + eventData.photo_out) : placeholderImg;
-            $('#modalImgOut').off('error').attr('src', imgOutPath).one('error', function() {
-                $(this).attr('src', placeholderImg);
-            }).show();
+            $('#modalImgOut')
+                .off('error')
+                .one('error', function() {
+                    $(this).attr('src', placeholderImg);
+                })
+                .attr('src', imgOutPath);
 
         } else if (eventData.type === 'permission') {
             $('#contentPermission').removeClass('d-none');
