@@ -54,7 +54,7 @@ $main_segment = $segments[0] ?? '';
                 </li>
             </ul>
             
-            <a href="#maps-section" class="btn btn-book d-none d-lg-block">
+            <a href="<?= base_url() ?>#maps-section" class="btn btn-book d-none d-lg-block">
                 Visit Lab
             </a>
         </div>
