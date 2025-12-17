@@ -129,7 +129,7 @@ class UserController extends Controller
 
             logActivity(
                 "Create",
-                "User {$user->username} successfully created",
+                "User " . $validation['data']['username'] . " successfully created",
                 "users",
                 $user->id,
                 null,
