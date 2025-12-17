@@ -350,7 +350,6 @@ class HomeController extends Controller
     public function getGallery()
     {
         try {
-            // Ambil data hanya yang bertipe 'Photo' sesuai request
             $query = $this->gallery->getByType('Photo');
 
             $data = array_map(function ($item) {
@@ -358,7 +357,6 @@ class HomeController extends Controller
                     "id"          => $item->id,
                     "title"       => $item->title,
                     "description" => $item->description,
-                    // Pastikan path sesuai folder upload
                     "image_name"  => !empty($item->image_name)
                         ? asset('uploads/gallery/images/') . $item->image_name
                         : 'https://placehold.co/600x400/png?text=No+Image',
@@ -383,14 +381,13 @@ class HomeController extends Controller
     public function getSiteSettings()
     {
         try {
-            // Ambil data site setting
             $settings = $this->siteSettings->getConfig();
 
             if (!$settings) {
                 return response()->json(['success' => false, 'message' => 'Settings not found'], 404);
             }
 
-            $rawSocial = $settings->social_media ?? $settings->social_media_links ?? null;
+            $rawSocial = $settings->social_links ?? null;
             $socials = [];
 
             if (!empty($rawSocial)) {

@@ -1,9 +1,3 @@
-/**
- * main.js - LabTech Landing Page Logic
- * Handles data fetching (mocked), rendering, and interactions.
- */
-
-// --- 1. Mock Data / Schema (Simulasi Backend) ---
 const MOCK_API = {
   news: [
     {
@@ -58,9 +52,8 @@ const MOCK_API = {
   ],
 };
 
-// --- 2. Helper Functions --
 
-// Simulate Fetch
+
 const fetchData = async (endpoint) => {
   return new Promise((resolve) => setTimeout(() => resolve(MOCK_API[endpoint]), 300));
 };
@@ -74,8 +67,8 @@ const initHeroSlider = async () => {
     return;
   }
 
-  // --- 1. SHOW SKELETON LOADING ---
-  // We inject this immediately while waiting for the fetch
+  
+  
   wrapper.innerHTML = `
     <div class="hero-slide active" style="z-index: 1;">
         <div class="slide-bg bg-secondary opacity-25"></div>
@@ -117,18 +110,18 @@ const initHeroSlider = async () => {
     }
   } catch (error) {
     console.error("Hero Slider API Fetch Failed:", error);
-    // Replace Skeleton with Error Message
+    
     wrapper.innerHTML = `<div class="d-flex align-items-center justify-content-center h-100 w-100 bg-light text-muted">Failed to load slides.</div>`;
     return;
   }
 
   if (sliderData.length === 0) {
-    // Replace Skeleton with Empty Message
+    
     wrapper.innerHTML = `<div class="d-flex align-items-center justify-content-center h-100 w-100 bg-light text-muted">No active slides found.</div>`;
     return;
   }
 
-  // --- Render Function (This will overwrite the Skeleton) ---
+  
   const renderSlider = (data) => {
     let slidesHTML = "";
     let dotsHTML = "";
@@ -136,19 +129,18 @@ const initHeroSlider = async () => {
     data.forEach((slide, index) => {
       const isActive = index === 0 ? "active" : "";
 
-      // Build Button HTML
+      
       const btnHTML =
         slide.button_text && slide.button_text.trim() !== ""
           ? `<a href="${slide.button_url}" class="hero-btn mt-4">${slide.button_text}</a>`
           : "";
 
-      // Render Slide
+      
       slidesHTML += `
                 <div class="hero-slide ${isActive}" data-index="${index}">
                     <div class="slide-overlay"></div>
-                    <img src="${slide.image_name}" class="slide-bg" alt="${slide.title}" loading="${
-        index === 0 ? "eager" : "lazy"
-      }">
+                    <img src="${slide.image_name}" class="slide-bg" alt="${slide.title}" loading="${index === 0 ? "eager" : "lazy"
+        }">
                     <div class="container hero-content-wrapper">
                         <div class="glass-card">
                             <span class="hero-subtitle">${slide.subtitle}</span>
@@ -159,16 +151,16 @@ const initHeroSlider = async () => {
                 </div>
             `;
 
-      // Render Dot
+      
       dotsHTML += `<div class="dot ${isActive}" data-index="${index}"></div>`;
     });
 
-    // This overwrites the skeleton HTML
+    
     wrapper.innerHTML = slidesHTML;
     dotsContainer.innerHTML = dotsHTML;
   };
 
-  // 4. Navigation Logic
+  
   const goToSlide = (index) => {
     const slides = document.querySelectorAll(".hero-slide");
     const dots = document.querySelectorAll(".dot");
@@ -191,7 +183,7 @@ const initHeroSlider = async () => {
   const nextSlide = () => goToSlide(currentSlide + 1);
   const prevSlide = () => goToSlide(currentSlide - 1);
 
-  // 5. Autoplay Logic
+  
   const startAutoPlay = () => {
     clearInterval(autoPlayInterval);
     autoPlayInterval = setInterval(nextSlide, AUTO_PLAY_DELAY);
@@ -202,7 +194,7 @@ const initHeroSlider = async () => {
     startAutoPlay();
   };
 
-  // 6. Execute Render & Bind Events
+  
   renderSlider(sliderData);
   startAutoPlay();
 
@@ -225,7 +217,7 @@ const initHeroSlider = async () => {
     }
   });
 
-  // Mobile Swipe
+  
   let touchStartX = 0;
   wrapper.addEventListener("touchstart", (e) => (touchStartX = e.changedTouches[0].screenX));
   wrapper.addEventListener("touchend", (e) => {
@@ -245,11 +237,9 @@ const initAbout = async () => {
   const contentContainer = document.getElementById("about-content");
   const gridContainer = document.getElementById("about-grid");
 
-  // Safety check
+  
   if (!contentContainer) return;
 
-  // --- 1. INJECT SKELETON LOADING ---
-  // Tampilkan kerangka sebelum data dimuat
   contentContainer.innerHTML = `
         <div class="placeholder-glow">
             <span class="placeholder col-6 mb-4 display-6"></span>
@@ -283,7 +273,7 @@ const initAbout = async () => {
     `;
 
   if (gridContainer) {
-    // Kita butuh 3 item skeleton agar sesuai dengan layout CSS Grid (1 besar kiri, 2 kecil kanan)
+    
     gridContainer.innerHTML = `
         <div class="about-img-item placeholder-glow">
             <span class="placeholder w-100 h-100 bg-secondary opacity-25"></span>
@@ -298,18 +288,18 @@ const initAbout = async () => {
   }
 
   try {
-    // 2. Fetch Real API
+    
     const response = await fetch(`/api/about-us`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
     const result = await response.json();
 
-    // 3. Validate Data
+    
     if (result.success && Array.isArray(result.data) && result.data.length > 0) {
       const data = result.data[0];
 
-      // 4. Render Actual Text Content (Overwrites Skeleton)
+      
       contentContainer.innerHTML = `
             <h2 class="display-6 about-title">${data.title}</h2>
             <p class="text-muted lead mb-5 text-justify" style="line-height: 1.8;">
@@ -334,7 +324,7 @@ const initAbout = async () => {
             </div>
         `;
 
-      // 5. Render Actual Images (Overwrites Skeleton)
+      
       if (gridContainer && Array.isArray(data.aboutusimages)) {
         const images = data.aboutusimages.slice(0, 3);
 
@@ -366,50 +356,50 @@ const additionalStyles = `
   .research-card {
     position: relative;
     overflow: hidden;
-    transform-style: preserve-3d; /* Penting untuk efek 3D */
+    transform-style: preserve-3d; 
     z-index: 1;
   }
 
-  /* Setup elemen pantulan (Shine) */
+  
   .research-card::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 100px; /* Lebar pantulan cahaya terbatas, bukan memenuhi card */
+    width: 100px; 
     height: 100%;
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0.1) 1%,
-      rgba(255, 255, 255, 0.6) 50%, /* Inti cahaya lebih terang/tajam */
+      rgba(255, 255, 255, 0.6) 50%, 
       rgba(255, 255, 255, 0.1) 99%,
       rgba(255, 255, 255, 0) 100%
     );
     opacity: 0;
-    transform: skewX(-25deg) translateX(-200%); /* Miringkan agar terlihat realistis */
+    transform: skewX(-25deg) translateX(-200%); 
     transition: opacity 0.3s;
     pointer-events: none;
-    z-index: 10; /* Pastikan di atas konten */
+    z-index: 10; 
   }
 
-  /* Trigger animasi saat hover */
+  
   .research-card:hover::after {
     opacity: 1;
     animation: mirror-sweep 1s ease-in-out forwards;
   }
 
-  /* Animasi menyapu dari kiri ke kanan dengan cepat */
+  
   @keyframes mirror-sweep {
     0% {
       transform: skewX(-25deg) translateX(-200%);
     }
     100% {
-      transform: skewX(-25deg) translateX(500%); /* Geser jauh ke kanan */
+      transform: skewX(-25deg) translateX(500%); 
     }
   }
 
-  /* Memastikan konten (teks/icon) tetap tajam di atas background */
+  
   .research-card > * {
     position: relative;
     z-index: 20;
@@ -422,22 +412,22 @@ document.head.appendChild(styleSheet);
 
 const addTiltEffect = () => {
   const cards = document.querySelectorAll('.research-card');
-  
+
   cards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      
+
       const rotateX = (y - centerY) / centerY * -10;
       const rotateY = (x - centerX) / centerX * 10;
-      
+
       card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     });
-    
+
     card.addEventListener('mouseleave', () => {
       card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
     });
@@ -491,7 +481,7 @@ const initResearch = async () => {
         })
         .join("");
 
-        addTiltEffect();
+      addTiltEffect();
     } else {
       throw new Error("Invalid Data Structure");
     }
@@ -502,11 +492,11 @@ const initResearch = async () => {
 };
 
 const initTeamCarousel = async () => {
-    const container = document.getElementById("team-track");
-    if (!container) return;
+  const container = document.getElementById("team-track");
+  if (!container) return;
 
-    // --- 1. SKELETON LOADING ---
-    const skeletonItem = `
+  
+  const skeletonItem = `
         <div class="team-carousel-item">
             <div class="team-card">
                 <div class="d-flex justify-content-center mb-4">
@@ -532,15 +522,15 @@ const initTeamCarousel = async () => {
         </div>
     `;
 
-    container.innerHTML = skeletonItem.repeat(4);
+  container.innerHTML = skeletonItem.repeat(4);
 
-    // --- Helper: Create Card ---
-    const createCard = (member) => {
-        const imgUrl = member.image_name || "https://placehold.co/150x150?text=Member";
-        // Gunakan slug jika ada, fallback ke hash #
-        const detailUrl = member.slug ? `/team?name=${member.slug}` : '#';
-        
-        return `
+  
+  const createCard = (member) => {
+    const imgUrl = member.image_name || "https://placehold.co/150x150?text=Member";
+    
+    const detailUrl = member.slug ? `/team?name=${member.slug}` : '#';
+
+    return `
             <div class="team-carousel-item">
                 <div class="team-card">
                     <div class="img-wrapper">
@@ -569,71 +559,71 @@ const initTeamCarousel = async () => {
                 </div>
             </div>
         `;
-    };
+  };
 
-    const renderInfiniteLoop = (data) => {
-        let finalHTML = "";
-        const loops = 4;
-        for (let i = 0; i < loops; i++) {
-            finalHTML += data.map(member => createCard(member)).join("");
-        }
-        container.innerHTML = finalHTML;
-        container.style.animation = ""; 
-    };
-
-    try {
-        // --- 2. FETCH DATA ---
-        const response = await fetch(`/api/team`);
-
-        if (!response.ok) throw new Error(`Status: ${response.status}`);
-        
-        const result = await response.json();
-        const teamData = result.data || result; 
-
-        if (Array.isArray(teamData) && teamData.length > 0) {
-            renderInfiniteLoop(teamData);
-        } else {
-            throw new Error("No data available"); 
-        }
-
-    } catch (error) {
-        console.warn("Using fallback team data due to error:", error);
-
-        // --- 3. FALLBACK DATA ---
-        // Ditambahkan field slug untuk testing link saat error
-        const fallbackData = [
-            {
-                full_name: "Dr. Sarah Lin",
-                slug: "dr-sarah-lin",
-                lab_position: "Lab Director",
-                image_name: "https://placehold.co/150x150/png?text=SL",
-                social: [{ type: "linkedin", icon_name: "bi bi-linkedin", url: "#" }]
-            },
-            {
-                full_name: "James Doe",
-                slug: "james-doe",
-                lab_position: "Lead Researcher",
-                image_name: "https://placehold.co/150x150/png?text=JD",
-                social: [{ type: "twitter", icon_name: "bi bi-twitter-x", url: "#" }]
-            },
-            {
-                full_name: "Anita Roy",
-                slug: "anita-roy",
-                lab_position: "Data Scientist",
-                image_name: "https://placehold.co/150x150/png?text=AR",
-                social: [{ type: "github", icon_name: "bi bi-github", url: "#" }]
-            },
-            {
-                full_name: "Michael Chen",
-                slug: "michael-chen",
-                lab_position: "Engineer",
-                image_name: "https://placehold.co/150x150/png?text=MC",
-                social: [{ type: "linkedin", icon_name: "bi bi-linkedin", url: "#" }]
-            }
-        ];
-
-        renderInfiniteLoop(fallbackData);
+  const renderInfiniteLoop = (data) => {
+    let finalHTML = "";
+    const loops = 4;
+    for (let i = 0; i < loops; i++) {
+      finalHTML += data.map(member => createCard(member)).join("");
     }
+    container.innerHTML = finalHTML;
+    container.style.animation = "";
+  };
+
+  try {
+    
+    const response = await fetch(`/api/team`);
+
+    if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+    const result = await response.json();
+    const teamData = result.data || result;
+
+    if (Array.isArray(teamData) && teamData.length > 0) {
+      renderInfiniteLoop(teamData);
+    } else {
+      throw new Error("No data available");
+    }
+
+  } catch (error) {
+    console.warn("Using fallback team data due to error:", error);
+
+    
+    
+    const fallbackData = [
+      {
+        full_name: "Dr. Sarah Lin",
+        slug: "dr-sarah-lin",
+        lab_position: "Lab Director",
+        image_name: "https://placehold.co/150x150/png?text=SL",
+        social: [{ type: "linkedin", icon_name: "bi bi-linkedin", url: "#" }]
+      },
+      {
+        full_name: "James Doe",
+        slug: "james-doe",
+        lab_position: "Lead Researcher",
+        image_name: "https://placehold.co/150x150/png?text=JD",
+        social: [{ type: "twitter", icon_name: "bi bi-twitter-x", url: "#" }]
+      },
+      {
+        full_name: "Anita Roy",
+        slug: "anita-roy",
+        lab_position: "Data Scientist",
+        image_name: "https://placehold.co/150x150/png?text=AR",
+        social: [{ type: "github", icon_name: "bi bi-github", url: "#" }]
+      },
+      {
+        full_name: "Michael Chen",
+        slug: "michael-chen",
+        lab_position: "Engineer",
+        image_name: "https://placehold.co/150x150/png?text=MC",
+        social: [{ type: "linkedin", icon_name: "bi bi-linkedin", url: "#" }]
+      }
+    ];
+
+    renderInfiniteLoop(fallbackData);
+  }
 };
 
 const initFacilities = async () => {
@@ -641,7 +631,7 @@ const initFacilities = async () => {
 
   if (!container) return;
 
-  // --- 1. SKELETON LOADING (Updated Layout) ---
+  
   const skeletonItem = `
     <div class="col-lg-6">
         <div class="facility-card placeholder-glow">
@@ -664,19 +654,19 @@ const initFacilities = async () => {
     const result = await response.json();
 
     if (result.success && Array.isArray(result.data)) {
-      
-      // --- 2. RENDER DATA ---
-      container.innerHTML = result.data.map((item) => {
-          const isOperational = ["Operational", "good", "Good"].includes(item.condition);
-          const badgeClass = isOperational ? "badge-soft-success" : "badge-soft-warning";
-          const imgUrl = item.image_name || "https://placehold.co/400x300?text=No+Img";
-          
-          // Encode data ke attribute agar mudah diambil saat klik modal
-          // Hati-hati dengan tanda kutip di deskripsi/nama
-          const safeDesc = item.description.replace(/"/g, '&quot;');
-          const safeName = item.name.replace(/"/g, '&quot;');
 
-          return `
+      
+      container.innerHTML = result.data.map((item) => {
+        const isOperational = ["Operational", "good", "Good"].includes(item.condition);
+        const badgeClass = isOperational ? "badge-soft-success" : "badge-soft-warning";
+        const imgUrl = item.image_name || "https://placehold.co/400x300?text=No+Img";
+
+        
+        
+        const safeDesc = item.description.replace(/"/g, '&quot;');
+        const safeName = item.name.replace(/"/g, '&quot;');
+
+        return `
             <div class="col-lg-6">
                 <div class="facility-card" 
                      onclick="openFacilityModal('${imgUrl}', '${safeName}', '${safeDesc}', '${item.condition}', '${badgeClass}')">
@@ -697,7 +687,7 @@ const initFacilities = async () => {
                 </div>
             </div>
             `;
-        }).join("");
+      }).join("");
 
     } else {
       container.innerHTML = `<div class="col-12 text-center text-muted">No facilities found.</div>`;
@@ -709,44 +699,44 @@ const initFacilities = async () => {
 };
 
 window.openFacilityModal = (img, title, desc, condition, badgeClass) => {
-    const modalImg = document.getElementById('modalFacilityImg');
-    const modalTitle = document.getElementById('modalFacilityTitle');
-    const modalDesc = document.getElementById('modalFacilityDesc');
-    const modalBadge = document.getElementById('modalFacilityBadge');
+  const modalImg = document.getElementById('modalFacilityImg');
+  const modalTitle = document.getElementById('modalFacilityTitle');
+  const modalDesc = document.getElementById('modalFacilityDesc');
+  const modalBadge = document.getElementById('modalFacilityBadge');
 
-    modalImg.src = img;
-    modalTitle.textContent = title;
-    modalDesc.textContent = desc;
-    
-    // Set Badge Style & Text
-    modalBadge.className = `badge ${badgeClass} rounded-pill fs-6`;
-    modalBadge.textContent = condition;
+  modalImg.src = img;
+  modalTitle.textContent = title;
+  modalDesc.textContent = desc;
 
-    // Show Modal via Bootstrap API
-    const myModal = new bootstrap.Modal(document.getElementById('facilityModal'));
-    myModal.show();
+  
+  modalBadge.className = `badge ${badgeClass} rounded-pill fs-6`;
+  modalBadge.textContent = condition;
+
+  
+  const myModal = new bootstrap.Modal(document.getElementById('facilityModal'));
+  myModal.show();
 };
 
 const initProjects = async () => {
-    const filterContainer = document.getElementById("project-filters");
-    const grid = document.getElementById("projects-grid");
-    const paginationContainer = document.getElementById("project-pagination");
-    const prevBtn = document.getElementById("proj-prev");
-    const nextBtn = document.getElementById("proj-next");
-    const pageInfo = document.getElementById("proj-page-info");
+  const filterContainer = document.getElementById("project-filters");
+  const grid = document.getElementById("projects-grid");
+  const paginationContainer = document.getElementById("project-pagination");
+  const prevBtn = document.getElementById("proj-prev");
+  const nextBtn = document.getElementById("proj-next");
+  const pageInfo = document.getElementById("proj-page-info");
 
-    // Config
-    const ITEMS_PER_PAGE = 6;
-    let currentPage = 1;
-    let currentFilterId = 'all';
-    let allProjects = []; // Store all fetched projects here
-    let categories = [];
+  
+  const ITEMS_PER_PAGE = 6;
+  let currentPage = 1;
+  let currentFilterId = 'all';
+  let allProjects = []; 
+  let categories = [];
 
-    if (!grid || !filterContainer) return;
+  if (!grid || !filterContainer) return;
 
-    // --- SKELETON RENDERER ---
-    const renderSkeleton = () => {
-        const skeletonHTML = `
+  
+  const renderSkeleton = () => {
+    const skeletonHTML = `
             <div class="col-md-6 col-lg-4">
                 <div class="project-card skeleton-card h-100 border-0 rounded-4 overflow-hidden">
                     <div class="ratio ratio-4x3 bg-light placeholder-glow"></div>
@@ -758,122 +748,121 @@ const initProjects = async () => {
                 </div>
             </div>
         `.repeat(3);
-        grid.innerHTML = skeletonHTML;
-    };
+    grid.innerHTML = skeletonHTML;
+  };
 
-    renderSkeleton();
+  renderSkeleton();
 
-    try {
-        // --- FETCH DATA ---
-        const response = await fetch(`/api/projects`);
-        if (!response.ok) throw new Error("API Error");
-        const result = await response.json();
+  try {
+    
+    const response = await fetch(`/api/projects`);
+    if (!response.ok) throw new Error("API Error");
+    const result = await response.json();
 
-        if (result.success && result.data) {
-            allProjects = result.data.items;
-            categories = result.data.categories;
+    if (result.success && result.data) {
+      allProjects = result.data.items;
+      categories = result.data.categories;
 
-            // --- RENDER FILTERS ---
-            filterContainer.innerHTML = `
+      
+      filterContainer.innerHTML = `
                 <button class="filter-btn active" data-id="all">All Projects</button>
                 ${categories.map(c => `
                     <button class="filter-btn" data-id="${c.id}">${c.name}</button>
                 `).join('')}
             `;
 
-            // --- FILTER LOGIC ---
-            filterContainer.addEventListener('click', (e) => {
-                if(e.target.classList.contains('filter-btn')) {
-                    // Update UI
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    
-                    // Update State
-                    currentFilterId = e.target.dataset.id;
-                    currentPage = 1; // Reset to page 1
-                    updateDisplay();
-                }
-            });
+      
+      filterContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('filter-btn')) {
+          
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
 
-            // --- PAGINATION LISTENERS ---
-            prevBtn.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    updateDisplay();
-                }
-            });
-
-            nextBtn.addEventListener('click', () => {
-                const filtered = getFilteredProjects();
-                const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    updateDisplay();
-                }
-            });
-
-            // Initial Render
-            updateDisplay();
-            paginationContainer.classList.remove('d-none');
-
+          
+          currentFilterId = e.target.dataset.id;
+          currentPage = 1; 
+          updateDisplay();
         }
-    } catch (error) {
-        console.error(error);
-        grid.innerHTML = `<div class="col-12 text-center text-muted">Failed to load projects.</div>`;
-    }
+      });
 
-    // --- HELPER: GET FILTERED DATA ---
-    function getFilteredProjects() {
-        if (currentFilterId === 'all') return allProjects;
-        // Filter logic: Check if category_ids array contains the selected ID
-        // Note: Make sure types match (string vs int). API usually returns int in array.
-        const targetId = parseInt(currentFilterId);
-        return allProjects.filter(p => p.category_ids.includes(targetId));
-    }
+      
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          updateDisplay();
+        }
+      });
 
-    // --- HELPER: UPDATE VIEW (GRID + PAGINATION) ---
-    function updateDisplay() {
+      nextBtn.addEventListener('click', () => {
         const filtered = getFilteredProjects();
-        const totalItems = filtered.length;
-        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
-        // 1. Pagination Controls State
-        if (totalItems === 0) {
-            paginationContainer.classList.add('d-none');
-            grid.innerHTML = `<div class="col-12 text-center text-muted py-5">No projects found in this category.</div>`;
-            return;
-        } else {
-            paginationContainer.classList.remove('d-none');
+        const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+        if (currentPage < totalPages) {
+          currentPage++;
+          updateDisplay();
         }
+      });
 
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages;
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+      
+      updateDisplay();
+      paginationContainer.classList.remove('d-none');
 
-        // 2. Slice Data for Current Page
-        const start = (currentPage - 1) * ITEMS_PER_PAGE;
-        const end = start + ITEMS_PER_PAGE;
-        const pageItems = filtered.slice(start, end);
+    }
+  } catch (error) {
+    console.error(error);
+    grid.innerHTML = `<div class="col-12 text-center text-muted">Failed to load projects.</div>`;
+  }
 
-        // 3. Render Grid
-        // Use slug-based URL: /projects/{nama_projects}
-        // Assuming API returns 'name' which is the slug, or we generate it. 
-        // Best practice: API should return a 'slug' field. 
-        // Fallback: simple slugify logic if API doesn't provide slug field explicitly.
-        
-        grid.innerHTML = pageItems.map(item => {
-            const slug = item.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-            const imgUrl = item.image_url && item.image_url !== "" 
-                         ? item.image_url 
-                         : "https://placehold.co/600x400/f8f9fa/adb5bd?text=Project";
+  
+  function getFilteredProjects() {
+    if (currentFilterId === 'all') return allProjects;
+    
+    
+    const targetId = parseInt(currentFilterId);
+    return allProjects.filter(p => p.category_ids.includes(targetId));
+  }
 
-            // Get Category Names
-            const itemCats = item.category_ids.map(id => {
-                const cat = categories.find(c => c.id === id);
-                return cat ? `<span class="badge bg-white text-dark border shadow-sm">${cat.name}</span>` : '';
-            }).join(' ');
+  
+  function updateDisplay() {
+    const filtered = getFilteredProjects();
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-            return `
+    
+    if (totalItems === 0) {
+      paginationContainer.classList.add('d-none');
+      grid.innerHTML = `<div class="col-12 text-center text-muted py-5">No projects found in this category.</div>`;
+      return;
+    } else {
+      paginationContainer.classList.remove('d-none');
+    }
+
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+    
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const pageItems = filtered.slice(start, end);
+
+    
+    
+    
+    
+
+    grid.innerHTML = pageItems.map(item => {
+      const slug = item.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+      const imgUrl = item.image_url && item.image_url !== ""
+        ? item.image_url
+        : "https://placehold.co/600x400/f8f9fa/adb5bd?text=Project";
+
+      
+      const itemCats = item.category_ids.map(id => {
+        const cat = categories.find(c => c.id === id);
+        return cat ? `<span class="badge bg-white text-dark border shadow-sm">${cat.name}</span>` : '';
+      }).join(' ');
+
+      return `
                 <div class="col-md-6 col-lg-4 fade-in">
                     <a href="/projects/${slug}" class="project-card d-block text-decoration-none h-100">
                         <div class="project-img-box">
@@ -892,20 +881,20 @@ const initProjects = async () => {
                     </a>
                 </div>
             `;
-        }).join('');
-    }
+    }).join('');
+  }
 };
 
 const initNews = async () => {
-    const track = document.getElementById("news-track");
-    const dotsContainer = document.getElementById("news-indicators");
-    const prevBtn = document.getElementById("news-prev");
-    const nextBtn = document.getElementById("news-next");
+  const track = document.getElementById("news-track");
+  const dotsContainer = document.getElementById("news-indicators");
+  const prevBtn = document.getElementById("news-prev");
+  const nextBtn = document.getElementById("news-next");
 
-    if (!track) return;
+  if (!track) return;
 
-    // --- 1. SKELETON LOADING ---
-    const skeletonHTML = `
+  
+  const skeletonHTML = `
         <div class="news-card active" style="z-index: 20; opacity: 1; visibility: visible;">
             <div class="news-card-img placeholder-glow">
                 <span class="placeholder w-100 h-100 bg-secondary opacity-25"></span>
@@ -918,35 +907,35 @@ const initNews = async () => {
             </div>
         </div>
     `;
-    track.innerHTML = skeletonHTML;
+  track.innerHTML = skeletonHTML;
 
-    try {
-        // --- 2. FETCH API ---
-        const response = await fetch(`/api/news`);
-        if (!response.ok) throw new Error("Network Error");
-        const result = await response.json();
+  try {
+    
+    const response = await fetch(`/api/news`);
+    if (!response.ok) throw new Error("Network Error");
+    const result = await response.json();
 
-        if (result.success && Array.isArray(result.data)) {
-            let newsData = result.data;
+    if (result.success && Array.isArray(result.data)) {
+      let newsData = result.data;
 
-            if (newsData.length === 0) {
-                track.innerHTML = `<div class="text-white text-center w-100 pt-5">No news available.</div>`;
-                return;
-            }
+      if (newsData.length === 0) {
+        track.innerHTML = `<div class="text-white text-center w-100 pt-5">No news available.</div>`;
+        return;
+      }
 
-            // --- 3. RENDER ITEMS ---
-            track.innerHTML = ""; // Clear skeleton
-            dotsContainer.innerHTML = "";
+      
+      track.innerHTML = ""; 
+      dotsContainer.innerHTML = "";
 
-            // Render Card Elements
-            newsData.forEach((n, index) => {
-                const imgUrl = n.image_name || "https://placehold.co/400x300?text=News";
-                const date = new Date(n.publish_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+      
+      newsData.forEach((n, index) => {
+        const imgUrl = n.image_name || "https://placehold.co/400x300?text=News";
+        const date = new Date(n.publish_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
-                const card = document.createElement("div");
-                card.className = "news-card"; // Base class (hidden by default via CSS)
-                card.dataset.index = index;
-                card.innerHTML = `
+        const card = document.createElement("div");
+        card.className = "news-card"; 
+        card.dataset.index = index;
+        card.innerHTML = `
                     <div class="news-card-img">
                         <img src="${imgUrl}" alt="${n.title}" loading="lazy">
                     </div>
@@ -957,79 +946,79 @@ const initNews = async () => {
                         <a href="/news/${n.slug}" class="btn btn-sm btn-outline-light rounded-pill px-4 mt-2 align-self-start">Read More</a>
                     </div>
                 `;
-                track.appendChild(card);
+        track.appendChild(card);
 
-                // Render Dot
-                const dot = document.createElement("div");
-                dot.className = "news-dot";
-                dot.addEventListener("click", () => updateCarousel(index));
-                dotsContainer.appendChild(dot);
-            });
+        
+        const dot = document.createElement("div");
+        dot.className = "news-dot";
+        dot.addEventListener("click", () => updateCarousel(index));
+        dotsContainer.appendChild(dot);
+      });
 
-            // --- 4. CAROUSEL STATE LOGIC ---
-            const items = document.querySelectorAll(".news-card");
-            const dots = document.querySelectorAll(".news-dot");
-            const totalItems = items.length;
-            let currentIndex = 0;
+      
+      const items = document.querySelectorAll(".news-card");
+      const dots = document.querySelectorAll(".news-dot");
+      const totalItems = items.length;
+      let currentIndex = 0;
 
-            const updateCarousel = (newIndex) => {
-                // Handle Infinite Loop limits
-                if (newIndex < 0) newIndex = totalItems - 1;
-                if (newIndex >= totalItems) newIndex = 0;
-                
-                currentIndex = newIndex;
+      const updateCarousel = (newIndex) => {
+        
+        if (newIndex < 0) newIndex = totalItems - 1;
+        if (newIndex >= totalItems) newIndex = 0;
 
-                // Calculate Indices
-                // Gunakan modulo aritmatika untuk circular index
-                const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
-                const nextIndex = (currentIndex + 1) % totalItems;
+        currentIndex = newIndex;
 
-                // Reset Class Names untuk semua item
-                items.forEach(item => {
-                    item.className = "news-card"; // Reset ke default (hidden)
-                });
+        
+        
+        const prevIndex = (currentIndex - 1 + totalItems) % totalItems;
+        const nextIndex = (currentIndex + 1) % totalItems;
 
-                dots.forEach(dot => dot.classList.remove("active"));
+        
+        items.forEach(item => {
+          item.className = "news-card"; 
+        });
 
-                // Apply Classes sesuai spesifikasi
-                // 1. Active (Tengah, Terbesar, Z-Index Tertinggi)
-                items[currentIndex].classList.add("active");
-                
-                // 2. Prev (Kiri, Kecil, Di bawah)
-                // Hanya tampilkan jika total item > 1
-                if (totalItems > 1) items[prevIndex].classList.add("prev");
+        dots.forEach(dot => dot.classList.remove("active"));
 
-                // 3. Next (Kanan, Kecil, Di bawah)
-                // Hanya tampilkan jika total item > 2 (agar tidak tumpang tindih jika cuma 2 item)
-                if (totalItems > 2) items[nextIndex].classList.add("next");
+        
+        
+        items[currentIndex].classList.add("active");
 
-                // Update Dot Active
-                if(dots[currentIndex]) dots[currentIndex].classList.add("active");
-            };
+        
+        
+        if (totalItems > 1) items[prevIndex].classList.add("prev");
 
-            // --- 5. EVENT LISTENERS ---
-            nextBtn.addEventListener("click", () => updateCarousel(currentIndex + 1));
-            prevBtn.addEventListener("click", () => updateCarousel(currentIndex - 1));
+        
+        
+        if (totalItems > 2) items[nextIndex].classList.add("next");
 
-            // Mobile Swipe Logic
-            let touchStartX = 0;
-            track.addEventListener("touchstart", e => touchStartX = e.touches[0].clientX);
-            track.addEventListener("touchend", e => {
-                const touchEndX = e.changedTouches[0].clientX;
-                if (touchStartX - touchEndX > 50) updateCarousel(currentIndex + 1); // Swipe Left -> Next
-                if (touchEndX - touchStartX > 50) updateCarousel(currentIndex - 1); // Swipe Right -> Prev
-            });
+        
+        if (dots[currentIndex]) dots[currentIndex].classList.add("active");
+      };
 
-            // Initialize First State
-            updateCarousel(0);
+      
+      nextBtn.addEventListener("click", () => updateCarousel(currentIndex + 1));
+      prevBtn.addEventListener("click", () => updateCarousel(currentIndex - 1));
 
-        } else {
-            throw new Error("Invalid API Data");
-        }
-    } catch (error) {
-        console.error("News API Error:", error);
-        track.innerHTML = `<div class="text-white text-center w-100 pt-5">Failed to load news.</div>`;
+      
+      let touchStartX = 0;
+      track.addEventListener("touchstart", e => touchStartX = e.touches[0].clientX);
+      track.addEventListener("touchend", e => {
+        const touchEndX = e.changedTouches[0].clientX;
+        if (touchStartX - touchEndX > 50) updateCarousel(currentIndex + 1); 
+        if (touchEndX - touchStartX > 50) updateCarousel(currentIndex - 1); 
+      });
+
+      
+      updateCarousel(0);
+
+    } else {
+      throw new Error("Invalid API Data");
     }
+  } catch (error) {
+    console.error("News API Error:", error);
+    track.innerHTML = `<div class="text-white text-center w-100 pt-5">Failed to load news.</div>`;
+  }
 };
 
 const initPartners = async () => {
@@ -1042,11 +1031,11 @@ const initPartners = async () => {
         <span class="placeholder bg-secondary opacity-25 rounded" style="width: 150px; height: 50px; display: block;"></span>
     </div>
   `;
-  // Ulangi 5 kali
+  
   track.innerHTML = skeletonItem.repeat(5);
 
   try {
-    // --- 2. FETCH REAL API ---
+    
     const response = await fetch(`/api/partners`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
@@ -1056,14 +1045,14 @@ const initPartners = async () => {
     if (result.success && Array.isArray(result.data) && result.data.length > 0) {
       const data = result.data;
 
-      // --- 3. LOGIC INFINITE SCROLL ---
-      // Duplicate data to create seamless infinite scroll (3x duplikasi)
+      
+      
       const items = [...data, ...data, ...data];
 
-      // --- 4. RENDER DATA ---
+      
       track.innerHTML = items
         .map((p) => {
-          // Jika ada URL, bungkus dengan anchor tag, jika tidak gambar saja
+          
           const imgHtml = `
             <img src="${p.partner_logo}" 
                  alt="${p.name}" 
@@ -1073,21 +1062,21 @@ const initPartners = async () => {
                  style="height: 50px; width: auto; object-fit: contain;">
           `;
 
-          return p.url 
-            ? `<a href="${p.url}" target="_blank" rel="noopener" class="d-inline-block">${imgHtml}</a>` 
+          return p.url
+            ? `<a href="${p.url}" target="_blank" rel="noopener" class="d-inline-block">${imgHtml}</a>`
             : imgHtml;
         })
         .join("");
-        
+
     } else {
-      // Jika tidak ada partner, kosongkan atau tampilkan pesan kecil
+      
       track.innerHTML = `<span class="text-muted small">No partners yet.</span>`;
-      // Hentikan animasi scroll jika kosong agar tidak aneh
+      
       track.style.animation = "none";
     }
   } catch (error) {
     console.error("Partners API Fetch Failed:", error);
-    track.innerHTML = ""; // Bersihkan skeleton jika error
+    track.innerHTML = ""; 
     track.style.animation = "none";
   }
 };
@@ -1095,11 +1084,11 @@ const initPartners = async () => {
 const initGallery = async () => {
   const grid = document.getElementById("gallery-grid");
 
-  // Safety Check
+  
   if (!grid) return;
 
-  // --- 1. INJECT SKELETON LOADING ---
-  // Membuat 6 item skeleton untuk mengisi grid (2 baris x 3 kolom di desktop)
+  
+  
   const skeletonItem = `
     <div class="col-6 col-md-4">
         <div class="gallery-item placeholder-glow" style="border-radius: 8px; overflow: hidden;">
@@ -1110,12 +1099,12 @@ const initGallery = async () => {
   grid.innerHTML = skeletonItem.repeat(6);
 
   try {
-    // --- 2. FETCH REAL API ---
-    // Pastikan route ini benar dan server berjalan
+    
+    
     const response = await fetch(`/api/gallery`);
 
     if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
     }
 
     const result = await response.json();
@@ -1123,24 +1112,24 @@ const initGallery = async () => {
     if (result.success && Array.isArray(result.data)) {
       const data = result.data;
 
-      // Jika data kosong
+      
       if (data.length === 0) {
         grid.innerHTML = `<div class="col-12 text-center text-muted py-5">No gallery items found.</div>`;
         return;
       }
 
-      // --- 3. RENDER DATA (Support Photo & Video) ---
+      
       grid.innerHTML = data
         .map((item) => {
-          // Ikon Play Overlay jika Video
-          const videoOverlay = item.type === 'Video' 
+          
+          const videoOverlay = item.type === 'Video'
             ? `<div class="position-absolute top-50 start-50 translate-middle text-white d-flex align-items-center justify-content-center" 
                     style="background:rgba(0,0,0,0.5); border-radius:50%; width:50px; height:50px; pointer-events:none; z-index: 2;">
                     <i class="bi bi-play-fill fs-2"></i>
-               </div>` 
+               </div>`
             : '';
 
-          // Fallback image jika null (biasanya video youtube thumbnail sudah dihandle backend, tapi ini jaga-jaga)
+          
           const imgSrc = item.image_name || 'https://placehold.co/600x400?text=No+Preview';
 
           return `
@@ -1160,107 +1149,107 @@ const initGallery = async () => {
         })
         .join("");
 
-      // --- 4. LIGHTBOX LOGIC ---
-      const lightbox = document.getElementById("lightbox");
       
-      // Pastikan elemen lightbox ada sebelum dimanipulasi
+      const lightbox = document.getElementById("lightbox");
+
+      
       if (lightbox) {
-          const lbImg = document.getElementById("lightbox-img");
-          const lbTitle = document.getElementById("lightbox-title");
-          const lbDesc = document.getElementById("lightbox-desc");
-          const closeBtn = document.getElementById("lightbox-close");
+        const lbImg = document.getElementById("lightbox-img");
+        const lbTitle = document.getElementById("lightbox-title");
+        const lbDesc = document.getElementById("lightbox-desc");
+        const closeBtn = document.getElementById("lightbox-close");
 
-          // Helper: Reset State (Hapus video lama)
-          const resetLightbox = () => {
-            const existingIframe = document.getElementById("lightbox-video-frame");
-            if (existingIframe) existingIframe.remove();
-            if (lbImg) lbImg.style.display = 'block'; // Tampilkan kembali holder gambar
-          };
+        
+        const resetLightbox = () => {
+          const existingIframe = document.getElementById("lightbox-video-frame");
+          if (existingIframe) existingIframe.remove();
+          if (lbImg) lbImg.style.display = 'block'; 
+        };
 
-          const openLightbox = (target) => {
-            resetLightbox(); // Bersihkan konten sebelumnya
+        const openLightbox = (target) => {
+          resetLightbox(); 
+
+          const type = target.dataset.type;
+          const videoUrl = target.dataset.videoUrl;
+
+          
+          if (lbTitle) lbTitle.textContent = target.dataset.title;
+          if (lbDesc) lbDesc.textContent = target.dataset.desc;
+
+          if (type === 'Video' && videoUrl) {
             
-            const type = target.dataset.type;
-            const videoUrl = target.dataset.videoUrl;
+            if (lbImg) lbImg.style.display = 'none'; 
 
-            // Set Text
-            if(lbTitle) lbTitle.textContent = target.dataset.title;
-            if(lbDesc) lbDesc.textContent = target.dataset.desc;
-
-            if (type === 'Video' && videoUrl) {
-                // --- Handle Video ---
-                if(lbImg) lbImg.style.display = 'none'; // Sembunyikan gambar utama
-                
-                // Convert Youtube URL ke format Embed
-                let embedUrl = videoUrl;
-                if (videoUrl.includes('watch?v=')) {
-                    embedUrl = videoUrl.replace('watch?v=', 'embed/');
-                    embedUrl = embedUrl.split('&')[0]; // Bersihkan parameter lain
-                } else if (videoUrl.includes('youtu.be/')) {
-                    embedUrl = videoUrl.replace('youtu.be/', 'youtube.com/embed/');
-                }
-
-                // Buat Iframe
-                const iframe = document.createElement('iframe');
-                iframe.id = 'lightbox-video-frame';
-                iframe.src = embedUrl + "?autoplay=1";
-                iframe.width = "100%";
-                iframe.height = "400px";
-                iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-                iframe.allowFullscreen = true;
-                iframe.className = "rounded shadow-lg mb-3 bg-black"; // Tambah bg-black agar rapi
-                
-                // Masukkan iframe sebelum caption
-                if(lbImg) lbImg.insertAdjacentElement('afterend', iframe);
-
-            } else {
-                // --- Handle Photo ---
-                if(lbImg) {
-                    lbImg.src = target.dataset.src;
-                    lbImg.style.display = 'block';
-                }
+            
+            let embedUrl = videoUrl;
+            if (videoUrl.includes('watch?v=')) {
+              embedUrl = videoUrl.replace('watch?v=', 'embed/');
+              embedUrl = embedUrl.split('&')[0]; 
+            } else if (videoUrl.includes('youtu.be/')) {
+              embedUrl = videoUrl.replace('youtu.be/', 'youtube.com/embed/');
             }
 
-            // Show Modal
-            lightbox.classList.add("active");
-            lightbox.setAttribute("aria-hidden", "false");
-            if(closeBtn) closeBtn.focus();
-            document.body.style.overflow = "hidden";
-          };
+            
+            const iframe = document.createElement('iframe');
+            iframe.id = 'lightbox-video-frame';
+            iframe.src = embedUrl + "?autoplay=1";
+            iframe.width = "100%";
+            iframe.height = "400px";
+            iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+            iframe.allowFullscreen = true;
+            iframe.className = "rounded shadow-lg mb-3 bg-black"; 
 
-          const closeLightbox = () => {
-            lightbox.classList.remove("active");
-            lightbox.setAttribute("aria-hidden", "true");
-            document.body.style.overflow = "";
-            resetLightbox(); // Stop video playback
-          };
+            
+            if (lbImg) lbImg.insertAdjacentElement('afterend', iframe);
 
-          // Event Delegation (Klik Item Grid)
-          grid.onclick = (e) => {
+          } else {
+            
+            if (lbImg) {
+              lbImg.src = target.dataset.src;
+              lbImg.style.display = 'block';
+            }
+          }
+
+          
+          lightbox.classList.add("active");
+          lightbox.setAttribute("aria-hidden", "false");
+          if (closeBtn) closeBtn.focus();
+          document.body.style.overflow = "hidden";
+        };
+
+        const closeLightbox = () => {
+          lightbox.classList.remove("active");
+          lightbox.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
+          resetLightbox(); 
+        };
+
+        
+        grid.onclick = (e) => {
+          const item = e.target.closest(".gallery-item");
+          if (item) openLightbox(item);
+        };
+
+        
+        grid.onkeydown = (e) => {
+          if (e.key === "Enter") {
             const item = e.target.closest(".gallery-item");
             if (item) openLightbox(item);
-          };
+          }
+        };
 
-          // Accessibility: Enter Key
-          grid.onkeydown = (e) => {
-            if (e.key === "Enter") {
-              const item = e.target.closest(".gallery-item");
-              if (item) openLightbox(item);
-            }
-          };
+        
+        if (closeBtn) closeBtn.onclick = closeLightbox;
 
-          // Controls
-          if(closeBtn) closeBtn.onclick = closeLightbox;
+        
+        document.onkeydown = (e) => {
+          if (e.key === "Escape" && lightbox.classList.contains("active")) closeLightbox();
+        };
 
-          // Close on Escape
-          document.onkeydown = (e) => {
-            if (e.key === "Escape" && lightbox.classList.contains("active")) closeLightbox();
-          };
-          
-          // Close on Click Outside
-          lightbox.onclick = (e) => {
-            if (e.target === lightbox) closeLightbox();
-          };
+        
+        lightbox.onclick = (e) => {
+          if (e.target === lightbox) closeLightbox();
+        };
       }
 
     } else {
@@ -1305,21 +1294,21 @@ const initProducts = async () => {
 
     let products = [];
     if (result.success) {
-        if (result.data && Array.isArray(result.data.items)) {
-            products = result.data.items;
-        } else if (Array.isArray(result.data)) {
-            products = result.data;
-        }
+      if (result.data && Array.isArray(result.data.items)) {
+        products = result.data.items;
+      } else if (Array.isArray(result.data)) {
+        products = result.data;
+      }
     }
 
     if (products.length > 0) {
       grid.innerHTML = products.map(item => {
         let dateStr = "Coming Soon";
-        if(item.release_date || item.created_at) {
-             const d = new Date(item.release_date || item.created_at);
-             dateStr = d.toLocaleDateString("en-US", { month: 'short', year: 'numeric' });
+        if (item.release_date || item.created_at) {
+          const d = new Date(item.release_date || item.created_at);
+          dateStr = d.toLocaleDateString("en-US", { month: 'short', year: 'numeric' });
         }
-        
+
         const imgName = item.image_url || item.image_name || "";
         const imgSrc = imgName.startsWith('http') ? imgName : `uploads/products/${imgName}`;
         const finalImg = (imgName === "") ? "https://placehold.co/600x400/111/333?text=Product" : imgSrc;
@@ -1346,35 +1335,35 @@ const initProducts = async () => {
         const tiles = document.querySelectorAll('.tech-tile');
 
         tiles.forEach(tile => {
-            const shine = tile.querySelector('.tile-shine');
+          const shine = tile.querySelector('.tile-shine');
 
-            tile.addEventListener('mousemove', (e) => {
-                const rect = tile.getBoundingClientRect();
-                const width = rect.width;
-                const height = rect.height;
+          tile.addEventListener('mousemove', (e) => {
+            const rect = tile.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
 
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                
-                const xPct = mouseX / width - 0.5;
-                const yPct = mouseY / height - 0.5; 
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
 
-                const rotateX = yPct * -15; 
-                const rotateY = xPct * 15; 
+            const xPct = mouseX / width - 0.5;
+            const yPct = mouseY / height - 0.5;
 
-                tile.style.transition = 'none'; 
-                tile.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            const rotateX = yPct * -15;
+            const rotateY = xPct * 15;
 
-                if (shine) {
-                    shine.style.setProperty('--shine-x', `${mouseX}px`);
-                    shine.style.setProperty('--shine-y', `${mouseY}px`);
-                }
-            });
+            tile.style.transition = 'none';
+            tile.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
 
-            tile.addEventListener('mouseleave', () => {
-                tile.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
-                tile.style.transform = 'rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
+            if (shine) {
+              shine.style.setProperty('--shine-x', `${mouseX}px`);
+              shine.style.setProperty('--shine-y', `${mouseY}px`);
+            }
+          });
+
+          tile.addEventListener('mouseleave', () => {
+            tile.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+            tile.style.transform = 'rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+          });
         });
       }
 
@@ -1390,27 +1379,26 @@ const initProducts = async () => {
 
 const initMaps = async () => {
   const section = document.getElementById("maps-section");
+
   
-  // Elements to update
   const emailEl = section.querySelector(".bi-envelope").closest(".d-flex").querySelector("span.fw-semibold");
   const phoneEl = section.querySelector(".bi-telephone").closest(".d-flex").querySelector("span.fw-semibold");
   const mapIframe = section.querySelector("iframe.map-iframe");
-  const addressEl = section.querySelector(".floating-map-card p.small"); // Address in floating card
+  const addressEl = section.querySelector(".floating-map-card p.small");
+
   
-  // Safety Check
   if (!section) return;
 
-  // --- 1. INJECT SKELETON LOADING ---
-  // Simpan text asli untuk fallback
+  
   const originalEmail = emailEl.innerText;
   const originalPhone = phoneEl.innerText;
+
   
-  // Replace text dengan skeleton
   emailEl.innerHTML = `<span class="placeholder col-8 bg-secondary opacity-25"></span>`;
   phoneEl.innerHTML = `<span class="placeholder col-6 bg-secondary opacity-25"></span>`;
-  if(addressEl) addressEl.innerHTML = `<span class="placeholder col-10 bg-secondary opacity-25"></span>`;
+  if (addressEl) addressEl.innerHTML = `<span class="placeholder col-10 bg-secondary opacity-25"></span>`;
+
   
-  // Map Skeleton overlay (karena iframe tidak bisa di-placeholder langsung dengan mudah)
   const mapWrapper = section.querySelector(".map-wrapper");
   const mapSkeleton = document.createElement("div");
   mapSkeleton.className = "position-absolute top-0 start-0 w-100 h-100 bg-light placeholder-glow d-flex align-items-center justify-content-center z-2";
@@ -1419,8 +1407,7 @@ const initMaps = async () => {
   mapWrapper.appendChild(mapSkeleton);
 
   try {
-    // --- 2. FETCH REAL API ---
-    // Pastikan route: Router::get('/api/site-settings', [HomeController::class, 'getSiteSettings']);
+    
     const response = await fetch(`/api/site-settings`);
 
     if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
@@ -1430,34 +1417,58 @@ const initMaps = async () => {
     if (result.success && result.data) {
       const data = result.data;
 
-      // --- 3. UPDATE CONTENT ---
       
-      // Update Email
       emailEl.innerText = data.email || originalEmail;
-      
-      // Update Phone
+
       phoneEl.innerText = data.phone || originalPhone;
-      
-      // Update Map Iframe Source
+
       if (mapIframe && data.map_src) {
         mapIframe.src = data.map_src;
-        // Hapus skeleton saat iframe selesai load
         mapIframe.onload = () => {
-            if(mapSkeleton) mapSkeleton.remove();
+          if (mapSkeleton) mapSkeleton.remove();
         };
       } else {
-         if(mapSkeleton) mapSkeleton.remove(); // Remove anyway if no map
+        if (mapSkeleton) mapSkeleton.remove();
       }
 
-      // Update Address in Floating Card
       if (addressEl) {
         addressEl.innerText = data.address || "Building A4, 2nd Floor, Science Park St.";
       }
 
-      // Optional: Update 'Get Directions' link if you want it dynamic based on address
       const directionBtn = section.querySelector("a.btn-outline-primary");
-      if(directionBtn && data.address) {
-          directionBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.address)}`;
+      if (directionBtn && data.map_src) {
+        let destinationQuery = "";
+
+        
+        
+        
+        const matchAddress = data.map_src.match(/!2s([^!]+)/);
+
+        if (matchAddress && matchAddress[1]) {
+          
+          destinationQuery = matchAddress[1];
+        }
+        
+        else {
+          const matchLat = data.map_src.match(/!3d([-0-9.]+)/);
+          const matchLng = data.map_src.match(/!2d([-0-9.]+)/);
+
+          if (matchLat && matchLng) {
+            destinationQuery = `${matchLat[1]},${matchLng[1]}`;
+          }
+        }
+
+        
+        if (!destinationQuery && data.address) {
+          destinationQuery = encodeURIComponent(data.address);
+        }
+
+        
+        if (destinationQuery) {
+          
+          directionBtn.href = `https://www.google.com/maps/search/?api=1&query=${destinationQuery}`;
+          directionBtn.target = "_blank"; 
+        }
       }
 
     } else {
@@ -1465,16 +1476,16 @@ const initMaps = async () => {
     }
   } catch (error) {
     console.error("Site Settings API Fetch Failed:", error);
+
     
-    // Restore Original / Remove Skeletons on Error
     emailEl.innerText = originalEmail;
     phoneEl.innerText = originalPhone;
-    if(addressEl) addressEl.innerText = "Building A4, 2nd Floor, Science Park St.";
-    if(mapSkeleton) mapSkeleton.remove();
+    if (addressEl) addressEl.innerText = "Building A4, 2nd Floor, Science Park St.";
+    if (mapSkeleton) mapSkeleton.remove();
   }
 };
 
-// --- 4. Init All ---
+
 document.addEventListener("DOMContentLoaded", () => {
   initHeroSlider();
   initAbout();

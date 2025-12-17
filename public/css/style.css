@@ -546,13 +546,14 @@ section {
   width: 100%;
   padding: 3rem 0;
   z-index: 1;
+  overflow: hidden;
 }
 
 .team-track {
   display: flex;
   width: max-content;
   animation: scroll-left 40s linear infinite;
-  gap: 0; /* Gap dihandle padding item */
+  gap: 0;
 }
 
 .team-slider-wrapper:hover .team-track {
@@ -565,10 +566,34 @@ section {
   box-sizing: border-box;
 }
 
-/* Desktop: 4 items (100% / 4 = 25%) */
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
+  .team-carousel-item {
+    width: 20vw;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
   .team-carousel-item {
     width: 25vw;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .team-carousel-item {
+    width: 33.33vw;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .team-carousel-item {
+    width: 50vw;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .team-carousel-item {
+    width: 85vw;
+    padding: 0 10px;
   }
 }
 
@@ -577,11 +602,8 @@ section {
   .team-carousel-item {
     width: 33.33vw;
   }
-}
 
-/* Mobile: 2 items (100% / 2 = 50%) */
-@media (max-width: 767.98px) {
-  .navbar {
+    .navbar {
     margin: 0 !important;
     border-radius: 0 !important;
     padding: 16px 20px !important;
@@ -616,32 +638,31 @@ section {
   .slider-nav {
     display: none;
   }
-
-  .team-carousel-item {
-    width: 50vw;
-  }
 }
 
 .team-card {
-  background: var(--glass-bg);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.5));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: var(--glass-border);
+  border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.5));
   border-radius: 20px;
   padding: 2.5rem 1.5rem;
   text-align: center;
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow, 0 8px 32px 0 rgba(31, 38, 135, 0.1));
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
   overflow: hidden;
 }
 
 .team-card:hover {
   transform: translateY(-12px);
-  box-shadow: var(--card-hover-shadow);
-  border-color: #fff;
   background: rgba(255, 255, 255, 0.9);
+  border-color: #fff;
 }
 
 .team-card img {
@@ -660,16 +681,16 @@ section {
 }
 
 .team-name {
-  font-family: var(--font-heading);
-  color: var(--text-dark);
+  font-family: var(--font-heading, sans-serif);
+  color: var(--text-dark, #333);
   font-weight: 700;
   font-size: 1.25rem;
   margin-bottom: 0.25rem;
 }
 
 .team-role {
-  font-family: var(--font-body);
-  color: var(--primary-color);
+  font-family: var(--font-body, sans-serif);
+  color: var(--primary-color, #0d6efd);
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -677,7 +698,6 @@ section {
   margin-bottom: 1.25rem;
 }
 
-/* Social Icons Team */
 .team-social {
   display: flex;
   justify-content: center;
@@ -692,19 +712,49 @@ section {
   justify-content: center;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.6);
-  color: var(--text-muted);
+  color: var(--text-muted, #6c757d);
   font-size: 1rem;
   transition: all 0.3s ease;
   border: 1px solid transparent;
 }
 
 .team-social a:hover {
-  background: var(--primary-color);
+  background: var(--primary-color, #0d6efd);
   color: #fff;
   transform: translateY(-3px);
 }
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .team-card img {
+    width: 90px;
+    height: 90px;
+  }
+}
 
-/* Slider Fade Sides */
+@media (max-width: 575.98px) {
+  .team-card {
+    padding: 2rem 1rem;
+  }
+  
+  .team-card img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1rem;
+  }
+
+  .team-name {
+    font-size: 1.1rem;
+  }
+  
+  .team-role {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  #team-carousel h2.display-6 {
+    font-size: 1.75rem;
+  }
+}
+
 .slider-overlay-left {
   position: absolute;
   top: 0;
@@ -715,6 +765,7 @@ section {
   pointer-events: none;
   background: linear-gradient(to right, rgb(239, 246, 255) 0%, transparent 100%);
 }
+
 .slider-overlay-right {
   position: absolute;
   top: 0;
@@ -724,6 +775,20 @@ section {
   z-index: 2;
   pointer-events: none;
   background: linear-gradient(to left, rgb(248, 250, 255) 0%, transparent 100%);
+}
+
+@media (max-width: 991.98px) {
+  .slider-overlay-left, 
+  .slider-overlay-right {
+    width: 60px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .slider-overlay-left, 
+  .slider-overlay-right {
+    width: 40px;
+  }
 }
 
 @keyframes scroll-left {
@@ -1190,45 +1255,37 @@ section {
 }
 
 /* 7. Gallery & Lightbox */
-/* --- Masonry Grid Layout Override --- */
-
-/* 1. Override Container Grid Bootstrap */
 #gallery-grid {
-  display: block !important; /* Matikan display flex bawaan Bootstrap row */
-  column-count: 3; /* Jumlah kolom default (Desktop) */
-  column-gap: 1.5rem; /* Jarak horizontal antar kolom */
+  display: block !important;
+  column-count: 3;
+  column-gap: 1.5rem;
   width: 100%;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
 }
 
-/* 2. Override Kolom Bootstrap (Child Items) */
-/* Selector ini menargetkan div <div class="col-6 col-md-4"> yang di-generate JS */
 #gallery-grid > div[class*="col-"] {
-  width: 100% !important; /* Paksa lebar penuh mengikuti kolom CSS */
+  width: 100% !important;
   max-width: 100% !important;
-  display: inline-block; /* Penting agar item tidak terpotong */
-  break-inside: avoid; /* Mencegah item terbelah antar kolom */
-  margin-bottom: 1.5rem; /* Jarak vertikal antar item */
-  padding: 0 !important; /* Reset padding bawaan bootstrap jika perlu */
+  display: inline-block;
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  padding: 0 !important;
 }
 
-/* 3. Styling Gallery Item (Card) */
 .gallery-item {
-  border-radius: 16px; /* Sudut lebih membulat & modern */
+  border-radius: 16px;
   overflow: hidden;
   position: relative;
-  background-color: #f8f9fa; /* Warna dasar saat loading */
+  background-color: #f8f9fa;
   cursor: pointer;
   z-index: 1;
-  /* Smooth Transition untuk hover effect */
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03); /* Shadow halus minimalis */
-
-  /* Hack untuk memfix border-radius bug di safari saat transform */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
   transform: translateZ(0);
   -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
-/* 4. Image Styling */
 .gallery-item img {
   width: 100%;
   height: auto !important;
@@ -1237,7 +1294,6 @@ section {
   object-fit: cover;
 }
 
-/* 5. Hover Effects */
 .gallery-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
@@ -1256,24 +1312,39 @@ section {
   background: rgba(0, 0, 0, 0.7) !important;
 }
 
-/* --- Responsive Breakpoints --- */
 @media (max-width: 992px) {
   #gallery-grid {
     column-count: 2;
     column-gap: 1rem;
   }
+  
   #gallery-grid > div[class*="col-"] {
     margin-bottom: 1rem;
   }
 }
 
-/* Mobile (dibawah 576px) -> 1 Kolom */
 @media (max-width: 576px) {
   #gallery-grid {
-    column-count: 1;
+    column-count: auto;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  #gallery-grid > div[class*="col-"] {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 0;
+  }
+
+  .gallery-item {
+    margin: 0 10px;
   }
 }
 
+/* Product */
 .product-section {
   background-color: var(--tech-black);
   padding: 6rem 0;
