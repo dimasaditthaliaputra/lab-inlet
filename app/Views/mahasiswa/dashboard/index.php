@@ -139,7 +139,7 @@
                         </p>
                     <?php else: ?>
                         <div class="text-center text-muted py-2">
-                            <i class="bi bi-emoji-smile mb-2 d-block" style="font-size: 1.5rem;"></i>
+                            <i class="bi bi-emoji-smile mb-2 me-2 d-block" style="font-size: 1.5rem;"></i>
                             No permission request history yet.
                         </div>
                     <?php endif; ?>
