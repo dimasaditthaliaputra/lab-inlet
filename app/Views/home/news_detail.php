@@ -140,15 +140,6 @@
         <article class="article-content fade-in-up" style="animation-delay: 0.2s;">
             <?= $news->content ?> 
         </article>
-
-        <div class="article-content mt-5 pt-5 border-top">
-            <div class="d-flex justify-content-between">
-                <a href="/news" class="btn btn-outline-primary rounded-pill px-4">
-                    <i class="bi bi-grid me-2"></i> More News
-                </a>
-            </div>
-        </div>
-
     </div>
 </section>
 
